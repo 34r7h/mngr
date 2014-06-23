@@ -1,6 +1,7 @@
 angular.module('mngr').factory('models',function() {
 
 	var models = {
+
 		products: [
 			{name:'upc',value:'',type:'text',element:'input'},
 			{name:'brand',value:'',type:'text',element:'input'},

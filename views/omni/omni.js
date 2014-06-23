@@ -1,7 +1,12 @@
-angular.module('mngr').directive('omni', function() {
+angular.module('mngr').directive('omni', function(ui) {
 	return {
 		restrict: 'E',
 		replace: true,
+		controller:function($scope){
+			$scope.workspaces = ui.workspace;
+			$scope.workspacesLength = Object.keys(ui.workspace);
+			$scope.components = ui.components;
+		},
 		scope: {
 
 		},

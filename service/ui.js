@@ -1,21 +1,31 @@
 angular.module('mngr').factory('ui',function($q) {
 
 	var ui = {
+		components:[
+			{name:'stock',icon:'fa fa-barcode'},
+			{name:'shop',icon:'fa fa-gift'},
+			{name:'orders',icon:'fa fa-barcode'},
+			{name:'users',icon:'fa fa-barcode'},
+			{name:'content',icon:'fa fa-barcode'}
+		],
 		workspace: {
 			overlay: {
 				show: false,
 				component: '',
-				view: ''
+				view: '',
+				icon:'fa fa-leaf'
 			},
 			workspaces: {
 				show: true,
 				component: '',
-				view: ''
+				view: '',
+				icon:'fa fa-leaf'
 			},
 			underlay: {
 				show: false,
 				component: '',
-				view: ''
+				view: '',
+				icon:'fa fa-leaf'
 			}
 		},
 		sortables:{
@@ -29,16 +39,24 @@ angular.module('mngr').factory('ui',function($q) {
 			icon: false,
 			textIcon: true
 		},
-		breadcrumbs: {},
+		notify:{
+			showNotify:false
+		},
+		breadcrumbs: {
+			showBreadcrumbs:false
+		},
 		create: {
 			showOptions: false,
 			options: ['products', 'users', 'orders', 'shops'],
 			showSpecific: false,
 			specific: ''
 		},
-		notify: {},
-		omni: {},
-		search: {},
+		omni: {
+			showOmni:false
+		},
+		search: {
+			showSearch:false
+		},
 		nightOrDay: "",
 		path:"",
 		params:"",

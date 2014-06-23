@@ -1,28 +1,17 @@
-<article class="row-13 col-13">
-    <section class="row-13 col-1 filters">
-        <button class="col-13" ng-click="showStockItem=!showStockItem"><i class="fa-arrow-left fa"></i></button>
-    </section>
-    <section class="row-13 col-12">
-        <p>We have item #{{item.$id}}: {{item}}</p>
-        <div ng-show="$parent.headerItems" class="row-2 col-13">
-            <div class="row-13 col-3"  ng-repeat="headerItem in $parent.headerItems">
-                <h4>
-                    <i class="{{headerItem.icon}}"> </i>
-                    <span >{{headerItem.info}}</span>
-                    <input ng-if="headerItem.action" ng-model="headerItem.action">
-                </h4>
-            </div>
-        </div>
-        <div ng-show="$parent.mainArea" class="row-11 col-5">
-            <img ng-show="$parent.mainArea.img" ng-src="{{$parent.mainArea.img}}" width="100%">
-        </div>
-        <div ng-show="$parent.sections" class="row-11 col-8" >
-            <div ng-repeat="section in $parent.sections">
-                <button ng-click="$parent.$parent.thisSection = section.module;$parent.$parent.thisFilter = section.filter;" class="pull-left" style="width:{{(100/$parent.$parent.sections.length)}}%">{{section.name | uppercase}}</button>
-            </div>
-            <div ng-show="$parent.thisSection">
-                <comp element="$parent.thisSection" filtered="{{$parent.thisFilter}}"></comp>
-            </div>
-        </div>
-    </section>
-</article>
+<div class="full">
+    <div class="col-1 row-12">
+        Actions
+    </div>
+    <span class="col-12 row-1">
+        Header
+    </span>
+    <span class="col-5 row-11">
+        Item
+    </span>
+    <span class="col-7 row-11">
+        Details
+    </span>
+    <span class="col-13 row-1">
+        Footer
+    </span>
+</div>
