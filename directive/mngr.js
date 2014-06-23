@@ -2,7 +2,7 @@ angular.module('mngr').directive('mngr', function($compile, $timeout) {
 	return {
 		restrict:"E",
 		replace:true,
-		scope:{element:"=",params:"=",type:"=",workspace:"@",calendar:"@calendar"},
+		scope:{element:"=",params:"=",type:"=",workspace:"@"},
 		link:function(scope, iElem, iAttrs, element, $scope, attrs) {
 			var domElement;
 			scope.$watch('element', function(newVal){

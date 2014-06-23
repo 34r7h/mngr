@@ -15,17 +15,12 @@
     <div class="col-13 row-11">
         <comp element="ui.workspaces['underlay'].component" params="ui.workspaces['underlay'].params" workspace="underlay"></comp>
         <div ng-show="ui.workspace.overlay.show" class="full">
-            <span class="full" style="display: table">
-                <i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;">
-                    Overlay: <mngr element="ui.workspaces['underlay'].component" params="ui.workspaces['underlay'].params" workspace="underlay"></mngr>
-
-                </i>
-            </span>
+                    <mngr element="ui.workspace.overlay.component"></mngr>
         </div>
         <div ng-show="ui.workspace.workspaces.show" class="full">
-            <div class="col-3 row-13">Left Space</div>
-            <div class="col-6 row-13"><mngr-form></mngr-form></div>
-            <div class="col-4 row-13">Right Space</div>
+            <div class="col-3 row-13"><mngr-item></mngr-item></div>
+            <div class="col-6 row-13"><mngr element="'mngr-form'"></mngr></div>
+            <div class="col-4 row-13"><mngr-table></mngr-table></div>
         </div>
         <div ng-show="ui.workspace.underlay.show" class="full">
             <span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Underlay</i></span>

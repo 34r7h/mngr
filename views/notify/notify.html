@@ -1,8 +1,14 @@
 <div class="full">
     <span class="full" style="display: table">
-        <i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;" ng-click="ui.notify.showNotify=!ui.notify.showNotify"> Notify</i>
+        <div
+                class="full fa fa-leaf"
+                ng-click="$parent.ui.notify.showNotify=!$parent.ui.notify.showNotify; $parent.ui.notify.notification = notification.name"
+                style="text-align: center;vertical-align: middle;display: table-cell;width:{{(100/$parent.$parent.ui.notify.components.length)}}%"
+                ng-repeat="notification in $parent.ui.notify.components">
+                    {{notification.name}}
+            </div>
     </span>
-    <div class="col-8 row-6 drop-1 absolute" ng-show="ui.notify.showNotify">
-        <div class="full">yup</div>
+    <div class="col-8 row-6 drop-1 absolute" ng-if="ui.notify.showNotify">
+        <div class="full"><mngr element="ui.notify.notification"></mngr></div>
     </div>
 </div>

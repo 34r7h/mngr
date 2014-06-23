@@ -10,13 +10,13 @@ angular.module('mngr').factory('ui',function($q) {
 		],
 		workspace: {
 			overlay: {
-				show: false,
-				component: '',
+				show: true,
+				component: 'stock',
 				view: '',
 				icon:'fa fa-leaf'
 			},
 			workspaces: {
-				show: true,
+				show: false,
 				component: '',
 				view: '',
 				icon:'fa fa-leaf'
@@ -40,7 +40,14 @@ angular.module('mngr').factory('ui',function($q) {
 			textIcon: true
 		},
 		notify:{
-			showNotify:false
+			showNotify:false,
+			components:[
+				{name:'messages', icon:'fa fa-mail'},
+				{name:'events', icon:'fa fa-calendar'},
+				{name:'cart', icon:'fa fa-shopping-cart'},
+				{name:'notices', icon:'fa fa-globe'}
+			],
+			notification:''
 		},
 		breadcrumbs: {
 			showBreadcrumbs:false
