@@ -1,0 +1,44 @@
+<div class="col-13 row-13 absolute test">
+    <div class="col-13 row-1" style="display: table">
+        <div class="col-1 row-13" >
+                <create></create>
+        </div>
+        <div class="col-7 row-13" >
+            <breadcrumbs></breadcrumbs>
+        </div>
+        <div class="col-5 row-13" >
+            <span class="full" style="display: table">
+                <i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Notify</i>
+            </span>
+        </div>
+    </div>
+    <div class="col-13 row-11">
+        <comp element="ui.workspaces['underlay'].component" params="ui.workspaces['underlay'].params" workspace="underlay"></comp>
+        <div ng-show="ui.workspace.overlay.show" class="full">
+            <span class="full" style="display: table">
+                <i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;">
+                    Overlay: <mngr element="ui.workspaces['underlay'].component" params="ui.workspaces['underlay'].params" workspace="underlay"></mngr>
+
+                </i>
+            </span>
+        </div>
+        <div ng-show="ui.workspace.workspaces.show" class="full">
+            <div class="col-3 row-13">Left Space</div>
+            <div class="col-6 row-13">Middle Space</div>
+            <div class="col-4 row-13">Right Space</div>
+        </div>
+        <div ng-show="ui.workspace.underlay.show" class="full">
+            <span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Underlay</i></span>
+        </div>
+    </div>
+    <div class="col-13 row-1">
+        <div class="col-6 row-13">
+            <span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Omni</i></span>
+        </div>
+        <div class="col-7 row-13">
+            <span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Search</i></span>
+
+        </div>
+    </div>
+
+</div>

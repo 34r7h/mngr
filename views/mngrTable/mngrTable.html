@@ -1,0 +1,116 @@
+<article class="row-13 col-13">
+    <div class="row-13 col-3 filters scroll-y">
+        <div ng-repeat="addNew in userAddedConfirm">{{addNew}}</div>
+        <div class="filters">
+            <div ng-repeat="filter in table.filters">
+                <label>{{filter.name}}</label>
+                <input
+                        ng-if="filter.type === 'text' || filter.type === 'email' || filter.type === 'number'"
+                        name="{{filter.name}}"
+                        type="{{filter.type}}"
+                        ng-model="filter.value"
+                        placeholder="{{filter.name}}"
+                        >
+                <input ng-if="filter.type === 'number' && filter.operand === '><' && (filter.value2||filter.value2==='')"
+                       name="{{filter.name}}-2"
+                       type="{{filter.type}}"
+                       ng-model="filter.value2"
+                       placeholder="{{filter.name}}"
+                        >
+                <textarea
+                        ng-if="filter.type==='textarea'"
+                        name="{{filter.name}}"
+                        ng-model="filter.value"
+                        placeholder="{{filter.name}}"
+                        ></textarea>
+                <select
+                        ng-if="filter.type==='select'"
+                        ng-model="filter.value"
+                        ng-options="user as user for user in filter.options"
+                        multiple="multiple"
+                        ><option value="">Choose {{filter.name}}</option></select>
+                <div ng-if="filter.type==='datetimepicker' || filter.type==='date'">
+                    <datetimepicker
+                            ng-model="filter.value"
+                            date-options="dateOptions"
+                            date-disabled="disabled(date, mode)"
+                            showMinutes="true"
+                            ></datetimepicker>
+
+                    <datetimepicker ng-if="filter.operand === '><' && (filter.value2 || filter.value2==='')"
+                                    ng-model="filter.value"
+                                    date-options="dateOptions"
+                                    date-disabled="disabled(date, mode)"
+                                    showMinutes="true"
+                            ></datetimepicker>
+
+                </div>
+                <select
+                        ng-if="filter.operand && filter.operands && filter.type !== 'date' && filter.type !== 'datetimepicker'"
+                        name="{{filter.name}}-operand"
+                        ng-model="filter.operand"
+                        ng-options="operand | operandText for operand in filter.operands"
+                        ></select>
+                <select
+                        ng-if="filter.operand && filter.operands && (filter.type === 'date' || filter.type === 'datetimepicker')"
+                        name="{{filter.name}}-operand"
+                        ng-model="filter.operand"
+                        ng-options="operand | operandText:'date' for operand in filter.operands"
+                        ></select>
+                <mngr-form element="input" type="filter.type" placeholder="{{filter.name}}"></mngr-form>
+            </div>
+        </div>
+    </div>
+    <div class="row-13 col-10">
+        <div class="row-1 col-13">
+            <span ng-repeat="sort in table.sortables | orderBy: priority ">
+                <input type="checkbox" ng-model="sort.show" id="sort-toggle-{{sort.name}}" ng-change="setColumnCount()">
+                <label for="sort-toggle-{{sort.name}}" ng-if="sort.title">{{sort.title | uppercase}}</label><label for="sort-toggle-{{sort.name}}" ng-if="!sort.title">{{sort.name | uppercase}}</label>
+            </span>
+        </div>
+
+        <div class="table-responsive col-13">
+            <table class="table col-13" ng-show="!filtering">
+                <thead>
+                <tr>
+                    <th class="col-controls"><input type="checkbox"></th>
+                    <th class="col-{{sort.name}}" ng-repeat="sort in table.sortables | orderBy: priority " ng-if="sort.show">
+                        <a ng-click="sortBy(sort.name)">
+                            <span ng-if="sort.title">{{sort.title | uppercase}}</span>
+                            <span ng-if="!sort.title">{{sort.name | uppercase}}</span>
+                        </a>
+                        <span ng-show="sorting.column===sort.name"><i class="fa fa-fw" ng-class="{'fa-sort-asc': !sorting.reverse, 'fa-sort-desc': sorting.reverse}"></i></span>
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="table-responsive col-13 row-11" style="overflow-y:auto" scroll-pages next-page="scroll.nextPage()" prev-page="scroll.prevPage()" back-scroll="true" threshold="3">
+            <div ng-show="filtering"><i class="fa fa-fw fa-spinner fa-spin"></i></div>
+            <div ng-show="!filtering" style="min-height:105%;padding-top:15px;">
+                <table class="table col-13">
+                    <tbody>
+                    <tr ng-repeat="item in table.data | orderBy:sorting.by:sorting.reverse | startAt:scroll.offset | limitTo:scroll.perPage">
+                        <td class="col-controls"><input type="checkbox"></td>
+                        <td class="col-{{sort.name}}" ng-repeat="sort in table.sortables | orderBy: priority" ng-if="sort.show">
+                            <a ng-if="sort.link" ng-href="{{sort.link | linkTo:item:workspace}}">
+                                <span ng-if="sort.display">{{item[sort.name] | display:sort.display}}</span>
+                                <span ng-if="!sort.display">{{item[sort.name]}}</span>
+                            </a>
+                        <span ng-if="!sort.link">
+                            <span ng-if="sort.display">{{item[sort.name] | display:sort.display}}</span>
+                            <span ng-if="!sort.display">{{item[sort.name]}}</span>
+                        </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="row-1 col-13 ">
+        Table Totals:
+        <hr>
+    </div>
+</article>

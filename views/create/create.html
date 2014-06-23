@@ -1,0 +1,45 @@
+<div class="full">
+    <span class="full" style="display: table" ng-click="ui.create.showOptions = !ui.create.showOptions">
+        <i ng-show="ui.iconography.text" class="full" style="text-align: center; vertical-align: middle; display: table-cell;">  <b >Create</b></i>
+        <i ng-show="ui.iconography.icon" class="full fa fa-plus" style="text-align: center; vertical-align: middle; display: table-cell;"></i>
+        <i ng-show="ui.iconography.textIcon" class="full fa fa-plus" style="text-align: center; vertical-align: middle; display: table-cell;"> <b>Create</b></i>
+    </span>
+    <div ng-show="ui.create.showOptions" class="absolute col-1 row-11" style="display: table">
+        <div
+                class="relative col-13"
+                style="display: table; height:{{(100/$parent.ui.create.options.length)}}%;"
+                ng-repeat="specific in ui.create.options"
+                ng-click="$parent.showSpecific=!$parent.showSpecific; ui.create.specific = specific; model[specific]={}">
+            <i ng-show="ui.iconography.text" class="full" style="text-align: center; vertical-align: middle; display: table-cell;"> {{specific | uppercase}}</i>
+            <i ng-show="ui.iconography.icon" class="full fa fa-plus" style="text-align: center; vertical-align: middle; display: table-cell;"></i>
+            <i ng-show="ui.iconography.textIcon" class="full fa fa-plus" style="text-align: center; vertical-align: middle; display: table-cell;"> {{specific | uppercase}}</i>
+
+        </div>
+
+        <div
+                ng-show=showSpecific
+                class="push-1 col-4 row-11 fixed">
+            <span class="col-13 row-1 center-layout">
+                <div class="full" style="text-align: center; vertical-align: middle; display: table-cell;" ng-init="model={};">
+                    <i class="col-5" > Cancel</i>
+                    <i class="col-8" ng-click="api.create(ui.create.specific,model[ui.create.specific])"> Save</i>
+                </div>
+            </span>
+            <div class="col-13 row-12 scroll-y">
+                <span
+                        class="col-13 row-1 center-layout scroll-y"
+                        ng-repeat="input in models[ui.create.specific]">
+                <div class="full" style="text-align: center; vertical-align: middle; display: table-cell;">
+                    <i class="col-3 text-right" >{{input.name | uppercase}} : </i>
+                    <i class="col-8" > <input type="{{input.type}}" class="col-13 row-13" ng-model="$parent.model[ui.create.specific][input.name]"></i>
+                </div>
+                </span>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
