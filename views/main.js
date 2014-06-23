@@ -6,7 +6,7 @@ angular.module('mngr').directive('main', function() {
 
 		},
 
-		templateUrl: 'directive/main.html',
+		templateUrl: 'views/main.html',
 		link: function(scope, element, attrs, fn) {
 
 
