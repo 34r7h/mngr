@@ -3,7 +3,7 @@ angular.module('mngr').directive('create', function() {
 		restrict: 'E',
 		replace: true,
 
-		templateUrl: 'views/create/create.html',
+		templateUrl: 'directive/views/create/create.html',
 		link: function(scope, element, attrs, fn) {
 
 

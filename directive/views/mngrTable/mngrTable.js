@@ -6,7 +6,7 @@ angular.module('mngr').directive('mngrTable', function() {
 			$scope.tableFiltersWidth = 3;
 		},
 		scope:{},
-		templateUrl: 'views/mngrTable/mngrTable.html',
+		templateUrl: 'directive/views/mngrTable/mngrTable.html',
 		link: function(scope, element, attrs, fn) {
 
 		}

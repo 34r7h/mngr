@@ -12,7 +12,8 @@
                     <td colspan="0" class="full">
                         <span ng-repeat="sort in $parent.sortables | orderBy: priority " style="width:{{(100/$parent.$parent.sortables.length)}}%">
                             <input type="checkbox" ng-model="sort.show" id="sort-toggle-{{sort.name}}" ng-change="setColumnCount()">
-                            <label for="sort-toggle-{{sort.name}}" ng-if="sort.title">{{sort.title | uppercase}}</label><label for="sort-toggle-{{sort.name}}" ng-if="!sort.title">{{sort.name | uppercase}}</label>
+                            <label for="sort-toggle-{{sort.name}}" ng-if="sort.title">{{sort.title | uppercase}}</label>
+                            <label for="sort-toggle-{{sort.name}}" ng-if="!sort.title">{{sort.name | uppercase}}</label>
                         </span>
                     </td>
                 </tr>

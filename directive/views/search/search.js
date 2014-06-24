@@ -1,11 +1,11 @@
-angular.module('mngr').directive('notify', function() {
+angular.module('mngr').directive('search', function() {
 	return {
 		restrict: 'E',
 		replace: true,
 		scope: {
 
 		},
-		templateUrl: 'views/notify/notify.html',
+		templateUrl: 'directive/views/search/search.html',
 		link: function(scope, element, attrs, fn) {
 
 

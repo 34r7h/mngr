@@ -10,7 +10,7 @@ angular.module('mngr').directive('omni', function(ui) {
 		scope: {
 
 		},
-		templateUrl: 'views/omni/omni.html',
+		templateUrl: 'directive/views/omni/omni.html',
 		link: function(scope, element, attrs, fn) {
 
 

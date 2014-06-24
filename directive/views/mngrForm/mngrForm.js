@@ -1,11 +1,11 @@
-angular.module('mngr').directive('search', function() {
+angular.module('mngr').directive('mngrForm', function() {
 	return {
 		restrict: 'E',
 		replace: true,
 		scope: {
 
 		},
-		templateUrl: 'views/search/search.html',
+		templateUrl: 'directive/views/mngrForm/mngrForm.html',
 		link: function(scope, element, attrs, fn) {
 
 

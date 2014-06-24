@@ -5,7 +5,7 @@ angular.module('mngr').directive('breadcrumbs', function() {
 		scope: {
 
 		},
-		templateUrl: 'views/breadcrumb/breadcrumbs.html',
+		templateUrl: 'directive/views/breadcrumb/breadcrumbs.html',
 		link: function(scope, element, attrs, fn) {
 
 
