@@ -4,7 +4,7 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider.state('main', {
 		url:'*path?role&preferences&history&store&overlay&main&leftbar&rightbar&event&info&inventory&activity&message&order&product',
 		reloadOnSearch: false,
-		controller: function($scope, ui, models, data, api, $location){
+		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api){
 			ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			$scope.$on('$locationChangeStart', function(){
 				ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
@@ -14,7 +14,7 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 			$scope.models = models;
 			$scope.data = data;
 			$scope.api = api;
-		},
+		}],
 		template: '<main></main>'
 	});
     /* Add New States Above */

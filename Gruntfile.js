@@ -138,7 +138,7 @@ module.exports = function (grunt) {
     ngmin: {
       main: {
         src:'temp/app.full.js',
-        dest: 'dist/app.full.min.js'
+        dest: 'temp/app.full.js'
       }
     },
     uglify: {
@@ -194,7 +194,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('build',['jshint','clean:before','less','dom_munger','ngtemplates','cssmin','concat','ngmin'/*,'uglify'*/,'copy','htmlmin','imagemin','clean:after']);
+  grunt.registerTask('build',['jshint','clean:before','less','dom_munger','ngtemplates','cssmin','concat','ngmin','uglify','copy','htmlmin','imagemin','clean:after']);
   grunt.registerTask('serve', ['dom_munger:read','jshint','connect', 'watch']);
   grunt.registerTask('test',['dom_munger:read','karma:all_tests']);
 

@@ -1,4 +1,4 @@
-angular.module('mngr').factory('models',function(ui, data) {
+angular.module('mngr').factory('models',function() {
 
 	var models = {
 		// ecodocs Layout Directive Models
@@ -108,9 +108,6 @@ angular.module('mngr').factory('models',function(ui, data) {
 				{}
 			],
 			users:[
-				{}
-			],
-			products:[
 				{}
 			],
 			content:[

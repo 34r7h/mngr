@@ -4,7 +4,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			$scope.showTable=models.table.showTable;
 			$scope.showItem=false;
-			$scope.showForm=false;
+			$scope.showForm=true;
 
 			$scope.table = {
 				show:'',
@@ -47,7 +47,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			};
 
-			$scope.sortables = ui.sortables.products;
+			$scope.sortables = models.sortables.products;
 			$scope.sortablesLength = (100/$scope.sortables.length);
 			$scope.filters = {};
 			$scope.api = api;
@@ -59,7 +59,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 		},
 		scope:{},
 		restrict: 'EA',
-		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
+		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
 		link: function(scope, element, attrs, fn) {
 
 

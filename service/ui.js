@@ -1,4 +1,4 @@
-angular.module('mngr').factory('ui',function($q) {
+angular.module('mngr').factory('ui',['$q',function($q) {
 
 	var ui = {
 		components:[
@@ -202,4 +202,4 @@ angular.module('mngr').factory('ui',function($q) {
 		}
 	};
 	return ui;
-});
+}]);
