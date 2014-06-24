@@ -16,7 +16,7 @@
   * right
   * alert
 
-## 3. Directory Structure
+## Directory Structure
 ====
 * **Directive**
   * **primary**
@@ -67,5 +67,5 @@ Links are created by directives or system-based functions like signing in. Each 
   * specific item
 
 
-Created with Angular JS and Firebase, courtesy of Yo! cg-angular
+Created with Angular JS, Firebase, and Font Awesome, courtesy of Yo! cg-angular
   
