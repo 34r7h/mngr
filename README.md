@@ -7,6 +7,7 @@
   * Employee
   * Manager
   * Admin
+  
 ### 2. Workspaces
   * Overlay
   * Underlay
