@@ -18,30 +18,30 @@
 
 ## 3. Directory Structure
 ====
-* ### Directive
-  * #### primary
+* **Directive**
+  * **primary**
     * contents
     * orders
     * shop
     * stock
     * users
-  * #### support
+  * **support**
     * messages
     * events
     * notes
     * notices
-  * #### views
-    * ##### mngrTable
-    * ##### mngrItem
-    * ##### mngrForm
-    * ##### breadcrumb
-    * ##### create
-    * ##### notify
-    * ##### omni
-    * ##### search
+  * **views**
+    * mngrTable
+    * mngrItem
+    * mngrForm
+    * breadcrumb
+    * create
+    * notify
+    * omni
+    * search
     * main
   * mngr
-* ### service
+* **service**
   * api
   * data
   * models
