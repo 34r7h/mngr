@@ -53,8 +53,8 @@
 
 
 Primary and support directives scope data from services to display on the view directives:
-  * **mngrItem** - Takes a single object
-  * **mngrTable** - Takes a list of objects
+  * **mngrItem** - Takes a single object and single item model
+  * **mngrTable** - Takes a list of objects and table model
   * **mngrForm** - Takes a model and modifies/creates an object
   
   

@@ -1,6 +1,6 @@
 angular.module('mngr').directive('shop', function() {
 	return {
-		restrict: 'A',
+		restrict: 'EA',
 		link: function(scope, element, attrs, fn) {
 
 
