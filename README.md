@@ -1,5 +1,14 @@
 # MNGR
 ![alt text](https://lh5.googleusercontent.com/CSNN23iyh6lXba1YoTqFwnLMTGd8TPRadVpRBng1c9s=w723-h844-no "MNGR, Crossing the finishline with you.")
+## MNGR manages retail business needs
+While the common brick and mortar business isn't a sexy sector in tech, they do have specific needs to have covered.
+* Inventory
+Keeping track of stock is a must in retail. The tighter an app can manage the amounts and whereabouts of products, less shrink and better decisions.
+* Orders
+Orders keep track of values for the business. Orders are not just sales, but supplier orders, employee payroll and other associated costs to the business.
+* People
+Tight as well is the actual management of people. Managers, suppliers, customers, employees and employees can interact with each other through messaging, events, and notice, all with the privacy controls we've come to expect nowadays.
+
 ## States
 ====
 ### 1. Authenticated
@@ -20,32 +29,32 @@
 ====
 * **Directive**
   * **primary**
-    * contents
-    * orders
-    * shop
-    * stock
-    * users
+    ** contents
+    ** orders
+    ** shop
+    ** stock
+    ** users
   * **support**
-    * messages
-    * events
-    * notes
-    * notices
+    ** messages
+    ** events
+    ** notes
+    ** notices
   * **views**
-    * mngrTable
-    * mngrItem
-    * mngrForm
-    * breadcrumb
-    * create
-    * notify
-    * omni
-    * search
-    * main
+    ** mngrTable
+    ** mngrItem
+    ** mngrForm
+    ** breadcrumb
+    ** create
+    ** notify
+    ** omni
+    ** search
+    ** main
   * mngr
 * **service**
-  * api
-  * data
-  * models
-  * ui
+  ** api
+  ** data
+  ** models
+  ** ui
 * app.js
 * index.html
 
@@ -62,12 +71,12 @@ For ex. calling the stock directive to the main workspace with a single product 
   * **mngrButton** - Displays a button, takes action on a model
   
 ### Development Pattern (suggested)
-  ** 1. HTML with dummy data
-  ** 2. HTML with ng-init data
-  ** 3. HTML with view $scope'd data
-  ** 4. HTML with directive $scope'd data
-  ** 5. HTML with directive $scope'd data from a model service
-  ** 6. HTML with directive $scope'd from a data service
+  * 1. HTML with dummy data
+  * 2. HTML with ng-init data
+  * 3. HTML with view $scope'd data
+  * 4. HTML with directive $scope'd data
+  * 5. HTML with directive $scope'd data from a model service
+  * 6. HTML with directive $scope'd from a data service
   
 ## Linking
 ====
