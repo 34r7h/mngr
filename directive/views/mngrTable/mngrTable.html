@@ -22,11 +22,11 @@
             <tbody class="col-13 row-11 scroll-y">
                 <tr class="col-13 row-1" ng-repeat="(key,data) in $parent.filteredData">
                     <td>
-                        {{key}}: <input ng-click="clickit(key)" ng-model="data.name">
-                        <b><input ng-model="data.sku">{{data.supplier.name}}[ <i ng-hide="confirmRemove" ng-click="confirmRemove=true;" ng-hide="confirmRemove">
+                        {{key }}: <input ng-click="clickit(key)" ng-model="data.name">
+                        <b>[ <i ng-hide="confirmRemove" ng-click="confirmRemove=true;" ng-hide="confirmRemove">
                             x
                         </i>
-                            <i ng-click="$parent.$parent.api.remove('products',key)" ng-show="confirmRemove">
+                            <i ng-click="$parent.$parent.api.remove($parent.$parent.type,key)" ng-show="confirmRemove">
                                 Remove?
                             </i> ]
                         </b>

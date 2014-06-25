@@ -1,16 +1,16 @@
 angular.module('mngr').directive('stock', function(ui,data,api,models) {
 	return {
 		controller: function($scope){
-
+			$scope.type = 'products';
 			$scope.showTable=true;
 			$scope.showItem=false;
 			$scope.showForm=false;
 
 			$scope.table = {
 				show:'',
-				sortables : models.sortables.products,
-				filters: models.filters.products,
-				data: data.products
+				sortables : models.sortables[$scope.type],
+				filters: models.filters[$scope.type],
+				data: data[$scope.type]
 			};
 			$scope.item = {
 				id:'',
@@ -47,19 +47,19 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			};
 
-			$scope.sortables = models.sortables.products;
-			$scope.sortablesLength = (100/$scope.sortables.length);
+			$scope.sortables = models.sortables[$scope.type];
+			$scope.sortablesLength = (100/($scope.sortables.length));
 			$scope.filters = {};
 			$scope.api = api;
 			// ecodocs must watch the double binding on ng-repeats because angular's digest cycle throws a circular reference.
 
 			/*
 			$scope.table.data.$on('value', function(){
-				$scope.filteredData = data.products;
+				$scope.filteredData = data[$scope.type];
 			});
 			*/
 			$scope.table.data.$on('value', function(){
-				data.products.$bind($scope,'filteredData');
+				data[$scope.type].$bind($scope,'filteredData');
 			});
 
 
