@@ -1,9 +1,8 @@
 bower_components/
 node_modules/
-
+dist
 .bowercc
 .editorconfig
-.jshintrc
 .npmignore
 .yo-rc.json
 .idea/
