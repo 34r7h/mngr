@@ -5,8 +5,8 @@ angular.module('mngr').directive('orders', function(ui,data,api,models) {
 			'<mngr-form ng-show="showForm"></mngr-form>' +
 			'<mngr-item ng-show="showItem" item="showItem"></mngr-item>',
 		controller: function($scope){
-			$scope.showTable=false;
-			$scope.showItem=true;
+			$scope.showTable=true;
+			$scope.showItem=false;
 			$scope.showForm=false;
 
 			$scope.table = {
@@ -57,7 +57,7 @@ angular.module('mngr').directive('orders', function(ui,data,api,models) {
 			// ecodocs must watch the double binding on ng-repeats because angular's digest cycle throws a circular reference.
 
 			$scope.table.data.$on('value', function(){
-				$scope.filteredData = data.orders;
+				data.orders.$bind($scope,'filteredData');
 			});
 		},
 		scope:{},

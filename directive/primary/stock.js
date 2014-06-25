@@ -53,9 +53,16 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 			$scope.api = api;
 			// ecodocs must watch the double binding on ng-repeats because angular's digest cycle throws a circular reference.
 
+			/*
 			$scope.table.data.$on('value', function(){
 				$scope.filteredData = data.products;
 			});
+			*/
+			$scope.table.data.$on('value', function(){
+				data.products.$bind($scope,'filteredData');
+			});
+
+
 
 		},
 		scope:{},

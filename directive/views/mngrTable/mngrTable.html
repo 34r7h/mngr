@@ -10,7 +10,7 @@
             <thead class="col-13 row-1">
                 <tr colspan="0" class="full">
                     <td colspan="0" class="full">
-                        <span ng-repeat="sort in $parent.sortables | orderBy: priority " style="width:{{(100/$parent.$parent.sortables.length)}}%">
+                        <span ng-repeat="sort in $parent.sortables | orderBy: priority " style="width:{{100/$parent.$parent.sortables.length}}%">
                             <input type="checkbox" ng-model="sort.show" id="sort-toggle-{{sort.name}}" ng-change="setColumnCount()">
                             <label for="sort-toggle-{{sort.name}}" ng-if="sort.title">{{sort.title | uppercase}}</label>
                             <label for="sort-toggle-{{sort.name}}" ng-if="!sort.title">{{sort.name | uppercase}}</label>
@@ -22,8 +22,8 @@
             <tbody class="col-13 row-11 scroll-y">
                 <tr class="col-13 row-1" ng-repeat="(key,data) in $parent.filteredData">
                     <td>
-                        {{key +' :'+data.name}}
-                        <b>[ <i ng-hide="confirmRemove" ng-click="confirmRemove=true;" ng-hide="confirmRemove">
+                        {{key}}: <input ng-click="clickit(key)" ng-model="data.name">
+                        <b><input ng-model="data.sku">{{data.supplier.name}}[ <i ng-hide="confirmRemove" ng-click="confirmRemove=true;" ng-hide="confirmRemove">
                             x
                         </i>
                             <i ng-click="$parent.$parent.api.remove('products',key)" ng-show="confirmRemove">
