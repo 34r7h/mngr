@@ -59,6 +59,7 @@ For ex. calling the stock directive to the main workspace with a single product 
   * **mngrForm** - Takes a model and modifies/creates an object
   * **mngrInput** - modifies/creates a model
   * **mngrContent** - Displays a model
+  * **mngrButton** - Displays a button, takes action on a model
   
 ### Development Pattern (suggested)
   ** 1. HTML with dummy data
@@ -92,9 +93,20 @@ Links are created by directives or system-based functions like signing in. Each 
   
   * Overflow control: .scroll-y, .scroll-x, .all-scroll, .no-scroll
   
+### UX Patterns
+  * Workspaces - control where modules go
+    ** Overlay
+    ** Main
+    ** Left - expands
+    ** Right - expands
+    ** Underlay
+  * Buttons - mngrButton
+  * Content - mngrContent
+  * Form - mngrForm
+  * Single item - mngrItem
+  * Table - mngrTable
   
   
-
 Created with Angular JS, Firebase, and Font Awesome. 
 Courtesy of Yo! generator: cg-angular 
   
