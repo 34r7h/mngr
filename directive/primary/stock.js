@@ -2,9 +2,9 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 	return {
 		controller: function($scope){
 
-			$scope.showTable=models.table.showTable;
+			$scope.showTable=true;
 			$scope.showItem=false;
-			$scope.showForm=true;
+			$scope.showForm=false;
 
 			$scope.table = {
 				show:'',
@@ -52,9 +52,10 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 			$scope.filters = {};
 			$scope.api = api;
 			// ecodocs must watch the double binding on ng-repeats because angular's digest cycle throws a circular reference.
-			$scope.$watch("$scope.table.data", function() {
+
+			$scope.table.data.$on('value', function(){
 				$scope.filteredData = data.products;
-			}, true);
+			});
 
 		},
 		scope:{},

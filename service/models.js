@@ -66,6 +66,7 @@ angular.module('mngr').factory('models',function() {
 			{name:'events',value:[''],type:'text',element:'input'},
 			{name:'notes',value:[''],type:'text',element:'input'}
 		],
+
 		sortables: {
 			products: [
 				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 1},
