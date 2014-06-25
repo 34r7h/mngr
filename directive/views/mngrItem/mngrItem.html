@@ -1,11 +1,15 @@
 <div class="full">
-    <div class="col-2 row-12">
-        Actions
+    <div class="col-1 row-12" >
+        <div ng-repeat="action in itemActions" class="col-13 full" style="height:{{100/itemActions.length}}%">
+            <div class="middle-container" ng-click="action.action()">
+                <i class="middle-content {{action.icon}}">{{action.name}}</i>
+            </div>
+        </div>
     </div>
-    <span class="col-11 row-1">
+    <span class="col-12 row-1">
         Header
     </span>
-    <span class="col-4 row-11">
+    <span class="col-5 row-11">
         Item
     </span>
     <span class="col-7 row-11">
