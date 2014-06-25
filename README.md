@@ -51,14 +51,16 @@
 
 ## Basic App Pattern
 ====
-
-
-Primary and support directives scope data from services to display on the view directives:
+Primary and support directives scope data from services to display on the view directives.
+For ex. calling the stock directive to the main workspace with a single product means that main workspace will have the stock directive with mngrItem showing that product.
+### Views
   * **mngrItem** - Takes a single object and single item model
   * **mngrTable** - Takes a list of objects and table model
   * **mngrForm** - Takes a model and modifies/creates an object
+  * **mngrInput** - modifies/creates a model
+  * **mngrContent** - Displays a model
   
-  ### Development Pattern (suggested)
+### Development Pattern (suggested)
   ** 1. HTML with dummy data
   ** 2. HTML with ng-init data
   ** 3. HTML with view $scope'd data
