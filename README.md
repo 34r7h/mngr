@@ -104,11 +104,11 @@ Links are created by directives or system-based functions like signing in. Each 
   
 ### UX Patterns
   * Workspaces - control where modules go
-    ** Overlay
-    ** Main
-    ** Left - expands
-    ** Right - expands
-    ** Underlay
+    * Overlay
+    * Main
+    * Left - expands
+    * Right - expands
+    * Underlay
   * Buttons - mngrButton
   * Content - mngrContent
   * Form - mngrForm
