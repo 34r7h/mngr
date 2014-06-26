@@ -2,8 +2,9 @@ angular.module('mngr').factory('api',function(data, $state) {
 
 	var api = {
 		state: $state,
-		bind:function(type, id){
-			data[type].fire.$child(id).$bind($scope, scope.type+data.$id)
+		bind:function(type, id, scope){
+			console.log('fire');
+			data[type].fire.$child(id).$bind(scope, type+id)
 		},
 		create:function(type, model){
 			this.model = model;
