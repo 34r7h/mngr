@@ -27,8 +27,7 @@
                 <tr class="col-13 row-1" ng-repeat="data in $parent.table.data.array | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
                     <td class="col-{{column.name}}" ng-repeat="column in $parent.$parent.table.sortables | filter:{show:true} | orderBy:priority">
                         <!--input ng-focus="$parent.$parent.api.bind($parent.$parent.type, key, $parent.$parent)" ng-blur="$parent.$parent.api.unbind($parent.$parent.type, key)" ng-model="$parent.$parent[$parent.$parent.type+'-'+key].name" /-->
-
-                        <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.workspace}}">
+                        <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.$parent.workspace}}">
                             <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
                             <span ng-if="!column.display">{{data[column.name]}}</span>
                         </a>
