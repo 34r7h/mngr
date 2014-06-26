@@ -20,7 +20,7 @@
             <label class="" for="sort-toggle-{{column.name}}" ng-if="!column.title">{{column.name | uppercase}}</label>
         </span>
     </div>
-    <div class="col-10 row-11 scroll-y table-responsive">
+    <div class="col-10 row-11 scroll-y table-responsive" mngr-scroll-pages next-page="scroll.nextPage()" prev-page="scroll.prevPage()" back-scroll="true" threshold="1">
         <table class="table full table-{{type}}">
             <thead class="col-13 row-1">
                 <tr class="middle-container">
@@ -35,20 +35,20 @@
             </thead>
 
             <tbody class="col-13 row-11 scroll-y middle-container">
-                <tr class="col-13 row-2 middle-content" ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse">
+                <tr class="col-13 row-2 middle-content" ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
                     <td class="text-center" ng-repeat="column in $parent.table.sortables | filter:{show:true} | orderBy:priority" style="width:{{100/$parent.table.sortables.length}}%">
                         <!--input ng-focus="$parent.api.bind($parent.type, key, $parent)" ng-blur="$parent.api.unbind($parent.type, key)" ng-model="$parent.$parent[$parent.type+'-'+key].name" /-->
                         <h4 class="text-left">
-                            <span ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
+                            <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
                                 <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
                                 <span ng-if="!column.display">{{data[column.name]}}</span>
-                            </span>
+                            </a>
                         </h4>
                         <h3 class="text-center middle-container">
-                        <a ng-if="!column.link" class="middle-content">
+                        <span ng-if="!column.link" class="middle-content">
                             <span class="text-left" ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
                             <span class="text-left" ng-if="!column.display" ng-model="data[column.name]"><i ng-hide="bind" class="text-center" ng-click="bind=true">{{data[column.name]}}</i><input class="text-center" autofocus ng-show="bind" ng-model="data[column.name]"> <i ng-show="bind" ng-click="$parent.$parent.$parent.$parent.api.save($parent.$parent.$parent.$parent.type,$parent.$parent.$parent.data.$id); bind=!bind">Done</i></span>
-                        </a>
+                        </span>
                         </h3>
 
                     </td>

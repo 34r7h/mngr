@@ -30,8 +30,8 @@ angular.module('mngr').directive('mngrTable', function(models, api) {
                 perPage: 50,
                 offset: 0,
                 nextPage: function(){
-                    if(scope.table && scope.table.data && scope.table.data.array){
-                        var maxOff = (scope.table.data.array.length - scope.scroll.perPage);
+                    if(scope.table && scope.table.filteredData){
+                        var maxOff = (scope.table.filteredData.length - scope.scroll.perPage);
                         if(scope.scroll.offset <= maxOff){
                             scope.scroll.offset += scope.scroll.perPage;
                         }
