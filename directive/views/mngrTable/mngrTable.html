@@ -42,7 +42,8 @@
                         </a>
                         <span ng-if="!column.link">
                             <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
-                            <span ng-if="!column.display">{{data[column.name]}}</span>
+                            <span ng-if="!column.display" ng-model="data[column.name]"><i ng-hide="bind" ng-click="bind=true">{{data[column.name]}}</i><input ng-show="bind" ng-model="data[column.name]"> <i ng-show="bind" ng-click="bind=!bind">Done</i></span>
+
                         </span>
 
 

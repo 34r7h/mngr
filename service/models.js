@@ -125,16 +125,23 @@ angular.module('mngr').factory('models',function($filter) {
 			{name:'threads',value:[{}],type:'text',element:'input'},
 			{name:'attachedTo',value:[{}],type:'text',element:'input'},
 			{name:'messages',value:[{}],type:'text',element:'input'},
-			{name:'type',value:'',type:'text',element:'select'}
+			{name:'type',value:'',type:'text',element:'input'},
+			{name:'users',value:[''],type:'text',element:'input'}
+
 		],
 		notices:[
 			{name:'title',value:'',type:'text',element:'input'},
 			{name:'date',value:'',element:'input'},
-			{name:'description',value:'',element:'textarea'},
-			{name:'threads',value:[{}],type:'text',element:'input'},
+			{name:'content',value:'',element:'textarea'},
+			{name:'users',value:[''],type:'text',element:'input'},
 			{name:'attachedTo',value:[{}],type:'text',element:'input'},
-			{name:'messages',value:[{}],type:'text',element:'input'},
-			{name:'type',value:'',type:'text',element:'select'}
+			{name:'type',value:'',type:'text',element:'input'}
+		],
+		notes:[
+			{name:'date',value:'',element:'input'},
+			{name:'content',value:'',element:'textarea'},
+			{name:'attachedTo',value:[{}],type:'text',element:'input'},
+			{name:'type',value:'',type:'text',element:'input'}
 		],
 		//ecodocs table models.
 		sortables: {

@@ -5,26 +5,26 @@ angular.module('mngr').factory('api',function(data, $state) {
 		create:function(type, model){
 			this.model = model;
 			//ecodocs takes a reference to firebase and $adds a model.
-			data[type].$add(this.model);
+			data[type].fire.$add(this.model);
 			this.model[type] = {};
 		},
 		save:function(type, id){
-			data[type].$save(id);
+			data[type].fire.$save(id);
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
 			var object={};
 			object[id] = model;
-			data[type].$set(object);
+			data[type].fire.$set(object);
 		},
 		update:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
 			var object={};
 			object[id] = model;
-			data[type].$update(object);
+			data[type].fire.$update(object);
 		},
 		remove:function(type, id){
-			data[type].$remove(id);
+			data[type].fire.$remove(id);
 		}
 	};
 
