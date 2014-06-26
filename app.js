@@ -9,11 +9,11 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 			$scope.$on('$locationChangeStart', function(){
 				ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			});
-
+			$scope.api = api;
 			$scope.ui = ui;
 			$scope.models = models;
 			$scope.data = data;
-			$scope.api = api;
+
 		}],
 		template: '<main></main>'
 	});
@@ -23,6 +23,7 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 });
 
 angular.module('mngr').run(function($rootScope) {
+
 
     $rootScope.safeApply = function(fn) {
         var phase = $rootScope.$$phase;

@@ -65,7 +65,8 @@ angular.module('mngr').factory('models',function($filter) {
 			{name:'supplier',value:[''],type:'text',element:'input'},
 			{name:'messages',value:[''],type:'text',element:'input'},
 			{name:'events',value:[''],type:'text',element:'input'},
-			{name:'notes',value:[''],type:'text',element:'input'}
+			{name:'notes',value:[''],type:'text',element:'input'},
+			{name:'updated',value:[''],type:'text', element:'input'}
 		],
 		orders: [
 			{name:'name',value:'',type:'text',element:'input'},
@@ -146,12 +147,13 @@ angular.module('mngr').factory('models',function($filter) {
 		//ecodocs table models.
 		sortables: {
 			products: [
-                {name: 'upc', 'show': true, type: 'text', priority: 1},
+                {name: 'upc', 'show': false, type: 'text', priority: 1},
 				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2},
 				{name: 'stock', show: true, type: 'number', priority: 5},
 				{name: 'price', show: false, type: 'number', display: 'currency', priority: 3},
 				{name: 'categories', title: 'category', show: false, type: 'categories', priority: 7},
-				{name: 'suppliers', show: false, type: 'static', priority: 10}
+				{name: 'suppliers', show: false, type: 'static', priority: 10},
+				{name: 'updated', show: true, type: 'static', priority: 10}
 			],
 			events: [
 				{name: 'date', 'show': true, type: 'number', priority: 1},
@@ -205,7 +207,14 @@ angular.module('mngr').factory('models',function($filter) {
                     model: 'upc',
                     value: '',
                     priority: 10
-                }
+                },
+				{
+					name: 'Updated',
+					type:'button',
+					model:'updated',
+					value:Date(),
+					priority: 10
+				}
 			],
 			users:[
 				{}

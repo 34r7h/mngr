@@ -1,7 +1,7 @@
 angular.module('mngr').factory('api',function(data, $state) {
 
 	var api = {
-		state: $state,
+
 		bind:function(type, id, scope){
 			data[type].fire.$child(id).$bind(scope, type+id);
 		},
@@ -12,7 +12,9 @@ angular.module('mngr').factory('api',function(data, $state) {
 			this.model[type] = {};
 		},
 		save:function(type, id){
-			console.log('saving '+type+ ': '+id);
+			var time = new Date();
+			console.log('At '+time+', saving '+type+ ': '+id);
+			data[type].fire.$child(id).$child('updated').$set(time);
 			data[type].fire.$save(id);
 		},
 		set:function(type, id, model){
