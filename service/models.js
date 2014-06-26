@@ -239,32 +239,33 @@ angular.module('mngr').factory('models',function($filter) {
                 case 'number':
                     args = function(item){
                         var result = false;
-                        var modelValue = item[filter.model];
-                        if(modelValue){
+                        var modelValue = item[filter.model]?item[filter.model]:0;
+                        var filterValue = filter.value?filter.value:0;
+                        if(modelValue || modelValue===0){
                             switch(filter.operand){
                                 case '<':
-                                    result = (modelValue <= filter.value);
+                                    result = (modelValue <= filterValue);
                                     break;
 
                                 case '>':
-                                    result = (modelValue >= filter.value);
+                                    result = (modelValue >= filterValue);
                                     break;
 
                                 case '><':
-                                    if(filter.value2){
-                                        result = (modelValue >= filter.value && modelValue <= filter.value2);
+                                    if(filter.value2 || filter.value2===0){
+                                        result = (modelValue >= filterValue && modelValue <= filter.value2);
                                     }
                                     else{
-                                        result = (modelValue===filter.value);
+                                        result = (modelValue===filterValue);
                                     }
                                     break;
 
                                 case '=':
-                                    result = (modelValue===filter.value);
+                                    result = (modelValue===filterValue);
                                     break;
 
                                 default:
-                                    result = (modelValue===filter.value);
+                                    result = (modelValue===filterValue);
                                     break;
                             }
                         }
