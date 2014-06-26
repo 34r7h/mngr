@@ -3,7 +3,7 @@
         ng-if="type === 'text' || type === 'email' || type === 'number'"
         name="{{name}}"
         type="{{type}}"
-        ng-model="ngModel"
+        ng-model="$parent.ngModel"
         placeholder="{{placeholder}}"
         >
 

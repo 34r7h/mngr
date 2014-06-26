@@ -1,6 +1,6 @@
 <div class="full">
     <div class="col-3 row-12">
-        <div ng-repeat="filter in $parent.table.filters">
+        <div ng-repeat="filter in table.filters">
             <mngr-input type="filter.type" name="{{filter.name}}" ng-model="filter.value"></mngr-input>
             <mngr-input type="filter.type" name="{{filter.name}}" ng-model="filter.value2" placeholder="{{filter.name}} (max)" ng-if="filter.operand==='><' && (filter.value2||filter.value2==='')"></mngr-input>
             <select
@@ -9,21 +9,20 @@
                 ng-model="filter.operand"
                 ng-options="operand | operandText for operand in filter.operands"
                 ></select>
-
         </div>
     </div>
     <div class="col-10 row-1 ">
-        <span ng-repeat="column in $parent.table.sortables | orderBy:priority" style="width:{{100/$parent.$parent.sortables.length}}%">
+        <span ng-repeat="column in table.sortables | orderBy:priority" style="width:{{100/sortables.length}}%">
             <input type="checkbox" ng-model="column.show" id="sort-toggle-{{column.name}}">
             <label for="sort-toggle-{{column.name}}" ng-if="column.title">{{column.title | uppercase}}</label>
             <label for="sort-toggle-{{column.name}}" ng-if="!column.title">{{column.name | uppercase}}</label>
         </span>
     </div>
     <div class="col-10 row-11 scroll-y table-responsive">
-        <table class="table full table-{{$parent.type}}">
+        <table class="table full table-{{type}}">
             <thead class="col-13 row-1">
                 <tr>
-                    <th class="col-{{column.name}}" ng-repeat="column in $parent.table.sortables | filter:{show:true} | orderBy:priority">
+                    <th class="col-{{column.name}}" ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority">
                         <a ng-click="sort.by(column.name)">
                             <span ng-if="column.title">{{column.title | uppercase}}</span>
                             <span ng-if="!column.title">{{column.name | uppercase}}</span>
@@ -34,10 +33,10 @@
             </thead>
 
             <tbody class="col-13 row-11 scroll-y" mngr-scroll-pages next-page="scroll.nextPage()" prev-page="scroll.prevPage()" back-scroll="true">
-                <tr class="col-13 row-1" ng-repeat="data in $parent.table.data.array | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
-                    <td class="col-{{column.name}}" ng-repeat="column in $parent.$parent.table.sortables | filter:{show:true} | orderBy:priority">
-                        <!--input ng-focus="$parent.$parent.api.bind($parent.$parent.type, key, $parent.$parent)" ng-blur="$parent.$parent.api.unbind($parent.$parent.type, key)" ng-model="$parent.$parent[$parent.$parent.type+'-'+key].name" /-->
-                        <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.$parent.workspace}}">
+                <tr class="col-13 row-1" ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
+                    <td class="col-{{column.name}}" ng-repeat="column in $parent.table.sortables | filter:{show:true} | orderBy:priority">
+                        <!--input ng-focus="$parent.api.bind($parent.type, key, $parent)" ng-blur="$parent.api.unbind($parent.type, key)" ng-model="$parent.$parent[$parent.type+'-'+key].name" /-->
+                        <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
                             <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
                             <span ng-if="!column.display">{{data[column.name]}}</span>
                         </a>
