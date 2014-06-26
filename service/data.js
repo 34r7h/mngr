@@ -4,6 +4,7 @@ angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
         path: '/',
         params: {},
 
+        // ecodocs: list of data types the service provides
         types: [
             'products',
             'orders',
