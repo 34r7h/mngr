@@ -177,6 +177,7 @@ angular.module('mngr').factory('models',function($filter) {
 			]
 
 		},
+        searchable: ['products', 'orders'],
 
         applyFilters: function(filters, data){
             var result = data;
