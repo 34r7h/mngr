@@ -41,7 +41,8 @@ angular.module('mngr').factory('models',function() {
 					icon:'',
 					type:'',
 					options:[{name:'',value:''}],
-					help:''
+					help:'',
+					properties:[{name:'', value:''}]
 				}]
 			}],
 			confirm:{},
