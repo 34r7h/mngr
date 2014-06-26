@@ -2,6 +2,9 @@ angular.module('mngr').factory('api',function(data, $state) {
 
 	var api = {
 		state: $state,
+		bind:function(type, id){
+			data[type].fire.$child(id).$bind($scope, scope.type+data.$id)
+		},
 		create:function(type, model){
 			this.model = model;
 			//ecodocs takes a reference to firebase and $adds a model.
