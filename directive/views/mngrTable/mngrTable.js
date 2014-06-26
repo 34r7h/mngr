@@ -46,7 +46,6 @@ angular.module('mngr').directive('mngrTable', function(models) {
             // apply filters
             scope.filterData = function() {
                 if(scope.table && scope.table.data && scope.table.data.array && scope.table.filters){
-                    console.log('filtering '+scope.table.data.array.length);
                     scope.table.filteredData = models.applyFilters(scope.table.filters, scope.table.data.array);
                 }
             };
