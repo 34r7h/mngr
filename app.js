@@ -1,4 +1,4 @@
-angular.module('mngr', ['ui.utils','ui.router','ngAnimate', 'firebase']);
+angular.module('mngr', ['ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.utility']);
 
 angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider.state('main', {
