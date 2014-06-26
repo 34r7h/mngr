@@ -19,9 +19,14 @@ angular.module("mngr").directive("mngrInput", function($compile){
 
 			},
 			templateUrl:'directive/views/mngrInput/mngrInput.html',
-			scope:{element:"@", properties:"@", options:"@", type:"@", model:"@", placeholder:'@', name:'@'},
+			//scope:{element:"@", properties:"@", options:"@", type:"@", model:"@", placeholder:'@', name:'@'},
+            scope:{type: '=', name: '@', placeholder: '@', ngModel: '='},
 			link:function(scope, iElem, iAttrs) {
+                if(angular.isUndefined(iAttrs.placeholder)){
+                    iAttrs.placeholder = iAttrs.name;
+                }
 
+                /**
 				var angElement = angular.element(document.createElement(scope.element));
 				angElement.attr('name', scope.name);
 				angElement.attr('properties', scope.properties);
@@ -33,6 +38,7 @@ angular.module("mngr").directive("mngrInput", function($compile){
 				}
 				$compile(angElement)(scope);
 				iElem.append(angElement);
+                 */
 			}
 		};
 	}
