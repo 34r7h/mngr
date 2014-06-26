@@ -47,11 +47,16 @@
                         <h3 class="text-center middle-container">
                         <span ng-if="!column.link" class="middle-content">
                             <span class="text-left" ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
-                            <span class="text-left" ng-if="!column.display" ng-model="data[column.name]"><i ng-hide="bind" class="text-center" ng-click="bind=true">{{data[column.name]}}</i><input class="text-center" autofocus ng-show="bind" ng-model="data[column.name]"> <i ng-show="bind" ng-click="$parent.$parent.$parent.$parent.api.save($parent.$parent.$parent.$parent.type,$parent.$parent.$parent.data.$id); bind=!bind">Done</i></span>
+                            <span class="text-left" ng-if="!column.display" ng-model="data[column.name]">
+                                <i ng-hide="bind" class="text-center" ng-click="bind=true">{{data[column.name]}}</i>
+                                <input class="text-center" autofocus ng-show="bind" ng-model="data[column.name]">
+                                <i ng-show="bind" ng-click="$parent.$parent.$parent.$parent.api.save($parent.$parent.$parent.$parent.type,$parent.$parent.$parent.data.$id); bind=!bind">Done</i>
+                            </span>
                         </span>
-                        </h3>
 
+                        </h3>
                     </td>
+                    <td class="col-1 row-1"><b ng-click="showRemove=!showRemove" ng-hide="showRemove">[x]</b><b ng-show="showRemove" ng-click="$parent.api.remove($parent.type,data.$id)">[REMOVE]</b></td>
                 </tr>
             </tbody>
 
