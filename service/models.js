@@ -240,45 +240,50 @@ angular.module('mngr').factory('models',function($filter) {
             var args = null;
             switch(filter.type){
                 case 'text':
-                    args = {};
-                    args[filter.model] = filter.value;
+                    if(filter.value){
+                        args = {};
+                        args[filter.model] = filter.value;
+                    }
+
                     break;
 
                 case 'number':
-                    args = function(item){
-                        var result = false;
-                        var modelValue = item[filter.model]?item[filter.model]:0;
-                        var filterValue = filter.value?filter.value:0;
-                        if(modelValue || modelValue===0){
-                            switch(filter.operand){
-                                case '<':
-                                    result = (modelValue <= filterValue);
-                                    break;
+                    if(filter.value || filter.value===0){
+                        args = function(item){
+                            var result = false;
+                            var modelValue = item[filter.model]?item[filter.model]:0;
+                            var filterValue = filter.value;
+                            if(modelValue){
+                                switch(filter.operand){
+                                    case '<':
+                                        result = (modelValue <= filterValue);
+                                        break;
 
-                                case '>':
-                                    result = (modelValue >= filterValue);
-                                    break;
+                                    case '>':
+                                        result = (modelValue >= filterValue);
+                                        break;
 
-                                case '><':
-                                    if(filter.value2 || filter.value2===0){
-                                        result = (modelValue >= filterValue && modelValue <= filter.value2);
-                                    }
-                                    else{
+                                    case '><':
+                                        if(filter.value2 || filter.value2===0){
+                                            result = (modelValue >= filterValue && modelValue <= filter.value2);
+                                        }
+                                        else{
+                                            result = (modelValue===filterValue);
+                                        }
+                                        break;
+
+                                    case '=':
                                         result = (modelValue===filterValue);
-                                    }
-                                    break;
+                                        break;
 
-                                case '=':
-                                    result = (modelValue===filterValue);
-                                    break;
-
-                                default:
-                                    result = (modelValue===filterValue);
-                                    break;
+                                    default:
+                                        result = (modelValue===filterValue);
+                                        break;
+                                }
                             }
-                        }
-                        return result;
-                    };
+                            return result;
+                        };
+                    }
                     break;
 
                 case 'select':
