@@ -1,6 +1,6 @@
 <div class="full">
     <div class="col-3 row-12">
-        <div ng-repeat="filter in table.filters">
+        <div ng-repeat="filter in table.filters" ng-if="filter.priority > 0">
             <mngr-input type="filter.type" name="{{filter.name}}" ng-model="filter.value"></mngr-input>
             <mngr-input type="filter.type" name="{{filter.name}}" ng-model="filter.value2" placeholder="{{filter.name}} (max)" ng-if="filter.operand==='><' && (filter.value2||filter.value2==='')"></mngr-input>
             <select
