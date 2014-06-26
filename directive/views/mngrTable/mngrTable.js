@@ -1,4 +1,4 @@
-angular.module('mngr').directive('mngrTable', function(models) {
+angular.module('mngr').directive('mngrTable', function(models, api) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -7,6 +7,10 @@ angular.module('mngr').directive('mngrTable', function(models) {
 		},
 		templateUrl: 'directive/views/mngrTable/mngrTable.html',
 		link: function(scope, element, attrs, fn) {
+            scope.bindIt = function(id){
+                api.bind(scope.type, id, scope);
+            };
+
             scope.sort = {column: '', operator: '', reverse: false, by: function(name){
                 if(scope.sort.column !== name){
                     scope.sort.column = name;
