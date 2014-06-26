@@ -39,7 +39,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		notify:{
 			showNotify:false,
 			components:[
-				{name:'messages', icon:'fa fa-mail'},
+				{name:'messages', icon:'fa fa-envelope'},
 				{name:'events', icon:'fa fa-calendar'},
 				{name:'cart', icon:'fa fa-shopping-cart'},
 				{name:'notices', icon:'fa fa-globe'}

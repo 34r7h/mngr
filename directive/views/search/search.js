@@ -2,6 +2,10 @@ angular.module('mngr').directive('search', function(models, data) {
 	return {
 		restrict: 'E',
 		replace: true,
+		controller: function($scope){
+			$scope.hideFilters = true;
+			$scope.hideSortables = true;
+		},
 		scope: {
             searchable: '=?'
 		},

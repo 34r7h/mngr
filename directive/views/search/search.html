@@ -1,9 +1,16 @@
 <div class="full">
-    <span class="full middle-container">
-        <i class="full fa fa-leaf middle-content"  ng-click="ui.search.showSearch=!ui.search.showSearch"> Search</i>
-        <mngr-input type="searchFilter.type" name="{{searchFilter.name}}" ng-model="searchFilter.value"></mngr-input>
+    <span class="full">
+        <h2 class="middle-container">
+            <input
+                    class="full fa fa-search text-center"
+                    placeholder="Search"
+                    ng-click="ui.search.showSearch=true"
+                    type="searchFilter.type"
+                    name="{{searchFilter.name}}"
+                    ng-model="searchFilter.value">
+        </h2>
     </span>
-    <div class="col-8 row-5 lift-1 absolute " ng-show="ui.search.showSearch">
-        <div class="full"><mngr-table></mngr-table></div>
+    <div class="col-8 row-9 lift-1 absolute " ng-mouseleave="ui.search.showSearch=!ui.search.showSearch" ng-show="ui.search.showSearch">
+        <div class="full mngr-search"><mngr-table></mngr-table></div>
     </div>
 </div>

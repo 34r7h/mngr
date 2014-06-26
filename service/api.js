@@ -3,8 +3,7 @@ angular.module('mngr').factory('api',function(data, $state) {
 	var api = {
 		state: $state,
 		bind:function(type, id, scope){
-			console.log('fire');
-			data[type].fire.$child(id).$bind(scope, type+id)
+			data[type].fire.$child(id).$bind(scope, type+id);
 		},
 		create:function(type, model){
 			this.model = model;
@@ -13,6 +12,7 @@ angular.module('mngr').factory('api',function(data, $state) {
 			this.model[type] = {};
 		},
 		save:function(type, id){
+			console.log('saving '+type+ ': '+id);
 			data[type].fire.$save(id);
 		},
 		set:function(type, id, model){
