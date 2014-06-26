@@ -47,27 +47,13 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			};
 
-			$scope.sortables = models.sortables[$scope.type];
-			$scope.sortablesLength = (100/($scope.sortables.length));
-			$scope.filters = {};
 			$scope.api = api;
-			// ecodocs must watch the double binding on ng-repeats because angular's digest cycle throws a circular reference.
-
-			/*
-			$scope.table.data.$on('value', function(){
-				$scope.filteredData = data[$scope.type];
-			});
-			*/
-			$scope.table.data.$on('value', function(){
-				data[$scope.type].$bind($scope,'filteredData');
-			});
-
 
 
 		},
 		scope:{},
 		restrict: 'EA',
-		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
+		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="item"></mngr-item>',
 		link: function(scope, element, attrs, fn) {
 
 

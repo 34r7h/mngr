@@ -119,7 +119,7 @@ angular.module('mngr').factory('models',function() {
 				{name: 'time', show: true, type: 'number', priority: 3}
 			],
 			orders: [
-				{name: 'order', link: 'orders/:id', 'show': true, type: 'text', priority: 1},
+				{name: 'name', title: 'order', link: 'orders/:id', 'show': true, type: 'text', priority: 1},
 				{name: 'date', show: true, type: 'number', priority: 5},
 				{name: 'type', show: true, type: 'text', priority: 3},
 				{name: 'total', show: true, type: 'text', priority: 7}
