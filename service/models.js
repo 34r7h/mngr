@@ -1,4 +1,4 @@
-angular.module('mngr').factory('models',function() {
+angular.module('mngr').factory('models',function($filter) {
 
 	var models = {
 		// ecodocs Layout Directive Models
@@ -138,7 +138,21 @@ angular.module('mngr').factory('models',function() {
 		},
 		filters:{
 			products:[
-				{}
+                {   name: 'Name',
+                    type: 'text',
+                    model: 'name',
+                    value: '',
+                    priority: 10
+                },
+                {   name: 'Price',
+                    type: 'number',
+                    model: 'price',
+                    operands: ['=', '<', '>', '><'],
+                    value: '',
+                    value2: '',
+                    operand: '=',
+                    priority: 10
+                }
 			],
 			users:[
 				{}
@@ -162,7 +176,92 @@ angular.module('mngr').factory('models',function() {
 				{}
 			]
 
-		}
+		},
+
+        applyFilters: function(filters, data){
+            var result = data;
+            angular.forEach(filters, function(filter, filterIdx){
+                var args = models.filterArgs(filter);
+                if(args){
+                    result = $filter('filter')(result, args);
+                }
+            });
+            return result;
+        },
+        // ecodocs: returns the arguments passed to the angular 'filter'
+        filterArgs: function(filter){
+            var args = null;
+            switch(filter.type){
+                case 'text':
+                    args = {};
+                    args[filter.model] = filter.value;
+                    break;
+
+                case 'number':
+                    args = function(item){
+                        var result = false;
+                        var modelValue = item[filter.model];
+                        if(modelValue){
+                            switch(filter.operand){
+                                case '<':
+                                    result = (modelValue <= filter.value);
+                                    break;
+
+                                case '>':
+                                    result = (modelValue >= filter.value);
+                                    break;
+
+                                case '><':
+                                    if(filter.value2){
+                                        result = (modelValue >= filter.value && modelValue <= filter.value2);
+                                    }
+                                    else{
+                                        result = (modelValue===filter.value);
+                                    }
+                                    break;
+
+                                case '=':
+                                    result = (modelValue===filter.value);
+                                    break;
+
+                                default:
+                                    result = (modelValue===filter.value);
+                                    break;
+                            }
+                        }
+                        return result;
+                    };
+                    break;
+
+                case 'select':
+                    args = function(item){
+                        var result = false;
+                        var modelValue = item[filter.model];
+                        if(modelValue){
+                            if(angular.isArray(modelValue)){
+                                // ecodocs: loop through each selected value (assumes <select multiple>)
+                                angular.forEach(filter.value, function(checkValue){
+                                    if(!result && modelValue.indexOf(checkValue)!==-1){
+                                        result = true;
+                                    }
+                                });
+                            }
+                            else{
+                                // ecodocs: check if modelValue is any of the selected values (assumes <select multiple>)
+                                if(filter.value.indexOf(modelValue)!==-1){
+                                    result = true;
+                                }
+                            }
+
+                        }
+                        return result;
+                    };
+                    break;
+
+                // ecodocs: add other filter.types
+            }
+            return args;
+        }
 
 	};
 

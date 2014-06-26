@@ -4,6 +4,27 @@ angular.module("mngr.utility").filter('mngrDisplay', function($filter){
     };
 });
 
+angular.module("mngr").filter('operandText', function($filter){
+    return function(operandCode, rangeType) {
+        var result = operandCode;
+        switch(operandCode){
+            case '=':
+                result = 'equals';
+                break;
+            case '>':
+                result = (rangeType==='date')?'after':'greater than';
+                break;
+            case '<':
+                result = (rangeType==='date')?'before':'less than';
+                break;
+            case '><':
+                result = 'between';
+                break;
+        }
+        return result;
+    };
+});
+
 angular.module("mngr.utility").filter("mngrLinkTo", function($location){
     return function(link, item, workspace) {
         workspace = angular.isDefined(workspace)?workspace:'main';

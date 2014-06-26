@@ -1,4 +1,10 @@
 <div>
-
+    <input
+        ng-if="type === 'text' || type === 'email' || type === 'number'"
+        name="{{name}}"
+        type="{{type}}"
+        ng-model="$parent.ngModel"
+        placeholder="{{placeholder}}"
+        >
 
 </div>

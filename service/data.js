@@ -61,6 +61,7 @@ angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
         // ecodocs: convert a $firebase refernce to an array (callback for data[type].fire.$on('value', function)
         fireToArray: function(type){
             data[type].array = $filter('orderByPriority')(data[type].fire);
+            console.log(type+' loaded');
         }
     };
 
