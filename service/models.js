@@ -146,7 +146,8 @@ angular.module('mngr').factory('models',function($filter) {
 		//ecodocs table models.
 		sortables: {
 			products: [
-				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 1},
+                {name: 'upc', 'show': true, type: 'text', priority: 1},
+				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2},
 				{name: 'stock', show: true, type: 'number', priority: 5},
 				{name: 'price', show: false, type: 'number', display: 'currency', priority: 3},
 				{name: 'categories', title: 'category', show: false, type: 'categories', priority: 7},
@@ -197,6 +198,12 @@ angular.module('mngr').factory('models',function($filter) {
                     value: '',
                     value2: '',
                     operand: '=',
+                    priority: 10
+                },
+                {   name: 'UPC',
+                    type: 'text',
+                    model: 'upc',
+                    value: '',
                     priority: 10
                 }
 			],
