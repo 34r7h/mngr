@@ -3,33 +3,41 @@
         Filters
     </div>
     <div class="col-10 row-1 ">
-        Header
+        <span ng-repeat="column in $parent.table.sortables | orderBy:priority" style="width:{{100/$parent.$parent.sortables.length}}%">
+            <input type="checkbox" ng-model="column.show" id="sort-toggle-{{column.name}}">
+            <label for="sort-toggle-{{column.name}}" ng-if="column.title">{{column.title | uppercase}}</label>
+            <label for="sort-toggle-{{column.name}}" ng-if="!column.title">{{column.name | uppercase}}</label>
+        </span>
     </div>
     <div class="col-10 row-11 scroll-y table-responsive">
-        <table class="table full">
+        <table class="table full table-{{$parent.type}}">
             <thead class="col-13 row-1">
-                <tr colspan="0" class="full">
-                    <td colspan="0" class="full">
-                        <span ng-repeat="sort in $parent.sortables | orderBy: priority " style="width:{{100/$parent.$parent.sortables.length}}%">
-                            <input type="checkbox" ng-model="sort.show" id="sort-toggle-{{sort.name}}" ng-change="setColumnCount()">
-                            <label for="sort-toggle-{{sort.name}}" ng-if="sort.title">{{sort.title | uppercase}}</label>
-                            <label for="sort-toggle-{{sort.name}}" ng-if="!sort.title">{{sort.name | uppercase}}</label>
-                        </span>
-                    </td>
+                <tr>
+                    <th class="col-{{column.name}}" ng-repeat="column in $parent.table.sortables | filter:{show:true} | orderBy:priority">
+                        <a ng-click="sort.by(column.name)">
+                            <span ng-if="column.title">{{column.title | uppercase}}</span>
+                            <span ng-if="!column.title">{{column.name | uppercase}}</span>
+                        </a>
+                        <span ng-show="sort.column===column.name"><i class="fa fa-fw" ng-class="{'fa-sort-asc': !sort.reverse, 'fa-sort-desc': sort.reverse}"></i></span>
+                    </th>
                 </tr>
             </thead>
 
-            <tbody class="col-13 row-11 scroll-y">
-                <tr class="col-13 row-1" ng-repeat="(key,data) in $parent.filteredData">
-                    <td>
-                        {{key }}: <input ng-click="clickit(key)" ng-model="data.name">
-                        <b>[ <i ng-hide="confirmRemove" ng-click="confirmRemove=true;" ng-hide="confirmRemove">
-                            x
-                        </i>
-                            <i ng-click="$parent.$parent.api.remove($parent.$parent.type,key)" ng-show="confirmRemove">
-                                Remove?
-                            </i> ]
-                        </b>
+            <tbody class="col-13 row-11 scroll-y" mngr-scroll-pages next-page="scroll.nextPage()" prev-page="scroll.prevPage()" back-scroll="true">
+                <tr class="col-13 row-1" ng-repeat="data in $parent.table.data.array | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
+                    <td class="col-{{column.name}}" ng-repeat="column in $parent.$parent.table.sortables | filter:{show:true} | orderBy:priority">
+                        <!--input ng-focus="$parent.$parent.api.bind($parent.$parent.type, key, $parent.$parent)" ng-blur="$parent.$parent.api.unbind($parent.$parent.type, key)" ng-model="$parent.$parent[$parent.$parent.type+'-'+key].name" /-->
+                        <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.$parent.workspace}}">
+                            <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
+                            <span ng-if="!column.display">{{data[column.name]}}</span>
+                        </a>
+                        <span ng-if="!column.link">
+                            <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
+                            <span ng-if="!column.display">{{data[column.name]}}</span>
+                        </span>
+
+
+
                     </td>
                 </tr>
             </tbody>

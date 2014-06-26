@@ -1,36 +1,71 @@
-angular.module('mngr').factory('data',function($firebase, Firebase) {
+angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
 
 	var data = {
-			path: '/',
-			params: {},
-			refs:{
-				products: new Firebase("https://mngr.firebaseio.com/products").limit(1000),
-				orders: new Firebase("https://mngr.firebaseio.com/orders"),
-				users: new Firebase("https://mngr.firebaseio.com/users"),
-				events: new Firebase("https://mngr.firebaseio.com/events"),
-				messages: new Firebase("https://mngr.firebaseio.com/messages"),
-				notices: new Firebase("https://mngr.firebaseio.com/notices"),
-				contents: new Firebase("https://mngr.firebaseio.com/contents"),
-				notes: new Firebase("https://mngr.firebaseio.com/notes"),
-				shops: new Firebase("https://mngr.firebaseio.com/shops"),
-				ui: new Firebase("https://mngr.firebaseio.com/ui"),
-				settings: new Firebase("https://mngr.firebaseio.com/settings"),
-				roles: new Firebase("https://mngr.firebaseio.com/roles")
-			},
-				//ecodocs Gets 3-way ready.
-			get products () {return $firebase(this.refs.products);},
-			get orders () {return $firebase(this.refs.orders);},
-			get users () {return $firebase(this.refs.users);},
-			get events () {return $firebase(this.refs.events);},
-			get messages () {return $firebase(this.refs.messages);},
-			get notices () {return $firebase(this.refs.notices);},
-			get contents () {return $firebase(this.refs.contents);},
-			get notes () {return $firebase(this.refs.notes);},
-			get shops () {return $firebase(this.refs.shops);},
-			get ui () {return $firebase(this.refs.ui);},
-			get settings () {return $firebase(this.refs.settings);},
-			get roles () {return $firebase(this.refs.roles);}
-		};
+        path: '/',
+        params: {},
+
+        // ecodocs: list of data types the service provides
+        types: [
+            'products',
+            'orders',
+            'users',
+            'events',
+            'messages',
+            'notices',
+            'contents',
+            'notes',
+            'shops',
+            'ui',
+            'settings',
+            'roles'
+        ],
+
+        // ecodocs: initialize the data
+        init: function (types) {
+            // by default load everything
+            types = (angular.isDefined(types)?(angular.isArray(types)?types:[types]):data.types);
+            this.initObjects(types);
+            this.initFires(types);
+            this.initArrays(types);
+        },
+
+        // ecodocs: initialize the container objects for each data type
+        initObjects: function(types) {
+            angular.forEach(types, function(type){
+                data[type] = {
+                    ref: new Firebase("https://mngr.firebaseio.com/"+type),
+                    fire: null,
+                    array: []
+                };
+            });
+        },
+
+        // ecodocs: initialize the $firebase bindings for each data type
+        initFires: function (types) {
+            angular.forEach(types, function(type){
+                if(data[type].ref){
+                    data[type].fire = $firebase(data[type].ref);
+                }
+            });
+        },
+
+        // ecodocs: initialize the arrays for each data type
+        initArrays: function (types) {
+            angular.forEach(types, function(type) {
+                if(data[type] && data[type].fire && angular.isFunction(data[type].fire.$on)){
+                    data[type].fire.$on('value', function(){ data.fireToArray(type); });
+                }
+            });
+        },
+
+        // ecodocs: convert a $firebase refernce to an array (callback for data[type].fire.$on('value', function)
+        fireToArray: function(type){
+            data[type].array = $filter('orderByPriority')(data[type].fire);
+        }
+    };
+
+    // ecodocs: self-init()'ing service (gets called only once)
+    data.init();
 
 	return data;
 });
