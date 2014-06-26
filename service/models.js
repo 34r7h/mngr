@@ -127,8 +127,15 @@ angular.module('mngr').factory('models',function($filter) {
 			{name:'messages',value:[{}],type:'text',element:'input'},
 			{name:'type',value:'',type:'text',element:'select'}
 		],
-
-
+		notices:[
+			{name:'title',value:'',type:'text',element:'input'},
+			{name:'date',value:'',element:'input'},
+			{name:'description',value:'',element:'textarea'},
+			{name:'threads',value:[{}],type:'text',element:'input'},
+			{name:'attachedTo',value:[{}],type:'text',element:'input'},
+			{name:'messages',value:[{}],type:'text',element:'input'},
+			{name:'type',value:'',type:'text',element:'select'}
+		],
 		//ecodocs table models.
 		sortables: {
 			products: [
