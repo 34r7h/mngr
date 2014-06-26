@@ -3,13 +3,10 @@
 ## MNGR manages retail business needs
 While the common brick and mortar business isn't a sexy sector in tech, they do have specific needs to have covered.
 * **Inventory**
-
   Keeping track of stock is a must in retail. The tighter an app can manage the amounts and whereabouts of products, less shrink and better decisions.
 * **Orders**
-
   Orders keep track of values for the business. Orders are not just sales, but supplier orders, employee payroll and other associated costs to the business.
 * **People**
-
   Tight as well is the actual management of people. Managers, suppliers, customers, employees and employees can interact with each other through messaging, events, and notice, all with the privacy controls we've come to expect nowadays.
 
 ## States
@@ -32,26 +29,26 @@ While the common brick and mortar business isn't a sexy sector in tech, they do 
 ====
 * **Directive**
   * **primary**
-    ** contents
-    ** orders
-    ** shop
-    ** stock
-    ** users
+    contents
+    orders
+    shop
+    stock
+    users
   * **support**
-    ** messages
-    ** events
-    ** notes
-    ** notices
+    messages
+    events
+    notes
+    notices
   * **views**
-    ** mngrTable
-    ** mngrItem
-    ** mngrForm
-    ** breadcrumb
-    ** create
-    ** notify
-    ** omni
-    ** search
-    ** main
+    mngrTable
+    mngrItem
+    mngrForm
+    breadcrumb
+    create
+    notify
+    omni
+    search
+    main
   * mngr
 * **service**
   ** api
