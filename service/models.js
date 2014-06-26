@@ -99,7 +99,7 @@ angular.module('mngr').factory('models',function($filter) {
 			{name:'notes',value:[''],type:'text',element:'input'},
 			{name:'notices',value:[''],type:'text',element:'input'}
 		],
-		content: [
+		contents: [
 			{name:'title',value:'',type:'text',element:'input'},
 			{name:'content',value:'',element:'textarea'},
 			{name:'author',value:'',type:'text',element:'input'},
@@ -123,8 +123,11 @@ angular.module('mngr').factory('models',function($filter) {
 			{name:'date',value:'',element:'input'},
 			{name:'description',value:'',element:'textarea'},
 			{name:'threads',value:[{}],type:'text',element:'input'},
-			{name:'attachedTo',value:[{}],type:'text',element:'input'}
+			{name:'attachedTo',value:[{}],type:'text',element:'input'},
+			{name:'messages',value:[{}],type:'text',element:'input'},
+			{name:'type',value:'',type:'text',element:'select'}
 		],
+
 
 		//ecodocs table models.
 		sortables: {

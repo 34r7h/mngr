@@ -51,7 +51,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		},
 		create: {
 			showOptions: false,
-			options: ['products', 'users', 'orders', 'shops'],
+			options: ['products', 'users', 'orders', 'shops', 'messages', 'events','contents'],
 			showSpecific: false,
 			specific: ''
 		},
