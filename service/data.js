@@ -1,36 +1,129 @@
-angular.module('mngr').factory('data',function($firebase, Firebase) {
+angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
 
 	var data = {
-			path: '/',
-			params: {},
-			refs:{
-				products: new Firebase("https://mngr.firebaseio.com/products").limit(1000),
-				orders: new Firebase("https://mngr.firebaseio.com/orders"),
-				users: new Firebase("https://mngr.firebaseio.com/users"),
-				events: new Firebase("https://mngr.firebaseio.com/events"),
-				messages: new Firebase("https://mngr.firebaseio.com/messages"),
-				notices: new Firebase("https://mngr.firebaseio.com/notices"),
-				contents: new Firebase("https://mngr.firebaseio.com/contents"),
-				notes: new Firebase("https://mngr.firebaseio.com/notes"),
-				shops: new Firebase("https://mngr.firebaseio.com/shops"),
-				ui: new Firebase("https://mngr.firebaseio.com/ui"),
-				settings: new Firebase("https://mngr.firebaseio.com/settings"),
-				roles: new Firebase("https://mngr.firebaseio.com/roles")
-			},
-				//ecodocs Gets 3-way ready.
-			get products () {return $firebase(this.refs.products);},
-			get orders () {return $firebase(this.refs.orders);},
-			get users () {return $firebase(this.refs.users);},
-			get events () {return $firebase(this.refs.events);},
-			get messages () {return $firebase(this.refs.messages);},
-			get notices () {return $firebase(this.refs.notices);},
-			get contents () {return $firebase(this.refs.contents);},
-			get notes () {return $firebase(this.refs.notes);},
-			get shops () {return $firebase(this.refs.shops);},
-			get ui () {return $firebase(this.refs.ui);},
-			get settings () {return $firebase(this.refs.settings);},
-			get roles () {return $firebase(this.refs.roles);}
-		};
+        path: '/',
+        params: {},
+
+        types: [
+            'products',
+            'orders',
+            'users',
+            'events',
+            'messages',
+            'notices',
+            'contents',
+            'notes',
+            'shops',
+            'ui',
+            'settings',
+            'roles'
+        ],
+
+        products: {
+            ref: new Firebase("https://mngr.firebaseio.com/products").limit(1000),
+            fire: null,
+            array: []
+        },
+        orders: {
+            ref: new Firebase("https://mngr.firebaseio.com/orders"),
+            fire: null,
+            array: []
+        },
+        users: {
+            ref: new Firebase("https://mngr.firebaseio.com/users"),
+            fire: null,
+            array: []
+        },
+        events: {
+            ref: new Firebase("https://mngr.firebaseio.com/events"),
+            fire: null,
+            array: []
+        },
+        messages: {
+            ref: new Firebase("https://mngr.firebaseio.com/messages"),
+            fire: null,
+            array: []
+        },
+        notices: {
+            ref: new Firebase("https://mngr.firebaseio.com/notices"),
+            fire: null,
+            array: []
+        },
+        contents: {
+            ref: new Firebase("https://mngr.firebaseio.com/contents"),
+            fire: null,
+            array: []
+        },
+        notes: {
+            ref: new Firebase("https://mngr.firebaseio.com/notes"),
+            fire: null,
+            array: []
+        },
+        shops: {
+            ref: new Firebase("https://mngr.firebaseio.com/shops"),
+            fire: null,
+            array: []
+        },
+        ui: {
+            ref: new Firebase("https://mngr.firebaseio.com/ui"),
+            fire: null,
+            array: []
+        },
+        settings: {
+            ref: new Firebase("https://mngr.firebaseio.com/settings"),
+            fire: null,
+            array: []
+        },
+        roles: {
+            ref: new Firebase("https://mngr.firebaseio.com/roles"),
+            fire: null,
+            array: []
+        },
+
+        init: function () {
+            this.initObjects();
+            this.initFires();
+            this.initArrays();
+        },
+        initObjects: function() {
+            //angular.forEach(this.types, function(type){
+            //});
+        },
+        initFires: function () {
+            this.products.fire = $firebase(this.products.ref);
+            this.orders.fire = $firebase(this.orders.ref);
+            this.users.fire = $firebase(this.users.ref);
+            this.events.fire = $firebase(this.events.ref);
+            this.messages.fire = $firebase(this.messages.ref);
+            this.notices.fire = $firebase(this.notices.ref);
+            this.contents.fire = $firebase(this.users.ref);
+            this.notes.fire = $firebase(this.notes.ref);
+            this.shops.fire = $firebase(this.shops.ref);
+            this.ui.fire = $firebase(this.ui.ref);
+            this.settings.fire = $firebase(this.settings.ref);
+            this.roles.fire = $firebase(this.roles.ref);
+        },
+        initArrays: function () {
+            this.products.fire.$on('value', function(){ data.fireToArray('products'); });
+            this.orders.fire.$on('value', function(){ data.fireToArray('orders'); });
+            this.users.fire.$on('value', function(){ data.fireToArray('users'); });
+            this.events.fire.$on('value', function(){ data.fireToArray('events'); });
+            this.messages.fire.$on('value', function(){ data.fireToArray('messages'); });
+            this.notices.fire.$on('value', function(){ data.fireToArray('notices'); });
+            this.contents.fire.$on('value', function(){ data.fireToArray('contents'); });
+            this.notes.fire.$on('value', function(){ data.fireToArray('notes'); });
+            this.shops.fire.$on('value', function(){ data.fireToArray('shops'); });
+            this.ui.fire.$on('value', function(){ data.fireToArray('ui'); });
+            this.settings.fire.$on('value', function(){ data.fireToArray('settings'); });
+            this.roles.fire.$on('value', function(){ data.fireToArray('roles'); });
+        },
+
+        fireToArray: function(type){
+            this[type].array = $filter('orderByPriority')(this[type].fire);
+        }
+    };
+
+    data.init(); // self-init()'ing service (gets called only once)
 
 	return data;
 });
