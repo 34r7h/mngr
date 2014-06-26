@@ -1,4 +1,4 @@
-angular.module('mngr').directive('search', function(models, data, ui) {
+angular.module('mngr').directive('search', function(models, data) {
 	return {
 		restrict: 'E',
 		replace: true,
