@@ -21,15 +21,17 @@ angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
         ],
 
         // ecodocs: initialize the data
-        init: function () {
-            this.initObjects();
-            this.initFires();
-            this.initArrays();
+        init: function (types) {
+            // by default load everything
+            types = (angular.isDefined(types)?(angular.isArray(types)?types:[types]):data.types);
+            this.initObjects(types);
+            this.initFires(types);
+            this.initArrays(types);
         },
 
         // ecodocs: initialize the container objects for each data type
-        initObjects: function() {
-            angular.forEach(this.types, function(type){
+        initObjects: function(types) {
+            angular.forEach(types, function(type){
                 data[type] = {
                     ref: new Firebase("https://mngr.firebaseio.com/"+type),
                     fire: null,
@@ -39,8 +41,8 @@ angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
         },
 
         // ecodocs: initialize the $firebase bindings for each data type
-        initFires: function () {
-            angular.forEach(this.types, function(type){
+        initFires: function (types) {
+            angular.forEach(types, function(type){
                 if(data[type].ref){
                     data[type].fire = $firebase(data[type].ref);
                 }
@@ -48,8 +50,8 @@ angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
         },
 
         // ecodocs: initialize the arrays for each data type
-        initArrays: function () {
-            angular.forEach(this.types, function(type) {
+        initArrays: function (types) {
+            angular.forEach(types, function(type) {
                 if(data[type] && data[type].fire && angular.isFunction(data[type].fire.$on)){
                     data[type].fire.$on('value', function(){ data.fireToArray(type); });
                 }
