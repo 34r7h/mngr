@@ -138,7 +138,21 @@ angular.module('mngr').factory('models',function() {
 		},
 		filters:{
 			products:[
-				{}
+                {   name: 'Name',
+                    type: 'text',
+                    model: 'name',
+                    value: '',
+                    priority: 10
+                },
+                {   name: 'Price',
+                    type: 'number',
+                    model: 'price',
+                    operands: ['=', '<', '>', '><'],
+                    value: '',
+                    value2: '',
+                    operand: '=',
+                    priority: 10
+                }
 			],
 			users:[
 				{}

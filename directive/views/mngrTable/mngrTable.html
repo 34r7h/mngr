@@ -1,6 +1,16 @@
 <div class="full">
     <div class="col-3 row-12">
-        Filters
+        <div ng-repeat="filter in $parent.table.filters">
+            <mngr-input type="filter.type" name="{{filter.name}}" ng-model="filter.value"></mngr-input>
+            <mngr-input type="filter.type" name="{{filter.name}}" ng-model="filter.value2" placeholder="{{filter.name}} (max)" ng-if="filter.operand==='><' && (filter.value2||filter.value2==='')"></mngr-input>
+            <select
+                ng-if="filter.operand && filter.operands && filter.type !== 'date' && filter.type !== 'datetimepicker'"
+                name="{{filter.name}}-operand"
+                ng-model="filter.operand"
+                ng-options="operand | operandText for operand in filter.operands"
+                ></select>
+
+        </div>
     </div>
     <div class="col-10 row-1 ">
         <span ng-repeat="column in $parent.table.sortables | orderBy:priority" style="width:{{100/$parent.$parent.sortables.length}}%">
