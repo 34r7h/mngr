@@ -50,7 +50,7 @@ angular.module('mngr').factory('models',function() {
 
 		},
 
-		// ecodocs Primary Directive Models
+		// ecodocs Primary Directive Models.
 		products: [
 			{name:'upc',value:'',type:'text',element:'input'},
 			{name:'brand',value:'',type:'text',element:'input'},
@@ -99,7 +99,34 @@ angular.module('mngr').factory('models',function() {
 			{name:'notes',value:[''],type:'text',element:'input'},
 			{name:'notices',value:[''],type:'text',element:'input'}
 		],
+		content: [
+			{name:'title',value:'',type:'text',element:'input'},
+			{name:'content',value:'',element:'textarea'},
+			{name:'author',value:'',type:'text',element:'input'},
+			{name:'categories',value:[''],type:'text',element:'input'},
+			{name:'tags',value:[''],type:'text',element:'input'},
+			{name:'links',value:[''],type:'number',element:'input'},
+			{name:'media',value:[{}],type:'text',element:'select',options:[{}]},
+			{name:'notes',value:[''],type:'text',element:'input'}
+		],
 
+		//ecodocs Support Directive Models.
+		messages:[
+			{name:'title',value:'',type:'text',element:'input'},
+			{name:'date',value:'',element:'input'},
+			{name:'description',value:'',element:'textarea'},
+			{name:'threads',value:[{}],type:'text',element:'input'},
+			{name:'attachedTo',value:[{}],type:'text',element:'input'}
+		],
+		events:[
+			{name:'title',value:'',type:'text',element:'input'},
+			{name:'date',value:'',element:'input'},
+			{name:'description',value:'',element:'textarea'},
+			{name:'threads',value:[{}],type:'text',element:'input'},
+			{name:'attachedTo',value:[{}],type:'text',element:'input'}
+		],
+
+		//ecodocs table models.
 		sortables: {
 			products: [
 				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 1},
@@ -137,6 +164,7 @@ angular.module('mngr').factory('models',function() {
 				{name: 'type', show: true, type: 'text', priority: 3}
 			]
 		},
+		//ecodocs filter models.
 		filters:{
 			products:[
 				{}

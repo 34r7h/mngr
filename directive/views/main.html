@@ -13,8 +13,7 @@
 
 
     <div class="col-13 row-11">
-        <comp element="ui.workspaces['underlay'].component" params="ui.workspaces['underlay'].params" workspace="underlay"></comp>
-        <div ng-show="ui.workspace.overlay.show" class="full">
+        <div ng-show="ui.workspace.overlay.show" class="full" ng-init="options={name:'drp'}">
             <mngr element="ui.workspaces.overlay.component" workspace="overlay"></mngr>
         </div>
         <div ng-show="ui.workspace.workspaces.show" class="full">

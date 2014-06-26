@@ -31,7 +31,9 @@
                         ng-repeat="input in models[ui.create.specific]">
                     <div class="full middle-content">
                         <i class="col-3 text-right" >{{input.name | uppercase}} : |</i>
-                        <i class="col-8" > <input type="{{input.type}}" class="col-13 row-13" ng-model="$parent.model[ui.create.specific][input.name]"></i>
+                        <i class="col-8" >
+                            <input type="{{input.type}}" class="col-13 row-13" ng-model="$parent.model[ui.create.specific][input.name]">
+                        </i>
                     </div>
                 </span>
             </div>

@@ -1,57 +1,24 @@
 <div>
-    <label>{{filter.name}}</label>
+    <label>{{input.name}}</label>
     <input
             ng-if="input.type === 'text' || input.type === 'email' || input.type === 'number'"
-            name="{{filter.name}}"
-            type="{{filter.type}}"
-            ng-model="filter.value"
-            placeholder="{{filter.name}}"
-            >
-    <input ng-if="filter.type === 'number' && filter.operand === '><' && (filter.value2||filter.value2==='')"
-           name="{{filter.name}}-2"
-           type="{{filter.type}}"
-           ng-model="filter.value2"
-           placeholder="{{filter.name}}"
+            name="{{input.name}}"
+            type="{{input.type}}"
+            ng-model="input.value"
+            placeholder="{{input.name}}"
             >
     <textarea
-            ng-if="filter.type==='textarea'"
-            name="{{filter.name}}"
-            ng-model="filter.value"
-            placeholder="{{filter.name}}"
+            ng-if="input.type==='textarea'"
+            name="{{input.name}}"
+            ng-model="input.value"
+            placeholder="{{input.name}}"
             ></textarea>
     <select
-            ng-if="filter.type==='select'"
-            ng-model="filter.value"
-            ng-options="user as user for user in filter.options"
+            ng-if="input.type==='select'"
+            ng-model="input.value"
+            ng-options="option as option for option in input.options"
             multiple="multiple"
-            ><option value="">Choose {{filter.name}}</option></select>
-    <div ng-if="filter.type==='datetimepicker' || filter.type==='date'">
-        <datetimepicker
-                ng-model="filter.value"
-                date-options="dateOptions"
-                date-disabled="disabled(date, mode)"
-                showMinutes="true"
-                ></datetimepicker>
-
-        <datetimepicker ng-if="filter.operand === '><' && (filter.value2 || filter.value2==='')"
-                        ng-model="filter.value"
-                        date-options="dateOptions"
-                        date-disabled="disabled(date, mode)"
-                        showMinutes="true"
-                ></datetimepicker>
-
-    </div>
-    <select
-            ng-if="filter.operand && filter.operands && filter.type !== 'date' && filter.type !== 'datetimepicker'"
-            name="{{filter.name}}-operand"
-            ng-model="filter.operand"
-            ng-options="operand | operandText for operand in filter.operands"
-            ></select>
-    <select
-            ng-if="filter.operand && filter.operands && (filter.type === 'date' || filter.type === 'datetimepicker')"
-            name="{{filter.name}}-operand"
-            ng-model="filter.operand"
-            ng-options="operand | operandText:'date' for operand in filter.operands"
-            ></select>
-    <mngr-form element="input" type="filter.type" placeholder="{{filter.name}}"></mngr-form>
+            >
+        <option value="">Choose {{input.name}}</option>
+    </select>
 </div>
