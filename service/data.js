@@ -1,8 +1,20 @@
-angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
+angular.module('mngr').factory('data',function($firebase, Firebase, $firebaseSimpleLogin, $filter) {
 
 	var data = {
         path: '/',
         params: {},
+        user: {
+            account: null,  // firebase authentication account
+            credentials: {
+                email: '',
+                password: '',
+                passConfirm: '',
+                recover: false
+            },
+            profile: null,  // user profile
+            auth: $firebaseSimpleLogin(new Firebase("https://mngr.firebaseio.com/"))
+        },
+
         // ecodocs: list of data types the service provides
         types: [
             'products',
@@ -61,6 +73,30 @@ angular.module('mngr').factory('data',function($firebase, Firebase, $filter) {
         fireToArray: function(type){
             data[type].array = $filter('orderByPriority')(data[type].fire);
             console.log(type+' loaded');
+        },
+
+        // creates a user profile for a given account
+        createUserProfile: function(account){
+        },
+
+        // loads the user profile for a given account
+        loadUserProfile: function(account){
+        },
+
+        // reset user login credentials
+        resetUserCredentials: function(){
+            data.user.credentials.email = '';
+            data.user.credentials.password = '';
+            data.user.credentials.passConfirm = '';
+            data.user.credentials.recover = false;
+        },
+
+        // check if the given email is associated with an existing account
+        userEmailExists: function(email){
+        },
+
+        // check if the given username is associated with an existing account
+        usernameExists: function(username){
         }
     };
 

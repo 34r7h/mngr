@@ -1,4 +1,4 @@
-angular.module('mngr').factory('api',function(data, models, $filter) {
+angular.module('mngr').factory('api',function(data, models, utility, $filter) {
 
 	var api = {
 
@@ -33,96 +33,71 @@ angular.module('mngr').factory('api',function(data, models, $filter) {
 		remove:function(type, id){
 			data[type].fire.$remove(id);
 		},
+
+        // logs a user in via the given provider
+        login: function(provider){
+            // handle login request based on provider
+            switch(provider){
+                case 'active':
+                    api.loginActive();
+                    break;
+
+                case 'password':
+                    api.loginPassword(data.user.account.email, data.user.account.password);
+                    break;
+
+                case 'facebook':
+                case 'twitter':
+                    api.loginProvider(provider);
+                    break;
+            }
+
+        },
+        // logs in the active user (ie. by cookie)
+        loginActive: function(){
+            data.user.auth.$getCurrentUser().then(utility.userAuthenticated);
+        },
+        // logs in a user by email/password account
+        loginPassword: function(email, password){
+
+        },
+        // logs in a user by 3rd party provider
+        loginProvider: function(provider){
+
+        },
+
+        // logs a user out
+        logout: function(){
+
+        },
+
+        // registers a new user account
+        register: function(){
+
+        },
+
+        // changes a user's password
+        changePassword: function(email, oldPassword, newPassword){
+
+        },
+
+        // recovers a user's password
+        recoverPassword: function(email){
+
+        },
+
+        // data filtering
 		applyFilters: function(filters, data){
 			var result = data;
 			angular.forEach(filters, function(filter, filterIdx){
-				var args = api.filterArgs(filter);
+				var args = utility.filterArgs(filter);
 				if(args){
 					result = $filter('filter')(result, args);
 				}
 			});
 			return result;
-		},
-		// ecodocs: returns the arguments passed to the angular 'filter'
-		filterArgs: function(filter){
-			var args = null;
-			switch(filter.type){
-				case 'text':
-					if(filter.value){
-						args = {};
-						args[filter.model] = filter.value;
-					}
-
-					break;
-
-				case 'number':
-					if(filter.value || filter.value===0){
-						args = function(item){
-							var result = false;
-							var modelValue = item[filter.model]?item[filter.model]:0;
-							var filterValue = filter.value;
-							if(modelValue){
-								switch(filter.operand){
-									case '<':
-										result = (modelValue <= filterValue);
-										break;
-
-									case '>':
-										result = (modelValue >= filterValue);
-										break;
-
-									case '><':
-										if(filter.value2 || filter.value2===0){
-											result = (modelValue >= filterValue && modelValue <= filter.value2);
-										}
-										else{
-											result = (modelValue===filterValue);
-										}
-										break;
-
-									case '=':
-										result = (modelValue===filterValue);
-										break;
-
-									default:
-										result = (modelValue===filterValue);
-										break;
-								}
-							}
-							return result;
-						};
-					}
-					break;
-
-				case 'select':
-					args = function(item){
-						var result = false;
-						var modelValue = item[filter.model];
-						if(modelValue){
-							if(angular.isArray(modelValue)){
-								// ecodocs: loop through each selected value (assumes <select multiple>)
-								angular.forEach(filter.value, function(checkValue){
-									if(!result && modelValue.indexOf(checkValue)!==-1){
-										result = true;
-									}
-								});
-							}
-							else{
-								// ecodocs: check if modelValue is any of the selected values (assumes <select multiple>)
-								if(filter.value.indexOf(modelValue)!==-1){
-									result = true;
-								}
-							}
-
-						}
-						return result;
-					};
-					break;
-
-				// ecodocs: add other filter.types
-			}
-			return args;
 		}
+
 	};
 
 	return api;
