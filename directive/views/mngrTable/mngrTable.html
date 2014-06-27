@@ -1,9 +1,24 @@
 <div class="full">
-    <div ng-hide='hideFilters' class="col-3 row-12">
+    <div
+            class="col-3 row-12"
+            ng-hide='hideFilters'>
         <b>Filters</b>
-        <div ng-repeat="filter in table.filters" ng-if="filter.priority > 0">
-            <mngr-input class="full row-2" type="filter.type" name="{{filter.name}}" ng-model="filter.value"></mngr-input>
-            <mngr-input class="col-13 row-2" type="filter.type" name="{{filter.name}}" ng-model="filter.value2" placeholder="{{filter.name}} (max)" ng-if="filter.operand==='><' && (filter.value2||filter.value2==='')"></mngr-input>
+        <div
+                ng-if="filter.priority > 0"
+                ng-repeat="filter in table.filters" >
+            <mngr-input
+                    class="full row-2"
+                    type="filter.type"
+                    name="{{filter.name}}"
+                    ng-model="filter.value">
+            </mngr-input>
+            <mngr-input
+                    class="col-13 row-2"
+                    type="filter.type"
+                    name="{{filter.name}}"
+                    ng-model="filter.value2"
+                    placeholder="{{filter.name}} (max)"
+                    ng-if="filter.operand==='><' && (filter.value2||filter.value2==='')"></mngr-input>
             <select
                 class="col-13 row-2"
                 ng-if="filter.operand && filter.operands && filter.type !== 'date' && filter.type !== 'datetimepicker'"
@@ -13,60 +28,139 @@
                 ></select>
         </div>
     </div>
-    <div ng-hide="hideSortables" class="col-10 row-1 middle-container">
-        <span class="middle-content text-center" ng-repeat="column in table.sortables | orderBy:priority" style="width:{{100/$parent.table.sortables.length}}%" ng-click="column.show=!column.show">
-            <input class="" type="checkbox" ng-model="column.show" id="sort-toggle-{{column.name}}">
-            <label class="" for="sort-toggle-{{column.name}}" ng-if="column.title">{{column.title | uppercase}}</label>
-            <label class="" for="sort-toggle-{{column.name}}" ng-if="!column.title">{{column.name | uppercase}}</label>
+    <div
+            ng-hide="hideSortables"
+            class="col-10 row-1 middle-container">
+        <span
+                class="middle-content text-center"
+                ng-repeat="column in table.sortables | orderBy:priority"
+                style="width:{{100/$parent.table.sortables.length}}%"
+                ng-click="column.show=!column.show">
+            <input
+                    class=""
+                    type="checkbox"
+                    ng-model="column.show"
+                    id="sort-toggle-{{column.name}}">
+            <label
+                    class=""
+                    for="sort-toggle-{{column.name}}"
+                    ng-if="column.title">
+                {{column.title | uppercase}}
+            </label>
+            <label class="" for="sort-toggle-{{column.name}}" ng-if="!column.title">
+                {{column.name | uppercase}}
+            </label>
         </span>
     </div>
-    <div class="col-10 row-11 scroll-y table-responsive" mngr-scroll-pages next-page="scroll.nextPage()" prev-page="scroll.prevPage()" back-scroll="true" threshold="1">
-        <table class="table full table-{{type}}">
-            <thead class="col-13 row-1">
+    <div
+            class="col-10 row-11 table-responsive"
+            mngr-scroll-pages next-page="scroll.nextPage()"
+            prev-page="scroll.prevPage()"
+            back-scroll="true"
+            threshold="1">
+        <table class="table full">
+            <thead class="col-13 row-2">
                 <tr class="middle-container">
-                    <th class="middle-content text-center" ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority">
+                    <th
+                            class="middle-content text-center"
+                            ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority">
                         <a ng-click="sort.by(column.name)">
-                            <span ng-if="column.title">{{column.title | uppercase}}</span>
-                            <span ng-if="!column.title">{{column.name | uppercase}}</span>
+                            <span ng-if="column.title">
+                                {{column.title | uppercase}}
+                            </span>
+                            <span ng-if="!column.title">
+                                {{column.name | uppercase}}
+                            </span>
                         </a>
-                        <span ng-show="sort.column===column.name"><i class="fa fa-fw" ng-class="{'fa-sort-asc': !sort.reverse, 'fa-sort-desc': sort.reverse}"></i></span>
+                        <span ng-show="sort.column===column.name">
+                            <i
+                                    class="fa fa-fw"
+                                    ng-class="{'fa-sort-asc': !sort.reverse, 'fa-sort-desc': sort.reverse}"></i>
+                        </span>
                     </th>
                 </tr>
             </thead>
 
-            <tbody class="col-13 row-11 scroll-y middle-container">
-                <tr class="col-13 row-2 middle-content" ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
-                    <td class="text-center" ng-repeat="column in $parent.table.sortables | filter:{show:true} | orderBy:priority" style="width:{{100/$parent.table.sortables.length}}%">
+            <tbody class="col-13 row-10 scroll-y ">
+                <tr
+                        class="col-13 row-2 middle-container"
+                        ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
+                    <td
+                            class="text-center middle-content"
+                            ng-repeat="column in $parent.table.sortables | filter:{show:true} | orderBy:priority"
+                            style="width:{{100/$parent.table.sortables.length}}%">
                         <!--input ng-focus="$parent.api.bind($parent.type, key, $parent)" ng-blur="$parent.api.unbind($parent.type, key)" ng-model="$parent.$parent[$parent.type+'-'+key].name" /-->
                         <h4 class="text-left">
-                            <a ng-if="column.link" ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
-                                <span ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
-                                <span ng-if="!column.display">{{data[column.name]}}</span>
+                            <a
+                                    ng-if="column.link"
+                                    ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
+                                <span ng-if="column.display">
+                                    {{data[column.name] | mngrDisplay:column.display}}
+                                </span>
+                                <span ng-if="!column.display">
+                                    {{data[column.name]}}
+                                </span>
                             </a>
                         </h4>
                         <h3 class="text-center middle-container">
-                        <span ng-if="!column.link" class="middle-content">
-                            <span class="text-left" ng-if="column.display">{{data[column.name] | mngrDisplay:column.display}}</span>
-                            <span class="text-left" ng-if="!column.display" ng-model="data[column.name]">
-                                <i ng-hide="bind" class="text-center" ng-click="bind=true">{{data[column.name]}}</i>
-                                <input class="text-center" autofocus ng-show="bind" ng-model="data[column.name]">
-                                <i ng-show="bind" ng-click="$parent.$parent.$parent.$parent.api.save($parent.$parent.$parent.$parent.type,$parent.$parent.$parent.data.$id); bind=!bind">Done</i>
+                        <span
+                                ng-if="!column.link"
+                                class="middle-content">
+                            <span
+                                    ng-if="column.display"
+                                    class="text-left" >
+                                {{data[column.name] | mngrDisplay:column.display}}
+                            </span>
+                            <span
+                                    class="text-left"
+                                    ng-if="!column.display"
+                                    ng-model="data[column.name]">
+                                <i
+                                        ng-hide="bind"
+                                        class="text-center"
+                                        ng-click="bind=true">
+                                    {{data[column.name]}}
+                                </i>
+                                <input
+                                        class="text-center"
+                                        autofocus ng-show="bind"
+                                        ng-model="data[column.name]">
+                                <i
+                                        ng-show="bind"
+                                        ng-click="$parent.$parent.$parent.$parent.api.save($parent.$parent.$parent.$parent.type,$parent.$parent.$parent.data.$id); bind=!bind">Done</i>
                             </span>
                         </span>
 
                         </h3>
                     </td>
-                    <td class="col-1 row-1"><b ng-click="showRemove=!showRemove" ng-hide="showRemove">[x]</b><b ng-show="showRemove" ng-click="$parent.api.remove($parent.type,data.$id)">[REMOVE]</b></td>
+                    <td class="col-1 row-1 middle-container">
+                        <b
+                                class="middle-content"
+                                ng-click="showRemove=!showRemove"
+                                ng-hide="showRemove">
+                            [x]
+                        </b>
+                        <b
+                                class="middle-content"
+                                ng-show="showRemove"
+                                ng-click="$parent.api.remove($parent.type,data.$id)">
+                            [REMOVE]
+                        </b>
+                    </td>
                 </tr>
             </tbody>
 
-            <tfoot>
-
+            <tfoot class="col-13 row-1">
+                <tr>
+                    <th>
+                        <td>
+                            Footer
+                        </td>
+                    </th>
+                </tr>
             </tfoot>
 
         </table>
     </div>
-    <div class="col-13 row-1">
-        Footer
-    </div>
+
 </div>

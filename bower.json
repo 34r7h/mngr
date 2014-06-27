@@ -23,6 +23,7 @@
     "less.js": "~1.6",
     "font-awesome": "~4.0",
     "firebase": "~1.0.17",
-    "angularfire": "~0.7.1"
+    "angularfire": "~0.7.1",
+    "ionic": "driftyco/ionic-bower#~0.9.26"
   }
 }

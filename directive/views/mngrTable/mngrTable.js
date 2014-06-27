@@ -50,7 +50,7 @@ angular.module('mngr').directive('mngrTable', function(models, api) {
             // apply filters
             scope.filterData = function() {
                 if(scope.table && scope.table.data && scope.table.data.array && scope.table.filters){
-                    scope.table.filteredData = models.applyFilters(scope.table.filters, scope.table.data.array);
+                    scope.table.filteredData = api.applyFilters(scope.table.filters, scope.table.data.array);
                 }
             };
 
