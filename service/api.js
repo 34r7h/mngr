@@ -1,9 +1,9 @@
-angular.module('mngr').factory('api',function(data) {
+angular.module('mngr').factory('api',function(data, ui, $q) {
 
 	var api = {
 
 		bind:function(type, id, scope){
-			data[type].fire.$child(id).$bind(scope, type+id);
+//			data[type].fire.$child(id).$bind(scope, type+id);
 		},
 		create:function(type, model){
 			//this.model = model;
@@ -35,20 +35,41 @@ angular.module('mngr').factory('api',function(data) {
 		},
 
         callbackError: function(error){
+            var errorMsg = '';
+            if(error){
+                if(error.code){
+                    switch(error.code){
+                        case 'EMAIL_TAKEN':
+                            errorMsg = 'Email address is in use';
+                            break;
+                    }
+                }
+                else{
+                    errorMsg = error;
+                }
+            }
+            if(!errorMsg){
+                errorMsg = 'Unknown error occurred';
+            }
+            // ecodocs: where do we put error messages?
+            console.log('Error:'+errorMsg);
         },
         callbackSuccess: function(result){
             if(result){
                 if(result.uid){
-                    var account = result;
-                    data.profile = data.loadUserProfile(account);
-                    if(!data.profile){
-                        data.profile.new = true;
-
-                        // create from models.users template
-                        if(account.provider.email){
-                            data.profile.email = account.profile.email;
-                        }
+                    api.loadProfile(result).then(api.callbackSuccess, api.callbackError);
+                }
+                else if(result.new && result.linked){
+                    console.log('new user profile...'+JSON.stringify(result));
+                    data.user.profile = result;
+                    if(result.confirmed){
+                        api.createProfile();
                     }
+                }
+                else if(result.username && result.email){
+                    console.log('user profile loaded...'+JSON.stringify(result));
+                    data.user.profile = result;
+                    ui.loadState();
                 }
             }
         },
@@ -67,6 +88,7 @@ angular.module('mngr').factory('api',function(data) {
 
                 case 'facebook':
                 case 'twitter':
+                case 'google':
                     api.loginProvider(provider);
                     break;
             }
@@ -77,8 +99,7 @@ angular.module('mngr').factory('api',function(data) {
         },
         // logs in a user by email/password account
         loginPassword: function(email, password){
-            console.log('login:'+email+';'+password+':');
-            data.user.auth.$login(email, password).then(api.callbackSuccess, api.callbackError);
+            data.user.auth.$login('password', {email:email, password:password}).then(api.callbackSuccess, api.callbackError);
         },
         // logs in a user by 3rd party provider
         loginProvider: function(provider){
@@ -93,7 +114,33 @@ angular.module('mngr').factory('api',function(data) {
 
         // creates a user email/password account
         createAccount: function(email, password, passwordConfirm){
-            console.log('createAccount:'+email+';'+password+':'+passwordConfirm+':');
+            if(!email){
+                api.callbackError('No email');
+            }
+            else if(!password){
+                api.callbackError('No password');
+            }
+            else if(password.length < 6){
+                api.callbackError('Passwords is too short');
+            }
+            else if(passwordConfirm !== password){
+                api.callbackError('Passwords don\'t match');
+            }
+            else if(api.userEmailExists(email)){
+                api.callbackError({code: "EMAIL_TAKEN"});
+            }
+            else{
+                console.log('$createUser:'+email+';'+password+':'+passwordConfirm+':');
+                data.user.auth.$createUser(email, password).then(api.callbackSuccess, api.callbackError);
+            }
+        },
+
+        // removes a user email/password account
+        removeAccount: function(email, password){
+            if(email && password){
+                console.log('removeAccount:'+email+':'+password);
+                data.user.auth.$removeUser(email, password).then(api.callbackSuccess, api.callbackError);
+            }
         },
 
         // recovers a user's password
@@ -106,26 +153,62 @@ angular.module('mngr').factory('api',function(data) {
 
         },
 
-
-
         // creates a user profile for a given account
         createProfile: function(){
-            //api.create('users', data.profile);
+            if(angular.isDefined(data.user.profile.new)){
+                delete data.user.profile.new;
+            }
+            if(angular.isDefined(data.user.profile.confirmed)){
+                delete data.user.profile.confirmed;
+            }
+            // ecodocs: create the user profile
+            console.log('createProfile:'+JSON.stringify(data.user.profile));
+            //api.create('users', data.user.profile);
         },
 
         // loads the user profile for a given account
         loadProfile: function(account){
+            var defer = $q.defer();
             if(account.uid){
+                var newProfile = {
+                    new: true,
+                    confirmed: false,
+                    linked: [account.uid]
+                };
 
+                if(account.email){
+                    newProfile.email = account.email;
+                }
+                else if(account.thirdPartyUserData && account.thirdPartyUserData.email){
+                    newProfile.email = account.thirdPartyUserData.email;
+                }
+
+                // set name
+                if(account.displayName){
+                    newProfile.name = account.displayName;
+                }
+                else if(newProfile.email){
+                    // no display name, parse it from the email
+                    var emailParse = newProfile.email.match(/^(\w+)@/);
+                    if(emailParse && emailParse.length > 1){
+                        newProfile.name = emailParse[1];
+                    }
+                }
+
+                if(account.provider==='password' && newProfile.email){
+                    newProfile.confirmed = true;
+                }
+
+                defer.resolve(newProfile);
             }
+            else{
+                defer.reject('No account to load uid for');
+            }
+            return defer.promise;
         },
 
         // check if the given email is associated with an existing account
         userEmailExists: function(email){
-        },
-
-        // check if the given username is associated with an existing account
-        usernameExists: function(username){
         }
 
 	};

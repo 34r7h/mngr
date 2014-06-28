@@ -49,6 +49,7 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 			};
 
             $scope.api = api;
+            $scope.data = data;
 
             if($scope.userId){
 

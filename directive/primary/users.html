@@ -1,6 +1,4 @@
 <div ng-show="!data.user.profile">
-
-
     <div ng-show="!action || action==='login'">
         <h2>Login</h2>
         <div>
@@ -43,6 +41,17 @@
         <button ng-click="action='login'">Cancel</button>
     </div>
 
+</div>
+<div ng-show="data.user.profile.new">
+    <h2>Confirm Email address</h2>
+    <div ng-show="data.user.profile.name">
+        Hello, {{data.user.profile.name}}
+    </div>
+    <div>
+        <input type="text" placeholder="email" ng-model="data.user.profile.email"/>
+    </div>
+    <button ng-click="api.createProfile()">Complete Registration</button>
+    <button ng-click="api.removeAccount(newAccount.email, newAccount.password);data.user.profile=null;newAccount.email='';newAccount.password='';newAccount.passwordConfirm='';action='login'">Cancel</button>
 </div>
 
 
