@@ -48,27 +48,25 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 
 			};
 
-			$scope.sortables = models.sortables[$scope.type];
-			$scope.sortablesLength = (100/($scope.sortables.length));
-			$scope.filters = {};
-			$scope.api = api;
-			// ecodocs must watch the double binding on ng-repeats because angular's digest cycle throws a circular reference.
+            $scope.api = api;
+            $scope.data = data;
 
-			/*
-			 $scope.table.data.$on('value', function(){
-			 $scope.filteredData = data[$scope.type];
-			 });
-			 */
-			$scope.table.data.$on('value', function(){
-				data[$scope.type].$bind($scope,'filteredData');
-			});
+            if($scope.userId){
+
+            }
+            else{
+
+            }
 
 
 
 		},
-		scope:{},
+		scope:{userId:'='},
 		restrict: 'EA',
-		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
+
+        // ecodocs: very bad, I know... but using it for dev purposes until mngr-form is ready to go for login
+        templateUrl: 'directive/primary/users.html',
+		//template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
 		link: function(scope, element, attrs, fn) {
 
 

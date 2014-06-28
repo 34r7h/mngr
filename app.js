@@ -1,12 +1,13 @@
 angular.module('mngr', ['ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.utility'/*, 'ionic'*/]);
 
+
 angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider.state('main', {
 		url:'*path',
 		reloadOnSearch: false,
 		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api){
 			ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
-			$scope.$on('$locationChangeStart', function(){
+			$scope.$on('$locationChangeSuccess', function(){
 				ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			});
 
