@@ -79,11 +79,6 @@ angular.module('mngr.utility').factory('utility',function(data) {
                 // ecodocs: add other filter.types
             }
             return args;
-        },
-
-        // login callback, account is the firebase authentication account
-        userAuthenticated: function(account){
-
         }
     };
 
