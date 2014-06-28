@@ -106,7 +106,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
             if(Object.keys(ui.workspace).indexOf(workspace)!==-1){
                 // valid workspace, load the path into the ui
 
-                // strip off any leading or trailing /'s from path
+                // strip off any leading or trailing /'s from path (for easier parsing)
                 path = (path.charAt(0) === '/') ? path.substr(1) : path;
                 path = (path.charAt(path.length - 1) === '/') ? path.substring(0, path.length - 1) : path;
 
@@ -117,13 +117,15 @@ angular.module('mngr').factory('ui',['$q',function($q) {
                     var componentName = pathParts[0];   // component name is part before first '/'
                     var params = pathParts.slice(1);    // params are everything after first '/'
 
-
+                    // search for the given componentName in the configured components
+                    // set it into the workspace when a match is found
                     angular.forEach(ui.components, function(component, componentIdx){
                         if(component.name===componentName){
                             ui.setWorkspace(workspace, component, params);
                             componentFound = true;
                         }
                     });
+                    // component not found in ui.components - search in ui.notify.components
                     if(!componentFound){
                         angular.forEach(ui.notify.components, function(component, componentIdx){
                             if(component.name===componentName){
@@ -143,6 +145,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
                         }
                     });
                 }
+                // at this point if !componentFound - then there isn't even a default component configured
             }
         },
 		loadState: function (fromPath, withParams) {
