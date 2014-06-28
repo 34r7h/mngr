@@ -1,11 +1,11 @@
-angular.module('mngr').directive('mngrButton', function() {
+angular.module('mngr').directive('mngrButton', function($compile) {
 	return {
 		restrict: 'E',
 		replace: true,
 		scope: {
 			title:'@',
 			content:'@',
-			action:'='
+			action:'@'
 		},
 		templateUrl: 'directive/views/mngrButton/mngrButton.html',
 		link:function(scope, iElem, iAttrs, element, $scope, attrs) {
