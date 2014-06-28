@@ -54,7 +54,7 @@ angular.module('mngr').factory('api',function(data) {
         },
 
         // logs a user in via the given provider
-        login: function(provider){
+        login: function(provider, email, password){
             // handle login request based on provider
             switch(provider){
                 case 'active':
@@ -62,7 +62,7 @@ angular.module('mngr').factory('api',function(data) {
                     break;
 
                 case 'password':
-                    api.loginPassword(data.user.account.email, data.user.account.password);
+                    api.loginPassword(email, password);
                     break;
 
                 case 'facebook':
@@ -77,6 +77,7 @@ angular.module('mngr').factory('api',function(data) {
         },
         // logs in a user by email/password account
         loginPassword: function(email, password){
+            console.log('login:'+email+';'+password+':');
             data.user.auth.$login(email, password).then(api.callbackSuccess, api.callbackError);
         },
         // logs in a user by 3rd party provider
@@ -86,12 +87,18 @@ angular.module('mngr').factory('api',function(data) {
 
         // logs a user out
         logout: function(){
-
+            data.user.auth.$logout();
+            data.user.profile = null;
         },
 
-        // registers a new user account
-        register: function(){
+        // creates a user email/password account
+        createAccount: function(email, password, passwordConfirm){
+            console.log('createAccount:'+email+';'+password+':'+passwordConfirm+':');
+        },
 
+        // recovers a user's password
+        recoverPassword: function(email){
+            console.log('recoverPassword:'+email);
         },
 
         // changes a user's password
@@ -99,18 +106,15 @@ angular.module('mngr').factory('api',function(data) {
 
         },
 
-        // recovers a user's password
-        recoverPassword: function(email){
 
-        },
 
         // creates a user profile for a given account
-        createUserProfile: function(){
-            api.create('users', data.profile);
+        createProfile: function(){
+            //api.create('users', data.profile);
         },
 
         // loads the user profile for a given account
-        loadUserProfile: function(account){
+        loadProfile: function(account){
             if(account.uid){
 
             }
