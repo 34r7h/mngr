@@ -1,4 +1,4 @@
-describe('utility', function() {
+describe('filter', function() {
 
     beforeEach(module('mngr'));
 

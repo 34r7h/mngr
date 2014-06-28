@@ -1,5 +1,16 @@
-angular.module('mngr.utility').factory('utility',function(data) {
-    var utility = {
+angular.module('mngr.utility').factory('filter',function($filter) {
+    var filter = {
+        applyFilters: function(filters, data){
+            var result = data;
+            angular.forEach(filters, function(value, index){
+                var args = filter.filterArgs(value);
+                if(args){
+                    result = $filter('filter')(result, args);
+                }
+            });
+            return result;
+        },
+
         // ecodocs: returns the arguments passed to the angular 'filter'
         filterArgs: function(filter){
             var args = null;
@@ -82,5 +93,5 @@ angular.module('mngr.utility').factory('utility',function(data) {
         }
     };
 
-    return utility;
+    return filter;
 });
