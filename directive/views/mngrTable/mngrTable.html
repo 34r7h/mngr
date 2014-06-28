@@ -36,28 +36,15 @@
                 ng-repeat="column in table.sortables | orderBy:priority"
                 style="width:{{100/$parent.table.sortables.length}}%"
                 ng-click="column.show=!column.show">
-            <input
-                    class=""
-                    type="checkbox"
-                    ng-model="column.show"
-                    id="sort-toggle-{{column.name}}">
-            <label
-                    class=""
-                    for="sort-toggle-{{column.name}}"
-                    ng-if="column.title">
+            <div ng-if="column.title">
                 {{column.title | uppercase}}
-            </label>
-            <label class="" for="sort-toggle-{{column.name}}" ng-if="!column.title">
+            </div>
+            <div ng-if="!column.title">
                 {{column.name | uppercase}}
-            </label>
+            </div>
         </span>
     </div>
-    <div
-            class="col-10 row-11 table-responsive"
-            mngr-scroll-pages next-page="scroll.nextPage()"
-            prev-page="scroll.prevPage()"
-            back-scroll="true"
-            threshold="1">
+    <div class="col-10 row-11 table-responsive">
         <table class="table full">
             <thead class="col-13 row-2">
                 <tr class="middle-container">
@@ -81,7 +68,10 @@
                 </tr>
             </thead>
 
-            <tbody class="col-13 row-10 scroll-y ">
+            <tbody class="col-13 row-10 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
+                   prev-page="scroll.prevPage()"
+                   back-scroll="true"
+                   threshold="1">
                 <tr
                         class="col-13 row-2 middle-container"
                         ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
@@ -94,6 +84,7 @@
                             <a
                                     ng-if="column.link"
                                     ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
+                      <mngrLink href="column.link" data="data" workspace="$parent.$parent.$parent.$parent.workspace"></mngLink>
                                 <span ng-if="column.display">
                                     {{data[column.name] | mngrDisplay:column.display}}
                                 </span>
