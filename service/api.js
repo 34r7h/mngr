@@ -1,4 +1,4 @@
-angular.module('mngr').factory('api',function(data, models, utility, $filter) {
+angular.module('mngr').factory('api',function(data) {
 
 	var api = {
 
@@ -6,10 +6,10 @@ angular.module('mngr').factory('api',function(data, models, utility, $filter) {
 			data[type].fire.$child(id).$bind(scope, type+id);
 		},
 		create:function(type, model){
-			this.model = model;
+			//this.model = model;
 			//ecodocs takes a reference to firebase and $adds a model.
-			data[type].fire.$add(this.model);
-			this.model[type] = {};
+			data[type].fire.$add(model);
+			//this.model[type] = {};
 		},
 		save:function(type, id){
 			var time = new Date();
@@ -34,6 +34,25 @@ angular.module('mngr').factory('api',function(data, models, utility, $filter) {
 			data[type].fire.$remove(id);
 		},
 
+        callbackError: function(error){
+        },
+        callbackSuccess: function(result){
+            if(result){
+                if(result.uid){
+                    var account = result;
+                    data.profile = data.loadUserProfile(account);
+                    if(!data.profile){
+                        data.profile.new = true;
+
+                        // create from models.users template
+                        if(account.provider.email){
+                            data.profile.email = account.profile.email;
+                        }
+                    }
+                }
+            }
+        },
+
         // logs a user in via the given provider
         login: function(provider){
             // handle login request based on provider
@@ -51,19 +70,18 @@ angular.module('mngr').factory('api',function(data, models, utility, $filter) {
                     api.loginProvider(provider);
                     break;
             }
-
         },
         // logs in the active user (ie. by cookie)
         loginActive: function(){
-            data.user.auth.$getCurrentUser().then(utility.userAuthenticated);
+            data.user.auth.$getCurrentUser().then(api.callbackSuccess, api.callbackError);
         },
         // logs in a user by email/password account
         loginPassword: function(email, password){
-
+            data.user.auth.$login(email, password).then(api.callbackSuccess, api.callbackError);
         },
         // logs in a user by 3rd party provider
         loginProvider: function(provider){
-
+            data.user.auth.$login(provider).then(api.callbackSuccess, api.callbackError);
         },
 
         // logs a user out
@@ -86,17 +104,25 @@ angular.module('mngr').factory('api',function(data, models, utility, $filter) {
 
         },
 
-        // data filtering
-		applyFilters: function(filters, data){
-			var result = data;
-			angular.forEach(filters, function(filter, filterIdx){
-				var args = utility.filterArgs(filter);
-				if(args){
-					result = $filter('filter')(result, args);
-				}
-			});
-			return result;
-		}
+        // creates a user profile for a given account
+        createUserProfile: function(){
+            api.create('users', data.profile);
+        },
+
+        // loads the user profile for a given account
+        loadUserProfile: function(account){
+            if(account.uid){
+
+            }
+        },
+
+        // check if the given email is associated with an existing account
+        userEmailExists: function(email){
+        },
+
+        // check if the given username is associated with an existing account
+        usernameExists: function(username){
+        }
 
 	};
 
