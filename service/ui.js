@@ -2,10 +2,10 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 
 	var ui = {
 		components:[
-			{name:'stock',icon:'fa fa-barcode',params:['productID']},
+			{name:'stock',icon:'fa fa-barcode',params:['product-id']},
 			{name:'shop',icon:'fa fa-gift',params:['path'],default:true},
-			{name:'orders',icon:'fa fa-barcode',params:['orderID']},
-			{name:'users',icon:'fa fa-barcode',params:['userID']},
+			{name:'orders',icon:'fa fa-barcode',params:['order-id']},
+			{name:'users',icon:'fa fa-barcode',params:['user-id']},
 			{name:'content',icon:'fa fa-barcode',params:[]}
 		],
 		workspace: {
@@ -42,9 +42,9 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		notify:{
 			showNotify:false,
 			components:[
-				{name:'messages', icon:'fa fa-envelope', params:['messageID']},
-				{name:'events', icon:'fa fa-calendar', params:['eventID']},
-				{name:'cart', icon:'fa fa-shopping-cart', params:['orderID']},
+				{name:'messages', icon:'fa fa-envelope', params:['message-id']},
+				{name:'events', icon:'fa fa-calendar', params:['event-id']},
+				{name:'cart', icon:'fa fa-shopping-cart', params:['order-id']},
 				{name:'notices', icon:'fa fa-globe', params:[]}
 			],
 			notification:''
@@ -79,7 +79,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 
                 // load the parameters we are given
                 if(angular.isArray(params)){
-                    // load the params in the order the component defines them
+                    // for array params - load the params in the order the component defines them
                     angular.forEach(component.params, function(name, index){
                         if(index < params.length){
                             ui.workspace[workspace].params[name] = params[index];
@@ -93,7 +93,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
                     }
                 }
                 else if(angular.isObject(params)){
-                    // set the params that are defined for the component
+                    // for object params - set the params that are defined for the component
                     angular.forEach(params, function(value, name){
                         if(component.params.indexOf(name)!==-1){
                             ui.workspace[workspace].params[name] = value;
