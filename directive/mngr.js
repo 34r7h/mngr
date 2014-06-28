@@ -17,6 +17,17 @@ angular.module('mngr').directive('mngr', function($compile, $timeout) {
 					iElem.empty();
 				}
 			});
+            scope.$watchCollection('params', function(newVal){
+                if(domElement && newVal){
+                    angular.forEach(domElement.attributes, function(name, index){
+                        domElement.removeAttribute(name.name);
+                    });
+                    angular.forEach(newVal, function(value, name){
+                        domElement.setAttribute(name, value);
+                    });
+                    $compile(domElement)(scope);
+                }
+            });
 		}
 	};
 });
