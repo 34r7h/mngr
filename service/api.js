@@ -1,4 +1,4 @@
-angular.module('mngr').factory('api',function(data, ui, $q) {
+angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 
 	var api = {
 
@@ -57,6 +57,7 @@ angular.module('mngr').factory('api',function(data, ui, $q) {
         callbackSuccess: function(result){
             if(result){
                 if(result.uid){
+                    console.log('user authenticated...');
                     api.loadProfile(result).then(api.callbackSuccess, api.callbackError);
                 }
                 else if(result.new && result.linked){
@@ -163,43 +164,65 @@ angular.module('mngr').factory('api',function(data, ui, $q) {
             }
             // ecodocs: create the user profile
             console.log('createProfile:'+JSON.stringify(data.user.profile));
-            //api.create('users', data.user.profile);
+            // ecodocs: create the emails entry
+            api.create('users', data.user.profile);
         },
 
         // loads the user profile for a given account
         loadProfile: function(account){
             var defer = $q.defer();
             if(account.uid){
-                var newProfile = {
-                    new: true,
-                    confirmed: false,
-                    linked: [account.uid]
-                };
+                var profile = null;
+                // ecodocs: do lookup for account.uid -> userID
+                // ecodocs: if only it was this easy...
+                //console.log('all users:'+JSON.stringify(data['users'].array));
+                //var user = $filter('filter')(data['users'].array, function(item){return (angular.isArray(item.linked) && item.linked.indexOf(account.uid)!==-1);});
+                //console.log('user for '+account.uid+':'+JSON.stringify(user));
 
-                if(account.email){
-                    newProfile.email = account.email;
-                }
-                else if(account.thirdPartyUserData && account.thirdPartyUserData.email){
-                    newProfile.email = account.thirdPartyUserData.email;
-                }
+                // ecodocs: if no user found for account, create new profile...
+                if(!profile){
+                    var newProfile = {
+                        new: true,
+                        confirmed: false,   // confirmed===true when the user has confirmed their email address
+                        linked: {}
+                    };
 
-                // set name
-                if(account.displayName){
-                    newProfile.name = account.displayName;
-                }
-                else if(newProfile.email){
-                    // no display name, parse it from the email
-                    var emailParse = newProfile.email.match(/^(\w+)@/);
-                    if(emailParse && emailParse.length > 1){
-                        newProfile.name = emailParse[1];
+                    newProfile.linked[account.uid] = true;
+
+                    if(account.email){
+                        newProfile.email = account.email;
                     }
+                    else if(account.thirdPartyUserData && account.thirdPartyUserData.email){
+                        newProfile.email = account.thirdPartyUserData.email;
+                    }
+
+                    // set name
+                    if(account.displayName){
+                        newProfile.name = account.displayName;
+                    }
+                    else if(newProfile.email){
+                        // no display name, parse it from the email
+                        var emailParse = newProfile.email.match(/^(\w+)@/);
+                        if(emailParse && emailParse.length > 1){
+                            newProfile.name = emailParse[1];
+                        }
+                    }
+
+                    // email/password accounts do not need further confirmation
+                    if(account.provider==='password' && newProfile.email){
+                        newProfile.confirmed = true;
+                    }
+
+                    // set default values for all user profile fields
+                    angular.forEach(models['users'], function(field){
+                        if(angular.isUndefined(newProfile[field.name])){
+                            newProfile[field.name] = field.value;
+                        }
+                    });
+                    profile = newProfile;
                 }
 
-                if(account.provider==='password' && newProfile.email){
-                    newProfile.confirmed = true;
-                }
-
-                defer.resolve(newProfile);
+                defer.resolve(profile);
             }
             else{
                 defer.reject('No account to load uid for');
@@ -209,6 +232,7 @@ angular.module('mngr').factory('api',function(data, ui, $q) {
 
         // check if the given email is associated with an existing account
         userEmailExists: function(email){
+            return false;
         }
 
 	};
