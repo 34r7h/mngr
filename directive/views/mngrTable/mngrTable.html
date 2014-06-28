@@ -27,6 +27,8 @@
                 ng-options="operand | operandText for operand in filter.operands"
                 ></select>
         </div>
+        <mngr-button action="Setup" title="Our Button" content="Just be alive"></mngr-button>
+        <mngr-link title="Google" content="Search data" link="http://google.com"></mngr-link>
     </div>
     <div
             ng-hide="hideSortables"
@@ -46,7 +48,7 @@
     </div>
     <div class="col-10 row-11 table-responsive">
         <table class="table full">
-            <thead class="col-13 row-2">
+            <thead class="col-13 row-1">
                 <tr class="middle-container">
                     <th
                             class="middle-content text-center"
@@ -65,13 +67,14 @@
                                     ng-class="{'fa-sort-asc': !sort.reverse, 'fa-sort-desc': sort.reverse}"></i>
                         </span>
                     </th>
+                    <th class="middle-content text-center">Remove</th>
                 </tr>
             </thead>
 
-            <tbody class="col-13 row-10 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
+            <tbody class="col-13 row-11 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
                    prev-page="scroll.prevPage()"
-                   back-scroll="true"
-                   threshold="1">
+                   back-scroll="false"
+                   threshold="30">
                 <tr
                         class="col-13 row-2 middle-container"
                         ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
@@ -84,7 +87,7 @@
                             <a
                                     ng-if="column.link"
                                     ng-href="{{column.link | mngrLinkTo:data:$parent.$parent.$parent.$parent.workspace}}">
-                      <mngrLink href="column.link" data="data" workspace="$parent.$parent.$parent.$parent.workspace"></mngLink>
+                      <mngr-link href="column.link" data="data" workspace="$parent.$parent.$parent.$parent.workspace"></mngr-link>
                                 <span ng-if="column.display">
                                     {{data[column.name] | mngrDisplay:column.display}}
                                 </span>
@@ -124,7 +127,7 @@
 
                         </h3>
                     </td>
-                    <td class="col-1 row-1 middle-container">
+                    <td class="col-1 row-1 middle-content">
                         <b
                                 class="middle-content"
                                 ng-click="showRemove=!showRemove"

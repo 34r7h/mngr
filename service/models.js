@@ -49,7 +49,17 @@ angular.module('mngr').factory('models',function() {
 			deny:{}
 
 		},
+		button:{
+			type:'',
+			function:'',
+			text:'',
+			subText:'',
+			style:{}
+		},
+		link:{
 
+		},
+		input:{},
 		// ecodocs Primary Directive Models.
 		products: [
 			{name:'upc',value:'',type:'text',element:'input'},
@@ -110,7 +120,6 @@ angular.module('mngr').factory('models',function() {
 			{name:'media',value:[{}],type:'text',element:'select',options:[{}]},
 			{name:'notes',value:[''],type:'text',element:'input'}
 		],
-
 		//ecodocs Support Directive Models.
 		messages:[
 			{name:'title',value:'',type:'text',element:'input'},
@@ -237,17 +246,8 @@ angular.module('mngr').factory('models',function() {
 			notices:[
 				{}
 			]
-
 		},
-        searchable: ['products', 'orders'],
-
-
-// Not the right place for this function. Please review the app structure and style guide -io
-
-
-
+        searchable: ['products', 'orders']
 	};
-
-
 	return models;
 });
