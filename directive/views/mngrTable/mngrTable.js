@@ -1,4 +1,4 @@
-angular.module('mngr').directive('mngrTable', function(models, api) {
+angular.module('mngr').directive('mngrTable', function(models, api, filter) {
 	return {
 		restrict: 'E',
 		replace: true,
@@ -27,7 +27,7 @@ angular.module('mngr').directive('mngrTable', function(models, api) {
             }};
 
             scope.scroll = {
-                perPage: 50,
+                perPage: 25,
                 offset: 0,
                 nextPage: function(){
                     if(scope.table && scope.table.filteredData){
@@ -50,7 +50,8 @@ angular.module('mngr').directive('mngrTable', function(models, api) {
             // apply filters
             scope.filterData = function() {
                 if(scope.table && scope.table.data && scope.table.data.array && scope.table.filters){
-                    scope.table.filteredData = api.applyFilters(scope.table.filters, scope.table.data.array);
+                    scope.table.filteredData = filter.applyFilters(scope.table.filters, scope.table.data.array);
+                    scope.scroll.offset = 0;
                 }
             };
 

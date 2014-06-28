@@ -13,17 +13,21 @@
 
 
     <div class="col-13 row-11">
+        {{ui.workspaces.main.component}}
         <div ng-show="ui.workspace.overlay.show" class="full">
-            <!-- mngr element="ui.workspaces.overlay.component" workspace="overlay"></mngr -->
-            <stock></stock>
+            <mngr element="ui.workspace.overlay.component" params="ui.workspace.overlay.params" workspace="overlay"></mngr>
+            <!-- stock></stock -->
         </div>
-        <div ng-show="ui.workspace.workspaces.show" class="full">
-            <div class="col-3 row-13"><mngr-item></mngr-item></div>
+        <div class="full" ng-show="ui.workspace.main.show">
+            <mngr element="ui.workspace.main.component" params="ui.workspace.main.params" workspace="main"></mngr>
+            <!--stock></stock-->
+            <!--div class="col-3 row-13"><mngr-item></mngr-item></div>
             <div class="col-6 row-13"><mngr element="'mngr-form'" workspace="main"></mngr></div>
-            <div class="col-4 row-13"><mngr-table></mngr-table></div>
+            <div class="col-4 row-13"><mngr-table></mngr-table></div-->
         </div>
         <div ng-show="ui.workspace.underlay.show" class="full">
-            <span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Underlay</i></span>
+            <mngr element="ui.workspace.underlay.component" params="ui.workspace.underlay.params" workspace="underlay"></mngr>
+            <!--span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Underlay</i></span-->
         </div>
     </div>
     <div class="col-13 row-1">

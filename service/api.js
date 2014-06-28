@@ -1,4 +1,4 @@
-angular.module('mngr').factory('api',function(data, models, $filter) {
+angular.module('mngr').factory('api',function(data) {
 
 	var api = {
 
@@ -6,10 +6,10 @@ angular.module('mngr').factory('api',function(data, models, $filter) {
 			data[type].fire.$child(id).$bind(scope, type+id);
 		},
 		create:function(type, model){
-			this.model = model;
+			//this.model = model;
 			//ecodocs takes a reference to firebase and $adds a model.
-			data[type].fire.$add(this.model);
-			this.model[type] = {};
+			data[type].fire.$add(model);
+			//this.model[type] = {};
 		},
 		save:function(type, id){
 			var time = new Date();
@@ -33,96 +33,97 @@ angular.module('mngr').factory('api',function(data, models, $filter) {
 		remove:function(type, id){
 			data[type].fire.$remove(id);
 		},
-		applyFilters: function(filters, data){
-			var result = data;
-			angular.forEach(filters, function(filter, filterIdx){
-				var args = api.filterArgs(filter);
-				if(args){
-					result = $filter('filter')(result, args);
-				}
-			});
-			return result;
-		},
-		// ecodocs: returns the arguments passed to the angular 'filter'
-		filterArgs: function(filter){
-			var args = null;
-			switch(filter.type){
-				case 'text':
-					if(filter.value){
-						args = {};
-						args[filter.model] = filter.value;
-					}
 
-					break;
+        callbackError: function(error){
+        },
+        callbackSuccess: function(result){
+            if(result){
+                if(result.uid){
+                    var account = result;
+                    data.profile = data.loadUserProfile(account);
+                    if(!data.profile){
+                        data.profile.new = true;
 
-				case 'number':
-					if(filter.value || filter.value===0){
-						args = function(item){
-							var result = false;
-							var modelValue = item[filter.model]?item[filter.model]:0;
-							var filterValue = filter.value;
-							if(modelValue){
-								switch(filter.operand){
-									case '<':
-										result = (modelValue <= filterValue);
-										break;
+                        // create from models.users template
+                        if(account.provider.email){
+                            data.profile.email = account.profile.email;
+                        }
+                    }
+                }
+            }
+        },
 
-									case '>':
-										result = (modelValue >= filterValue);
-										break;
+        // logs a user in via the given provider
+        login: function(provider){
+            // handle login request based on provider
+            switch(provider){
+                case 'active':
+                    api.loginActive();
+                    break;
 
-									case '><':
-										if(filter.value2 || filter.value2===0){
-											result = (modelValue >= filterValue && modelValue <= filter.value2);
-										}
-										else{
-											result = (modelValue===filterValue);
-										}
-										break;
+                case 'password':
+                    api.loginPassword(data.user.account.email, data.user.account.password);
+                    break;
 
-									case '=':
-										result = (modelValue===filterValue);
-										break;
+                case 'facebook':
+                case 'twitter':
+                    api.loginProvider(provider);
+                    break;
+            }
+        },
+        // logs in the active user (ie. by cookie)
+        loginActive: function(){
+            data.user.auth.$getCurrentUser().then(api.callbackSuccess, api.callbackError);
+        },
+        // logs in a user by email/password account
+        loginPassword: function(email, password){
+            data.user.auth.$login(email, password).then(api.callbackSuccess, api.callbackError);
+        },
+        // logs in a user by 3rd party provider
+        loginProvider: function(provider){
+            data.user.auth.$login(provider).then(api.callbackSuccess, api.callbackError);
+        },
 
-									default:
-										result = (modelValue===filterValue);
-										break;
-								}
-							}
-							return result;
-						};
-					}
-					break;
+        // logs a user out
+        logout: function(){
 
-				case 'select':
-					args = function(item){
-						var result = false;
-						var modelValue = item[filter.model];
-						if(modelValue){
-							if(angular.isArray(modelValue)){
-								// ecodocs: loop through each selected value (assumes <select multiple>)
-								angular.forEach(filter.value, function(checkValue){
-									if(!result && modelValue.indexOf(checkValue)!==-1){
-										result = true;
-									}
-								});
-							}
-							else{
-								// ecodocs: check if modelValue is any of the selected values (assumes <select multiple>)
-								if(filter.value.indexOf(modelValue)!==-1){
-									result = true;
-								}
-							}
+        },
 
-						}
-						return result;
-					};
-					break;
+        // registers a new user account
+        register: function(){
 
-				// ecodocs: add other filter.types
-			}
-			return args;
-		}
+        },
+
+        // changes a user's password
+        changePassword: function(email, oldPassword, newPassword){
+
+        },
+
+        // recovers a user's password
+        recoverPassword: function(email){
+
+        },
+
+        // creates a user profile for a given account
+        createUserProfile: function(){
+            api.create('users', data.profile);
+        },
+
+        // loads the user profile for a given account
+        loadUserProfile: function(account){
+            if(account.uid){
+
+            }
+        },
+
+        // check if the given email is associated with an existing account
+        userEmailExists: function(email){
+        },
+
+        // check if the given username is associated with an existing account
+        usernameExists: function(username){
+        }
+
 	};
 
 	return api;
