@@ -15,11 +15,19 @@
     <div class="col-13 row-11">
         {{ui.workspaces.main.component}}
         <div ng-show="ui.workspace.overlay.show" class="full">
-            <!-- mngr element="ui.workspace.overlay.component" params="ui.workspace.overlay.params" workspace="overlay"></mngr -->
-            <stock></stock>
+            <mngr
+                    element="ui.workspace.overlay.component"
+                    params="ui.workspace.overlay.params"
+                    workspace="overlay"></mngr >
+            <!--stock></stock-->
         </div>
-        <div class="full" ng-show="ui.workspace.main.show">
-            <mngr element="ui.workspace.main.component" params="ui.workspace.main.params" workspace="main"></mngr>
+        <div
+                class="full"
+                ng-show="ui.workspace.main.show">
+            <mngr
+                    element="ui.workspace.main.component"
+                    params="ui.workspace.main.params"
+                    workspace="main"></mngr>
             <!--stock></stock-->
             <!--div class="col-3 row-13"><mngr-item></mngr-item></div>
             <div class="col-6 row-13"><mngr element="'mngr-form'" workspace="main"></mngr></div>

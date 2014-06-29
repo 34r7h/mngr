@@ -10,14 +10,14 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		],
 		workspace: {
 			overlay: {
-				show: true,
+				show: false,
 				component: '',
                 params: {},
 				view: '',
 				icon:'fa fa-leaf'
 			},
 			main: {
-				show: false,
+				show: true,
 				component: '',
                 params: {},
 				view: '',

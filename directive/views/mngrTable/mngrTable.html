@@ -97,7 +97,7 @@
                         <h3 class="text-center middle-container">
                         <span
                                 ng-if="!column.link"
-                                class="middle-content">
+                                class="middle-content text-center">
                             <span
                                     ng-if="column.display"
                                     class="text-left" >
@@ -127,13 +127,13 @@
                     </td>
                     <td class="col-1 row-1 middle-content">
                         <b
-                                class="middle-content"
+                                class="middle-content text-right"
                                 ng-click="showRemove=!showRemove"
                                 ng-hide="showRemove">
                             [x]
                         </b>
                         <b
-                                class="middle-content"
+                                class="middle-content text-right"
                                 ng-show="showRemove"
                                 ng-click="$parent.api.remove($parent.type,data.$id)">
                             [REMOVE]
