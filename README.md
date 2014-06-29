@@ -98,21 +98,21 @@ Links are created by directives or system-based functions like signing in. Each 
   * specific item
 
 mngr provides the mngrLinkTo filter which can be used to target a link path into a specific workspace and has the following arguments:
-  * input - a template of the link path (ex. events/:id)
+  * input - a template of the link path (ex. `events/:id`)
   * object - the object to pull replacement values from
-  * workspace - the workspace to target the link to
+  * workspace - the workspace to target the link to.
 	
-mngrLinkTo allows for replacement tokens in the link template (ex. :id).  If the object contains a property matching the replacement token, the generated path will replace the token with the value from the object.
+mngrLinkTo allows for replacement tokens in the link template (ex. `:id`).  If the object contains a property matching the replacement token, the generated path will replace the token with the value from the object.
 
 Supported replacement tokens:
-  * ':id' - replaced with object.id
+  * `':id'` - replaced with `object.id`
 
   Example:
-    <a ng-href="{{ 'events/:id | mngrLinkTo:eventObject:'overlay' }}">{{eventObject.name}}</a>
+    `<a ng-href="{{ 'events/:id | mngrLinkTo:eventObject:'overlay' }}">{{eventObject.name}}</a>`
 		
-    If eventObject = {id: '12345', name: 'Foo'}; the filter would generate the following html:
+    If `eventObject = {id: '12345', name: 'Foo'};` the filter would generate the following html:
 		
-    <a href="*?overlay=events/12345">Foo</a>
+    `<a href="*?overlay=events/12345">Foo</a>`
 		
   Note that the '*' in the example generated HTML denotes any location.  mngrLinkTo preserves the existing location and query arguments, overwriting only the argument for the given workspace.
 
