@@ -1,4 +1,4 @@
-angular.module('mngr', ['ngSanitize','ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.utility', 'ionic']);
+angular.module('mngr', ['ngSanitize','ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.utility'/*, 'ionic'*/]);
 
 
 angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
@@ -24,6 +24,7 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 });
 
 angular.module('mngr').run(function($rootScope, data, $firebase, Firebase, $filter) {
+	Firebase.enableLogging(true);
     var dataLoader = {
         // ecodocs: initialize the data
         init: function (types) {

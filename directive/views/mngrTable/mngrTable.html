@@ -5,7 +5,7 @@
         <b>Filters</b>
         <div
                 ng-if="filter.priority > 0"
-                ng-repeat="filter in table.filters" >
+                ng-repeat="filter in table.filters">
             <mngr-input
                     class="full row-2"
                     type="filter.type"
@@ -71,7 +71,7 @@
 
             <tbody class="col-13 row-11 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
                    prev-page="scroll.prevPage()"
-                   back-scroll="false"
+                   back-scroll="true"
                    threshold="30">
                 <tr
                         class="col-13 row-2 middle-container"
