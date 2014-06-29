@@ -105,7 +105,7 @@ mngr provides the mngrLinkTo filter which can be used to target a link path into
 mngrLinkTo allows for replacement tokens in the link template (ex. `:id`).  If the object contains a property matching the replacement token, the generated path will replace the token with the value from the object.
 
 Supported replacement tokens:
-  * `':id'` - replaced with `object.id`
+  `*` `:id` - replaced with `object.id`
 
   Example:
     `<a ng-href="{{ 'events/:id | mngrLinkTo:eventObject:'overlay' }}">{{eventObject.name}}</a>`
@@ -114,7 +114,7 @@ Supported replacement tokens:
 		
     `<a href="*?overlay=events/12345">Foo</a>`
 		
-  Note that the '*' in the example generated HTML denotes any location.  mngrLinkTo preserves the existing location and query arguments, overwriting only the argument for the given workspace.
+  Note that the `*` in the example generated HTML denotes any location.  `mngrLinkTo` preserves the existing location and query arguments, overwriting only the argument for the given workspace.
 
   If 'main' is given as the workspace, mngrLinkTo uses the generated path as the location, all other workspaces appear as query arguments.
 		
