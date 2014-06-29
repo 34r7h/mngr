@@ -69,6 +69,18 @@ For ex. calling the stock directive to the main workspace with a single product 
   * **mngrInput** - modifies/creates a model
   * **mngrContent** - Displays a model
   * **mngrButton** - Displays a button, takes action on a model
+
+### Data service
+====
+For each data type that is loaded, the data service creates an object containing the following 3 items:
+  * ref - Firebase reference object
+  * fire - angularfire's 2-way binded $firebase object, keyed by item id (see https://www.firebase.com/docs/angular/reference.html#firebase).
+  * array - an array of the data, ordered by priority.  Each item in the array has an id property.  Array is provided primarily for use with filters.
+
+An item of type can be therefore be accessed in one of the 3 ways:
+  * data[type].ref.child(id)
+  * data[type].fire.$child(id)
+  * data[type].array[index]
   
 ### Development Pattern (suggested)
   * 1. HTML with dummy data
@@ -84,6 +96,29 @@ Links are created by directives or system-based functions like signing in. Each 
   * workspaces
   * directives
   * specific item
+
+mngr provides the mngrLinkTo filter which can be used to target a link path into a specific workspace and has the following arguments:
+  * input - a template of the link path (ex. events/:id)
+  * object - the object to pull replacement values from
+  * workspace - the workspace to target the link to
+	
+mngrLinkTo allows for replacement tokens in the link template (ex. :id).  If the object contains a property matching the replacement token, the generated path will replace the token with the value from the object.
+
+Supported replacement tokens:
+  * ':id' - replaced with object.id
+
+  Example:
+    <a ng-href="{{ 'events/:id | mngrLinkTo:eventObject:'overlay' }}">{{eventObject.name}}</a>
+		
+    If eventObject = {id: '12345', name: 'Foo'}; the filter would generate the following html:
+		
+    <a href="*?overlay=events/12345">Foo</a>
+		
+  Note that the '*' in the example generated HTML denotes any location.  mngrLinkTo preserves the existing location and query arguments, overwriting only the argument for the given workspace.
+
+  If 'main' is given as the workspace, mngrLinkTo uses the generated path as the location, all other workspaces appear as query arguments.
+		
+
   
 ## Design Guide
 
