@@ -30,13 +30,13 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 if(this.$secure.fire){
                     return this.$secure.fire.$set(value);
                 }
-                return null; // if they don't have root access, they cannot set the root
+                return null; // if they don't have root access, they cannot $set the root
             },
             $update: function(value){
                 if(this.$secure.fire){
                     return this.$secure.fire.$update(value);
                 }
-                return null; // if they don't have root access, they cannot update the root
+                return null; // if they don't have root access, they cannot $update the root
             },
             $getIndex: function(){
                 if(this.$secure.fire){
