@@ -80,12 +80,21 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     return Object.keys(this.children);
                 },
                 addChild: function(value){
-                    // ecodocs: push the child
+                    // allow adding the child if we have root access or the value references the user
+                    if(this.permit() || (type.access.indexOf('user')!==-1 && angular.isArray(value.users) && value.users.indexOf(this.user.$id)!==-1)){
+                        var newID = this.ref.push(value);
+                        this.child(newID);
+                        return newID;
+                    }
                 },
                 removeChild: function(key){
                     var child = this.child(key);
+                    // if we have the child, we have access to remove it
                     if(child){
                         child.$remove();
+                        if(this.children[key]){
+                            delete this.children[key];
+                        }
                     }
                 },
                 saveChild: function(key){
