@@ -68,19 +68,18 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                 }
                 else if(result.new && result.linked){
                     console.log('new user profile...'+JSON.stringify(result));
-                    data.user.profile = result;
                     if(result.confirmed){
                         api.createProfile();
                     }
                 }
                 else if(result.name && result.email){
                     console.log('user profile loaded...'+JSON.stringify(result));
-                    data.user.profile = result;
                     ui.loadState();
                 }
                 else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
                     console.log('new '+result.parent().name()+' record ('+result.name()+')...');
                     if(result.parent().name() === 'users'){
+                        data.user.profile = data['users'].fire.$child(result.name());
                         api.linkProfileAccounts(result.name());
                     }
                 }
@@ -240,18 +239,17 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
         loadProfile: function(account){
             var defer = $q.defer();
             if(account.uid){
-                var profile = null;
                 // ecodocs: do lookup for account.uid -> userID
                 if(data['userAccounts'].fire[account.uid]){
-                    profile = data['users'].fire[data['userAccounts'].fire[account.uid]];
+                    data.user.profile = data['users'].fire.$child(data['userAccounts'].fire[account.uid]);
                 }
 
                 // ecodocs: if no user found for account, get a new profile...
-                if(!profile){
-                    profile = api.newProfile(account);
+                if(!data.user.profile){
+                    data.user.profile = api.newProfile(account);
                 }
 
-                defer.resolve(profile);
+                defer.resolve(data.user.profile);
             }
             else{
                 defer.reject('No account to load uid for');

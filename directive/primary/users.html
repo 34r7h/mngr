@@ -53,7 +53,7 @@
     <button ng-click="api.createProfile()">Complete Registration</button>
     <button ng-click="api.removeAccount(newAccount.email, newAccount.password);data.user.profile=null;newAccount.email='';newAccount.password='';newAccount.passwordConfirm='';action='login'">Cancel</button>
 </div>
-<div ng-show="data.user.profile">
+<div ng-show="data.user.profile.name && data.user.profile.email">
     Logged in as <strong>{{data.user.profile.name}}</strong><br/>
     <button ng-click="api.logout()">Logout</button>
 </div>
