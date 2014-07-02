@@ -6,16 +6,19 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 if(this.$secure.fire){
                     return this.$secure.fire.$add(value);
                 }
+                return this.$secure.addChild(value);
             },
             $remove: function(key){
                 if(this.$secure.fire){
                     return this.$secure.fire.$remove(key);
                 }
+                return this.$secure.removeChild(key);
             },
             $save: function(key){
                 if(this.$secure.fire){
                     return this.$secure.fire.$save(key);
                 }
+                return this.$secure.saveChild(key);
             },
             $child: function(key){
                 if(this.$secure.fire){
@@ -27,11 +30,13 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 if(this.$secure.fire){
                     return this.$secure.fire.$set(value);
                 }
+                return null; // if they don't have root access, they cannot set the root
             },
             $update: function(value){
                 if(this.$secure.fire){
                     return this.$secure.fire.$update(value);
                 }
+                return null; // if they don't have root access, they cannot update the root
             },
             $getIndex: function(){
                 if(this.$secure.fire){
@@ -43,6 +48,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 if(this.$secure.fire){
                     return this.$secure.fire.$transaction(updateFn, applyLocally);
                 }
+                return null; // if they don't have root access, they cannot perform transaction on the root
             },
             $on: function(eventName, handler){
                 if(this.$secure.fire){
@@ -72,6 +78,21 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 },
                 childKeys: function(){
                     return Object.keys(this.children);
+                },
+                addChild: function(value){
+                    // ecodocs: push the child
+                },
+                removeChild: function(key){
+                    var child = this.child(key);
+                    if(child){
+                        child.$remove();
+                    }
+                },
+                saveChild: function(key){
+                    var child = this.child(key);
+                    if(child){
+                        child.$save();
+                    }
                 },
                 loadForUser: function(){
                     // loads all children of <type> that user knows about (ie. id's listed in user/<type>)
