@@ -23,8 +23,8 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 
 });
 
-angular.module('mngr').run(function($rootScope, data, $firebase, Firebase, $filter) {
-	Firebase.enableLogging(true);
+angular.module('mngr').run(function($rootScope, api, data, $firebase, Firebase, $filter, mngrSecureFirebase) {
+	//Firebase.enableLogging(true);
     var dataLoader = {
         // ecodocs: initialize the data
         init: function (types) {
@@ -86,6 +86,26 @@ angular.module('mngr').run(function($rootScope, data, $firebase, Firebase, $filt
         'settings',
         'roles'
     ]);
+
+    api.login('active');
+
+    var up = $firebase(new Firebase('https://mngr.firebaseio.com/users/-JQZB3Pmi-yyABRG5x7B'));
+    up.$on('loaded', function(){
+        var securityTest = mngrSecureFirebase({name: 'test', access: ['customer', 'user']}, up);
+
+        var testData = securityTest.$child('jibba');
+        if(testData){
+            console.log('%cUser knows, waiting for data... '+JSON.stringify(testData), 'background: #000; color: #CF0');
+            testData.$on('loaded', function(){
+                console.log('%cGranted! '+JSON.stringify(testData), 'background: #000; color: #0F0');
+            });
+        }
+        else{
+            console.log('%cDenied!', 'background: #000; color: #F00');
+        }
+
+    });
+
 
 
 
