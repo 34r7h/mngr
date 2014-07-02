@@ -73,7 +73,12 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 child: function(key){
                     if(this.permit(key)){
                         if(!this.children[key]){
-                            this.children[key] = $firebase(this.ref.child(key));
+                            var loadedChild = $firebase(this.ref.child(key));
+                            this.children[key] = loadedChild;
+                            loadedChild.$on('change', function(){
+                                // bubble the child's change event
+                                mngrSecureFirebase.$secure.handleEvent('change'); // ecodocs: angularfire event
+                            });
                         }
                         return this.children[key];
                     }
@@ -104,6 +109,21 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     var child = this.child(key);
                     if(child){
                         child.$save();
+                    }
+                },
+                handleEvent: function(eventName, arg1, arg2){
+                    if(this.eventHandlers[eventName]){
+                        angular.forEach(this.eventHandlers[eventName], function(handler){
+                            if(angular.isDefined(arg1) && angular.isDefined(arg2)){
+                                handler(arg1, arg2);
+                            }
+                            else if(angular.isDefined(arg1)){
+                                handler(arg1);
+                            }
+                            else{
+                                handler();
+                            }
+                        });
                     }
                 },
                 addEventHandler: function(eventName, handler){
@@ -143,6 +163,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                                 mngrSecureFirebase.$secure.child(key);
                             }
                         });
+                        this.handleEvent('loaded'); // ecodocs: angularfire event
                     }
                 },
                 permit: function(key){
@@ -204,6 +225,25 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
         else{
             // no root access, load what we can for the user
             mngrSecureFirebase.$secure.loadForUser();
+
+            // ecodocs: how do we handle changes to the user's roles and data type lists
+
+            // ecodocs: need to test and develop handling of Firebase events for non-root accessed data types
+            mngrSecureFirebase.$secure.ref.on('value', function(dataSnapshot){
+                mngrSecureFirebase.$secure.handleEvent('value', dataSnapshot);
+            });
+            mngrSecureFirebase.$secure.ref.on('child_added', function(childSnapshot, prevChildName){
+                mngrSecureFirebase.$secure.handleEvent('child_added', childSnapshot, prevChildName);
+            });
+            mngrSecureFirebase.$secure.ref.on('child_removed', function(oldChildSnapshot){
+                mngrSecureFirebase.$secure.handleEvent('child_removed', oldChildSnapshot);
+            });
+            mngrSecureFirebase.$secure.ref.on('child_changed', function(childSnapshot, prevChildName){
+                mngrSecureFirebase.$secure.handleEvent('child_changed', childSnapshot, prevChildName);
+            });
+            mngrSecureFirebase.$secure.ref.on('child_moved', function(childSnapshot, prevChildName){
+                mngrSecureFirebase.$secure.handleEvent('child_moved', childSnapshot, prevChildName);
+            });
         }
 
         return mngrSecureFirebase;
