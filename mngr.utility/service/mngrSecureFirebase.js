@@ -54,11 +54,13 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 if(this.$secure.fire){
                     return this.$secure.fire.$on(eventName, handler);
                 }
+                this.$secure.addEventHandler(eventName, handler);
             },
             $off: function(eventName, handler){
                 if(this.$secure.fire){
                     return this.$secure.fire.$off(eventName, handler);
                 }
+                this.$secure.removeEventHandler(eventName, handler);
             },
 
             $secure: {
@@ -67,6 +69,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 children: {},   // object of child $firebase()'s for user-level access
                 type: type,
                 user: user,
+                eventHandlers: {},
                 child: function(key){
                     if(this.permit(key)){
                         if(!this.children[key]){
@@ -80,7 +83,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     return Object.keys(this.children);
                 },
                 addChild: function(value){
-                    // allow adding the child if we have root access or the value references the user
+                    // allow adding the child if we have root access or the value's users list contains the user
                     if(this.permit() || (type.access.indexOf('user')!==-1 && angular.isArray(value.users) && value.users.indexOf(this.user.$id)!==-1)){
                         var newID = this.ref.push(value);
                         this.child(newID);
@@ -101,6 +104,35 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     var child = this.child(key);
                     if(child){
                         child.$save();
+                    }
+                },
+                addEventHandler: function(eventName, handler){
+                    if(!this.eventHandlers[eventName]){
+                        this.eventHandlers[eventName] = [];
+                    }
+                    // add the handler if it does not already exist
+                    if(this.eventHandlers[eventName].indexOf(handler)===-1){
+                        this.eventHandlers[eventName].push(handler);
+                    }
+                },
+                removeEventHandler: function(eventName, handler){
+                    if(this.eventHandlers[eventName]){
+                        if(angular.isDefined(handler)){
+                            var handlerIndex = this.eventHandlers[eventName].indexOf(handler);
+                            if(handlerIndex!==-1){
+                                // if the specific handler is found, remove it
+                                this.eventHandlers[eventName].splice(handlerIndex, 1);
+
+                                if(this.eventHandlers[eventName].length===0){
+                                    // no handlers left for this eventName
+                                    delete this.eventHandlers[eventName];
+                                }
+                            }
+                        }
+                        else{
+                            // no handler specified, remove all handlers for this eventName
+                            delete this.eventHandlers[eventName];
+                        }
                     }
                 },
                 loadForUser: function(){
