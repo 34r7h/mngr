@@ -7,28 +7,40 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 		},
 		create:function(type, model){
 			//this.model = model;
+/**            var defer = $q.defer();
 			//ecodocs takes a reference to firebase and $adds a model.
-			data[type].fire.$add(model);
+			data[type].fire.$add(model).then(function(newRef){
+                defer.resolve({created: newRef.name(), type: type});
+            }, api.callbackError);
 			//this.model[type] = {};
+            return defer.promise;*/
+            return data[type].fire.$add(model);
 		},
 		save:function(type, id){
 			var time = new Date();
 			console.log('At '+time+', saving '+type+ ': '+id);
+            data[type].fire[id]['updated'] = time; // does the same thing, but with only 1 firebase call
 			data[type].fire.$save(id);
-			data[type].fire.$child(id).$child('updated').$set(time);
+			//data[type].fire.$child(id).$child('updated').$set(time);
 
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
-			var object={};
+			/**var object={};
 			object[id] = model;
 			data[type].fire.$set(object);
+             // that approach would overwrite the entire data[type] table, leaving only the id:model record
+             */
+            data[type].fire.$child(id).$set(model);
 		},
 		update:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
-			var object={};
+			/**var object={};
 			object[id] = model;
 			data[type].fire.$update(object);
+             // that approach would overwrite the full data[type][id] record rather than updating it
+             */
+            data[type].fire.$child(id).update(model);
 		},
 		remove:function(type, id){
 			data[type].fire.$remove(id);
@@ -72,12 +84,25 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                     data.user.profile = result;
                     ui.loadState();
                 }
+                /**else if(result.created){
+                    switch(result.type){
+                        case 'users':
+                            api.linkProfileAccounts(result.created);
+                            break;
+                    }
+                }*/
+                else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
+                    if(result.parent().name() === 'users'){
+                        api.linkProfileAccounts(result.name());
+                    }
+                }
             }
         },
 
         // logs a user in via the given provider
         login: function(provider, email, password){
             // handle login request based on provider
+            console.log('logging in \''+provider+'\'...');
             switch(provider){
                 case 'active':
                     api.loginActive();
@@ -164,8 +189,69 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
             }
             // ecodocs: create the user profile
             console.log('createProfile:'+JSON.stringify(data.user.profile));
+
             // ecodocs: create the emails entry
-            api.create('users', data.user.profile);
+            api.create('users', data.user.profile).then(api.callbackSuccess, api.callbackError);
+        },
+        linkProfileAccounts: function(userID){
+            console.log('linkProfileAccounts:'+userID);
+            if(data['users'].fire[userID]['linked']){
+                angular.forEach(data['users'].fire[userID]['linked'], function(linked, uid){
+                    if(linked){
+                        api.set('userAccounts', uid, userID);
+
+                        // ecodocs: another way...
+                        //data['userAccounts'].fire[uid] = userID;
+                        //api.save('userAccounts', uid);
+                    }
+                });
+
+            }
+
+        },
+        newProfile: function(account){
+            var newProfile = null;
+            if(account.uid){
+                newProfile = {
+                    new: true,
+                    confirmed: false,   // confirmed===true when the user has confirmed their email address
+                    linked: {}
+                };
+
+                newProfile.linked[account.uid] = true;
+
+                if(account.email){
+                    newProfile.email = account.email;
+                }
+                else if(account.thirdPartyUserData && account.thirdPartyUserData.email){
+                    newProfile.email = account.thirdPartyUserData.email;
+                }
+
+                // set name
+                if(account.displayName){
+                    newProfile.name = account.displayName;
+                }
+                else if(newProfile.email){
+                    // no display name, parse it from the email
+                    var emailParse = newProfile.email.match(/^(\w+)@/);
+                    if(emailParse && emailParse.length > 1){
+                        newProfile.name = emailParse[1];
+                    }
+                }
+
+                // email/password accounts do not need further confirmation
+                if(account.provider==='password' && newProfile.email){
+                    newProfile.confirmed = true;
+                }
+
+                // set default values for all user profile fields
+                angular.forEach(models['users'], function(field){
+                    if(angular.isUndefined(newProfile[field.name])){
+                        newProfile[field.name] = field.value;
+                    }
+                });
+            }
+            return newProfile;
         },
 
         // loads the user profile for a given account
@@ -174,52 +260,14 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
             if(account.uid){
                 var profile = null;
                 // ecodocs: do lookup for account.uid -> userID
-                // ecodocs: if only it was this easy...
-                //console.log('all users:'+JSON.stringify(data['users'].array));
-                //var user = $filter('filter')(data['users'].array, function(item){return (angular.isArray(item.linked) && item.linked.indexOf(account.uid)!==-1);});
-                //console.log('user for '+account.uid+':'+JSON.stringify(user));
+                if(data['userAccounts'].fire[account.uid]){
+                    profile = data['users'].fire[data['userAccounts'].fire[account.uid]];
+                    console.log('profile found:'+JSON.stringify(profile));
+                }
 
                 // ecodocs: if no user found for account, create new profile...
                 if(!profile){
-                    var newProfile = {
-                        new: true,
-                        confirmed: false,   // confirmed===true when the user has confirmed their email address
-                        linked: {}
-                    };
-
-                    newProfile.linked[account.uid] = true;
-
-                    if(account.email){
-                        newProfile.email = account.email;
-                    }
-                    else if(account.thirdPartyUserData && account.thirdPartyUserData.email){
-                        newProfile.email = account.thirdPartyUserData.email;
-                    }
-
-                    // set name
-                    if(account.displayName){
-                        newProfile.name = account.displayName;
-                    }
-                    else if(newProfile.email){
-                        // no display name, parse it from the email
-                        var emailParse = newProfile.email.match(/^(\w+)@/);
-                        if(emailParse && emailParse.length > 1){
-                            newProfile.name = emailParse[1];
-                        }
-                    }
-
-                    // email/password accounts do not need further confirmation
-                    if(account.provider==='password' && newProfile.email){
-                        newProfile.confirmed = true;
-                    }
-
-                    // set default values for all user profile fields
-                    angular.forEach(models['users'], function(field){
-                        if(angular.isUndefined(newProfile[field.name])){
-                            newProfile[field.name] = field.value;
-                        }
-                    });
-                    profile = newProfile;
+                    profile = api.newProfile(account);
                 }
 
                 defer.resolve(profile);
