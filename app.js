@@ -23,7 +23,7 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 
 });
 
-angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Firebase, $filter, mngrSecureFirebase) {
+angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Firebase, $filter) {
 	//Firebase.enableLogging(true);
     var dataLoader = {
         // ecodocs: initialize the data
@@ -85,7 +85,11 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
                     arraysInitted[type] = arrayInitted.promise;
                     data[type].fire.$on('value', function(){
                         dataLoader.fireToArray(type);
-                        arrayInitted.resolve(true);
+                        if(arrayInitted){
+                            // only resolve the first time (when initializing)
+                            arrayInitted.resolve(true);
+                            arrayInitted = null;
+                        }
                     });
                 }
             });
@@ -120,9 +124,10 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
     });
 
     // ecodocs: mngrSecureFirebase testing...
-    var up = $firebase(new Firebase('https://mngr.firebaseio.com/users/-JQZB3Pmi-yyABRG5x7B'));
+/**    var up = $firebase(new Firebase('https://mngr.firebaseio.com/users/-JQZB3Pmi-yyABRG5x7B'));
     up.$on('loaded', function(){
         var securityTest = mngrSecureFirebase({name: 'test', access: ['customer', 'user']}, up);
+        var publicTest = mngrSecureFirebase({name: 'test', access: ['public']}, up);
 
         var testData = securityTest.$child('jibba');
         if(testData){
@@ -135,8 +140,62 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
             console.log('%cDenied!', 'background: #000; color: #F00');
         }
 
-    });
+        var publicData = publicTest.$child('jibba');
+        if(publicData){
+            console.log('%cUser knows, waiting for data... '+JSON.stringify(publicData), 'background: #555; color: #CF0');
+            publicData.$on('loaded', function(){
+                console.log('%cGranted! '+JSON.stringify(publicData), 'background: #555; color: #0F0');
+            });
+        }
+        else{
+            console.log('%cDenied!', 'background: #555; color: #F00');
+        }
 
+        // events on data root
+        securityTest.$on('loaded', function(){
+            console.log('%cSecure Root: loaded', 'background: #000; color: #0CF');
+        });
+        securityTest.$on('change', function(){
+            console.log('%cSecure Root: change', 'background: #000; color: #0CF');
+        });
+        securityTest.$on('value', function(snapshot){
+            console.log('%cSecure Root: value:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #000; color: #0CF');
+        });
+
+        publicTest.$on('loaded', function(){
+            console.log('%cPublic Root: loaded', 'background: #555; color: #0CF');
+        });
+        publicTest.$on('change', function(){
+            console.log('%cPublic Root: change', 'background: #555; color: #0CF');
+        });
+        publicTest.$on('value', function(snapshot){
+            console.log('%cPublic Root: value:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #555; color: #0CF');
+        });
+
+
+        // events on a $child
+        testData.$on('loaded', function(){
+            console.log('%cSecure testData: loaded', 'background: #000; color: #09F');
+        });
+        testData.$on('change', function(){
+            console.log('%cSecure testData: change', 'background: #000; color: #09F');
+        });
+        testData.$on('value', function(snapshot){
+            console.log('%cSecure testData: value: '+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #000; color: #09F');
+        });
+
+        publicData.$on('loaded', function(){
+            console.log('%cSecure publicData: loaded', 'background: #555; color: #09F');
+        });
+        publicData.$on('change', function(){
+            console.log('%cSecure publicData: change', 'background: #555; color: #09F');
+        });
+        publicData.$on('value', function(snapshot){
+            console.log('%cSecure publicData: value: '+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #555; color: #09F');
+        });
+
+    });
+*/
 
 
 

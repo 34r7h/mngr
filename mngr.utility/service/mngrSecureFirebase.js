@@ -79,6 +79,10 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                                 // bubble the child's change event
                                 mngrSecureFirebase.$secure.handleEvent('change'); // ecodocs: angularfire event
                             });
+                            loadedChild.$on('value', function(snapshot){
+                                // bubble the child's value event
+                                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                            });
                         }
                         return this.children[key];
                     }
@@ -110,6 +114,25 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     if(child){
                         child.$save();
                     }
+                },
+                snapshot: function(){
+                    // generate a snapshot of the secured data
+                    var snap = {name: this.type.name, value: {}};
+                    angular.forEach(this.children, function(child, key){
+                        if(child){
+                            var childIndex =child.$getIndex();
+                            if(childIndex.length){
+                                snap.value[key] = {};
+                                angular.forEach(childIndex, function(childKey){
+                                    snap.value[key][childKey] = child[childKey];
+                                });
+                            }
+                            else if(angular.isDefined(child.$value)){
+                                snap.value[key] = child.$value;
+                            }
+                        }
+                    });
+                    return {snapshot: snap};
                 },
                 handleEvent: function(eventName, arg1, arg2){
                     if(this.eventHandlers[eventName]){
@@ -163,6 +186,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                                 mngrSecureFirebase.$secure.child(key);
                             }
                         });
+                        console.log('%cSecure \''+this.type.name+'\' data loaded for \''+user.name+'\'', 'background: #000; color: #CF0');
                         this.handleEvent('loaded'); // ecodocs: angularfire event
                     }
                 },
@@ -219,10 +243,12 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // load the data based on user's access level
         if(mngrSecureFirebase.$secure.permit()){
+            console.log('%cRoot on \''+mngrSecureFirebase.$secure.type.name+'\'...', 'background: #555; color: #F90');
             // create the $firebase object if the user has root access for this type
             mngrSecureFirebase.$secure.fire = $firebase(mngrSecureFirebase.$secure.ref);
         }
         else{
+            console.log('%cRecords on \''+mngrSecureFirebase.$secure.type.name+'\'...', 'background: #000; color: #F90');
             // no root access, load what we can for the user
             mngrSecureFirebase.$secure.loadForUser();
 
@@ -230,7 +256,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
             // ecodocs: need to test and develop handling of Firebase events for non-root accessed data types
             mngrSecureFirebase.$secure.ref.on('value', function(dataSnapshot){
-                mngrSecureFirebase.$secure.handleEvent('value', dataSnapshot);
+                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
             });
             mngrSecureFirebase.$secure.ref.on('child_added', function(childSnapshot, prevChildName){
                 mngrSecureFirebase.$secure.handleEvent('child_added', childSnapshot, prevChildName);
