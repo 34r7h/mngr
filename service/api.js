@@ -73,12 +73,13 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                         api.createProfile();
                     }
                 }
-                else if(result.username && result.email){
+                else if(result.name && result.email){
                     console.log('user profile loaded...'+JSON.stringify(result));
                     data.user.profile = result;
                     ui.loadState();
                 }
                 else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
+                    console.log('new '+result.parent().name()+' record ('+result.name()+')...');
                     if(result.parent().name() === 'users'){
                         api.linkProfileAccounts(result.name());
                     }
@@ -198,9 +199,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                     confirmed: false,   // confirmed===true when the user has confirmed their email address
                     linked: {}
                 };
-
                 newProfile.linked[account.uid] = true;
 
+                // set email
                 if(account.email){
                     newProfile.email = account.email;
                 }
@@ -220,7 +221,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                     }
                 }
 
-                // email/password accounts do not need further confirmation
+                // auto-confirm email/password accounts
                 if(account.provider==='password' && newProfile.email){
                     newProfile.confirmed = true;
                 }
@@ -243,10 +244,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                 // ecodocs: do lookup for account.uid -> userID
                 if(data['userAccounts'].fire[account.uid]){
                     profile = data['users'].fire[data['userAccounts'].fire[account.uid]];
-                    console.log('profile found:'+JSON.stringify(profile));
                 }
 
-                // ecodocs: if no user found for account, create new profile...
+                // ecodocs: if no user found for account, get a new profile...
                 if(!profile){
                     profile = api.newProfile(account);
                 }
@@ -261,6 +261,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 
         // check if the given email is associated with an existing account
         userEmailExists: function(email){
+            // ecodocs: need to implement this
             return false;
         }
 
