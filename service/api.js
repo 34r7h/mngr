@@ -7,14 +7,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 		},
 		create:function(type, model){
 			//this.model = model;
-/**            var defer = $q.defer();
 			//ecodocs takes a reference to firebase and $adds a model.
-			data[type].fire.$add(model).then(function(newRef){
-                defer.resolve({created: newRef.name(), type: type});
-            }, api.callbackError);
-			//this.model[type] = {};
-            return defer.promise;*/
-            return data[type].fire.$add(model);
+            //this.model[type] = {};
+            return data[type].fire.$add(model); // return the $add promise
 		},
 		save:function(type, id){
 			var time = new Date();
@@ -22,7 +17,6 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
             data[type].fire[id]['updated'] = time; // does the same thing, but with only 1 firebase call
 			data[type].fire.$save(id);
 			//data[type].fire.$child(id).$child('updated').$set(time);
-
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -84,13 +78,6 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                     data.user.profile = result;
                     ui.loadState();
                 }
-                /**else if(result.created){
-                    switch(result.type){
-                        case 'users':
-                            api.linkProfileAccounts(result.created);
-                            break;
-                    }
-                }*/
                 else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
                     if(result.parent().name() === 'users'){
                         api.linkProfileAccounts(result.name());
@@ -199,15 +186,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                 angular.forEach(data['users'].fire[userID]['linked'], function(linked, uid){
                     if(linked){
                         api.set('userAccounts', uid, userID);
-
-                        // ecodocs: another way...
-                        //data['userAccounts'].fire[uid] = userID;
-                        //api.save('userAccounts', uid);
                     }
                 });
-
             }
-
         },
         newProfile: function(account){
             var newProfile = null;
