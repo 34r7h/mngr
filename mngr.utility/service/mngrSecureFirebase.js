@@ -3,66 +3,66 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
     function MngrSecureFirebase(type, user){
         var mngrSecureFirebase = {
             $add: function(value){
-                if(this.$security.fire){
-                    return this.$security.fire.$add(value);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$add(value);
                 }
             },
             $remove: function(key){
-                if(this.$security.fire){
-                    return this.$security.fire.$remove(key);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$remove(key);
                 }
             },
             $save: function(key){
-                if(this.$security.fire){
-                    return this.$security.fire.$save(key);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$save(key);
                 }
             },
             $child: function(key){
-                if(this.$security.fire){
-                    return this.$security.fire.$child(key);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$child(key);
                 }
-                return this.$security.getChild(key);
+                return this.$secure.child(key);
             },
             $set: function(value){
-                if(this.$security.fire){
-                    return this.$security.fire.$set(value);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$set(value);
                 }
             },
             $update: function(value){
-                if(this.$security.fire){
-                    return this.$security.fire.$update(value);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$update(value);
                 }
             },
             $getIndex: function(){
-                if(this.$security.fire){
-                    return this.$security.fire.$getIndex();
+                if(this.$secure.fire){
+                    return this.$secure.fire.$getIndex();
                 }
-                return this.$security.getChildKeys();
+                return this.$secure.childKeys();
             },
             $transaction: function(updateFn, applyLocally){
-                if(this.$security.fire){
-                    return this.$security.fire.$transaction(updateFn, applyLocally);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$transaction(updateFn, applyLocally);
                 }
             },
             $on: function(eventName, handler){
-                if(this.$security.fire){
-                    return this.$security.fire.$on(eventName, handler);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$on(eventName, handler);
                 }
             },
             $off: function(eventName, handler){
-                if(this.$security.fire){
-                    return this.$security.fire.$off(eventName, handler);
+                if(this.$secure.fire){
+                    return this.$secure.fire.$off(eventName, handler);
                 }
             },
 
-            $security: {
+            $secure: {
                 ref: null,  // Firebase reference
                 fire: null, // null unless a user has root access for this type (ie. public or role-access)
                 children: {},   // object of child $firebase()'s for user-level access
                 type: type,
                 user: user,
-                getChild: function(key){
-                    if(this.allowed(key)){
+                child: function(key){
+                    if(this.permit(key)){
                         if(!this.children[key]){
                             this.children[key] = $firebase(this.ref.child(key));
                         }
@@ -70,7 +70,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     }
                     return null;
                 },
-                getChildKeys: function(){
+                childKeys: function(){
                     return Object.keys(this.children);
                 },
                 loadForUser: function(){
@@ -78,12 +78,12 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     if(this.type.access.indexOf('user')!==-1 && angular.isObject(this.user[this.type.name])){
                         angular.forEach(this.user[this.type.name], function(allowed, key){
                             if(allowed){
-                                mngrSecureFirebase.$security.getChild(key);
+                                mngrSecureFirebase.$secure.child(key);
                             }
                         });
                     }
                 },
-                allowed: function(key){
+                permit: function(key){
                     var result = false;
                     if(this.publicAllowed()){
                         result = true;
@@ -91,10 +91,10 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     else{
                         angular.forEach(this.type.access, function(access){
                             if(!result){
-                                if(access === 'user' && mngrSecureFirebase.$security.userAllowed(key)){
+                                if(access === 'user' && mngrSecureFirebase.$secure.userAllowed(key)){
                                     result = true;
                                 }
-                                else if(access !== 'public' && mngrSecureFirebase.$security.roleAllowed(access)){
+                                else if(access !== 'public' && mngrSecureFirebase.$secure.roleAllowed(access)){
                                     result = true;
                                 }
                             }
@@ -112,7 +112,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     var result = false;
                     // user-level access can never be granted unless there is a key associated
                     if(angular.isDefined(key)){
-                        // they have access if the key is found in the user's list of entries for the type
+                        // user has access if key is found in their list of entries for the type
                         // this is client-side security only.  server-side security rules must also be set up to avoid client-side spoofing
                         // when proper server-side security rules are set, any spoof attempts would return a firebase "permission denied"
                         if(angular.isObject(this.user[this.type.name]) && this.user[this.type.name][key]){
@@ -128,20 +128,20 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // ensure type.access is always an array (for ease of use)
         if(angular.isString(type.access)){
-            mngrSecureFirebase.$security.type.access = [type.access];
+            mngrSecureFirebase.$secure.type.access = [type.access];
         }
 
         // get a reference to the type's root
-        mngrSecureFirebase.$security.ref = new Firebase("https://mngr.firebaseio.com/"+type.name);
+        mngrSecureFirebase.$secure.ref = new Firebase("https://mngr.firebaseio.com/"+type.name);
 
         // load the data based on user's access level
-        if(mngrSecureFirebase.$security.allowed()){
+        if(mngrSecureFirebase.$secure.permit()){
             // create the $firebase object if the user has root access for this type
-            mngrSecureFirebase.$security.fire = $firebase(mngrSecureFirebase.$security.ref);
+            mngrSecureFirebase.$secure.fire = $firebase(mngrSecureFirebase.$secure.ref);
         }
         else{
             // no root access, load what we can for the user
-            mngrSecureFirebase.$security.loadForUser();
+            mngrSecureFirebase.$secure.loadForUser();
         }
 
         return mngrSecureFirebase;
