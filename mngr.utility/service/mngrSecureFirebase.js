@@ -208,7 +208,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         });
                         $q.all(dataLoaded).then(function(results){
                             // all children are securely loaded for the user
-                            console.log('%Secure \''+mngrSecureFirebase.$secure.type.name+'\' loaded and secured for \''+mngrSecureFirebase.$secure.user.name+'\'', 'background: #999; color: #D0E');
+                            console.log('%cSecure \''+mngrSecureFirebase.$secure.type.name+'\' loaded and secured for \''+mngrSecureFirebase.$secure.user.name+'\'', 'background: #999; color: #D0E');
                             $timeout(function(){
                                 // timeout so final change and child_added events get fired before value and loaded (consistency with stock Firebase event orders)
                                 mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
