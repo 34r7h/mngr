@@ -103,7 +103,7 @@ module.exports = function (grunt) {
 			},
 			ipad: {
 				files: [
-					{expand:true, cwd:'dist/', src:['**'], dest: '~/apps/ionic/www/'}
+					{expand:true, cwd:'dist/', src:['**'], dest: '../ionic/www/'}
 					//{src: ['bower_components/font-awesome/fonts/**'], dest: '..ionic/www/',filter:'isFile',expand:true}
 					//{src: ['bower_components/angular-ui-utils/ui-utils-ieshiv.min.js'], dest: 'dist/'},
 					//{src: ['bower_components/select2/*.png','bower_components/select2/*.gif'], dest:'dist/css/',flatten:true,expand:true},
@@ -218,7 +218,7 @@ module.exports = function (grunt) {
 			},
 
 			ios: {
-				cmd: 'cd ~/apps/ionic && ionic run ios'
+				cmd: 'cd ../apps/ionic && ionic run ios'
 			},
 			github:{
 				cmd: 'git add --u && git commit -m magic'
