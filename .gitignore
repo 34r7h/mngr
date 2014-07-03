@@ -1,6 +1,6 @@
 bower_components/
 node_modules/
-dist
+dist/
 .bowercc
 .editorconfig
 .npmignore
