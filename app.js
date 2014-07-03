@@ -23,7 +23,7 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 
 });
 
-angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Firebase, $filter) {
+angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Firebase, $filter, mngrSecureFirebase) {
 	//Firebase.enableLogging(true);
     var dataLoader = {
         // ecodocs: initialize the data
@@ -124,7 +124,7 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
     });
 
     // ecodocs: mngrSecureFirebase testing...
-/**    var up = $firebase(new Firebase('https://mngr.firebaseio.com/users/-JQZB3Pmi-yyABRG5x7B'));
+    var up = $firebase(new Firebase('https://mngr.firebaseio.com/users/-JQZB3Pmi-yyABRG5x7B'));
     up.$on('loaded', function(){
         var securityTest = mngrSecureFirebase({name: 'test', access: ['customer', 'user']}, up);
         var publicTest = mngrSecureFirebase({name: 'test', access: ['public']}, up);
@@ -161,6 +161,18 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
         securityTest.$on('value', function(snapshot){
             console.log('%cSecure Root: value:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #000; color: #0CF');
         });
+        securityTest.$on('child_added', function(snapshot){
+            console.log('%cSecure Root: child_added:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+snapshot.prevChild:'null?'), 'background: #000; color: #0CF');
+        });
+        securityTest.$on('child_removed', function(snapshot){
+            console.log('%cSecure Root: child_removed:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name:'null?'), 'background: #000; color: #0CF');
+        });
+        securityTest.$on('child_changed', function(snapshot){
+            console.log('%cSecure Root: child_changed:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+snapshot.prevChild:'null?'), 'background: #000; color: #0CF');
+        });
+        securityTest.$on('child_moved', function(snapshot){
+            console.log('%cSecure Root: child_moved:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+snapshot.prevChild:'null?'), 'background: #000; color: #0CF');
+        });
 
         publicTest.$on('loaded', function(){
             console.log('%cPublic Root: loaded', 'background: #555; color: #0CF');
@@ -171,9 +183,22 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
         publicTest.$on('value', function(snapshot){
             console.log('%cPublic Root: value:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #555; color: #0CF');
         });
+        publicTest.$on('child_added', function(snapshot){
+            console.log('%cPublic Root: child_added:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+snapshot.prevChild:'null?'), 'background: #555; color: #0CF');
+        });
+        publicTest.$on('child_removed', function(snapshot){
+            console.log('%cPublic Root: child_removed:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name:'null?'), 'background: #555; color: #0CF');
+        });
+        publicTest.$on('child_changed', function(snapshot){
+            console.log('%cPublic Root: child_changed:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+snapshot.prevChild:'null?'), 'background: #555; color: #0CF');
+        });
+        publicTest.$on('child_moved', function(snapshot){
+            console.log('%cPublic Root: child_moved:'+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+snapshot.prevChild:'null?'), 'background: #555; color: #0CF');
+        });
 
 
         // events on a $child
+        /**
         testData.$on('loaded', function(){
             console.log('%cSecure testData: loaded', 'background: #000; color: #09F');
         });
@@ -193,9 +218,8 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
         publicData.$on('value', function(snapshot){
             console.log('%cSecure publicData: value: '+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #555; color: #09F');
         });
-
+        */
     });
-*/
 
 
 

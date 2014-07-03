@@ -1,4 +1,4 @@
-angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $firebase) {
+angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $firebase, $q, $timeout) {
     // secured replica of $firebase - provides same interface as $firebase() object
     function MngrSecureFirebase(type, user){
         var mngrSecureFirebase = {
@@ -70,19 +70,11 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 type: type,
                 user: user,
                 eventHandlers: {},
+                loading: false,
                 child: function(key){
                     if(this.permit(key)){
                         if(!this.children[key]){
-                            var loadedChild = $firebase(this.ref.child(key));
-                            this.children[key] = loadedChild;
-                            loadedChild.$on('change', function(){
-                                // bubble the child's change event
-                                mngrSecureFirebase.$secure.handleEvent('change'); // ecodocs: angularfire event
-                            });
-                            loadedChild.$on('value', function(snapshot){
-                                // bubble the child's value event
-                                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
-                            });
+                            this.children[key] = $firebase(this.ref.child(key));
                         }
                         return this.children[key];
                     }
@@ -104,9 +96,6 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     // if we have the child, we have access to remove it
                     if(child){
                         child.$remove();
-                        if(this.children[key]){
-                            delete this.children[key];
-                        }
                     }
                 },
                 saveChild: function(key){
@@ -115,24 +104,48 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         child.$save();
                     }
                 },
-                snapshot: function(){
+                snapshot: function(key, prevChild){
                     // generate a snapshot of the secured data
-                    var snap = {name: this.type.name, value: {}};
-                    angular.forEach(this.children, function(child, key){
-                        if(child){
-                            var childIndex =child.$getIndex();
-                            if(childIndex.length){
-                                snap.value[key] = {};
-                                angular.forEach(childIndex, function(childKey){
-                                    snap.value[key][childKey] = child[childKey];
-                                });
+                    var result = {snapshot: null};
+                    if(angular.isUndefined(key)){
+                        // no child key specified, generate snapshot of all children
+                        result.snapshot = {name: this.type.name, value: {}};
+                        angular.forEach(this.children, function(child, key){
+                            if(child){
+                                result.snapshot.value[key] = mngrSecureFirebase.$secure.snapshotValue(child);
                             }
-                            else if(angular.isDefined(child.$value)){
-                                snap.value[key] = child.$value;
+                        });
+                    }
+                    else if(this.permit(key)){
+                        // snapshot for a specific child
+                        var child = this.child(key);
+                        if(child){
+                            result.snapshot = {name: key, value: mngrSecureFirebase.$secure.snapshotValue(child)};
+                            if(angular.isDefined(prevChild) && this.permit(prevChild)){
+                                result.prevChild = prevChild;
                             }
                         }
-                    });
-                    return {snapshot: snap};
+                    }
+                    return result;
+                },
+                snapshotValue: function(child){
+                    // generates the value for a snapshot of a single child
+                    var snapshotValue = null;
+                    if(child){
+                        var childIndex = child.$getIndex();
+                        if(childIndex.length){
+                            // handle child with descendants
+                            snapshotValue = {};
+                            angular.forEach(childIndex, function(childKey){
+                                snapshotValue[childKey] = child[childKey];
+                            });
+                        }
+                        else if(angular.isDefined(child.$value)){
+                            // handle child with literal value
+                            snapshotValue = child.$value;
+                        }
+                    }
+                    return snapshotValue;
                 },
                 handleEvent: function(eventName, arg1, arg2){
                     if(this.eventHandlers[eventName]){
@@ -181,13 +194,28 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 loadForUser: function(){
                     // loads all children of <type> that user knows about (ie. id's listed in user/<type>)
                     if(this.type.access.indexOf('user')!==-1 && angular.isObject(this.user[this.type.name])){
+                        var dataLoaded = {};
+                        mngrSecureFirebase.$secure.loading = true;
                         angular.forEach(this.user[this.type.name], function(allowed, key){
                             if(allowed){
-                                mngrSecureFirebase.$secure.child(key);
+                                var dataLoader = $q.defer();
+                                dataLoaded[key] = dataLoader.promise;
+                                var loadedChild = mngrSecureFirebase.$secure.child(key);
+                                loadedChild.$on('loaded', function(){
+                                    dataLoader.resolve(loadedChild);
+                                });
                             }
                         });
-                        console.log('%cSecure \''+this.type.name+'\' data loaded for \''+user.name+'\'', 'background: #000; color: #CF0');
-                        this.handleEvent('loaded'); // ecodocs: angularfire event
+                        $q.all(dataLoaded).then(function(results){
+                            // all children are securely loaded for the user
+
+                            //console.log('%cSecure \''+this.type.name+'\' data loaded for \''+user.name+'\'', 'background: #000; color: #CF0');
+                            console.log('%cTrigger event: loaded', 'background: #999; color: #D0E');
+                            mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot()); // ecodocs: angularfire event
+                            mngrSecureFirebase.$secure.handleEvent('loaded'); // ecodocs: angularfire event
+
+                            mngrSecureFirebase.$secure.loading = false;
+                        });
                     }
                 },
                 permit: function(key){
@@ -254,21 +282,59 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
             // ecodocs: how do we handle changes to the user's roles and data type lists
 
-            // ecodocs: need to test and develop handling of Firebase events for non-root accessed data types
+            // ecodocs: handle firebase data events in a secure way
             mngrSecureFirebase.$secure.ref.on('value', function(dataSnapshot){
-                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                // do nothing with value, we will trigger 'value' event when one of the permitted children changes
+                //console.log('%cFirebase:event: value', 'background: #999; color: #D0E');
             });
             mngrSecureFirebase.$secure.ref.on('child_added', function(childSnapshot, prevChildName){
-                mngrSecureFirebase.$secure.handleEvent('child_added', childSnapshot, prevChildName);
+                if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
+                    console.log('%cFirebase:event: child_added:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
+                    mngrSecureFirebase.$secure.child(childSnapshot.name()).$on('loaded', function(){
+                        mngrSecureFirebase.$secure.handleEvent('change');
+                        mngrSecureFirebase.$secure.handleEvent('child_added', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                        if(!mngrSecureFirebase.$secure.loading){
+                            mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                        }
+                    });
+                }
             });
             mngrSecureFirebase.$secure.ref.on('child_removed', function(oldChildSnapshot){
-                mngrSecureFirebase.$secure.handleEvent('child_removed', oldChildSnapshot);
+                if(mngrSecureFirebase.$secure.permit(oldChildSnapshot.name())){
+                    console.log('%cFirebase:event: child_removed:'+oldChildSnapshot.name(), 'background: #999; color: #D0E');
+                    mngrSecureFirebase.$secure.handleEvent('change');
+                    mngrSecureFirebase.$secure.handleEvent('child_removed', mngrSecureFirebase.$secure.snapshot(oldChildSnapshot.name()));
+                    if(!mngrSecureFirebase.$secure.loading){
+                        mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                    }
+
+                    if(mngrSecureFirebase.$secure.children[oldChildSnapshot.name()]){
+                        delete mngrSecureFirebase.$secure.children[oldChildSnapshot.name()];
+                    }
+                }
             });
             mngrSecureFirebase.$secure.ref.on('child_changed', function(childSnapshot, prevChildName){
-                mngrSecureFirebase.$secure.handleEvent('child_changed', childSnapshot, prevChildName);
+                if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
+                    // need $timeout because the Firebase event fires before the $firebase reference gets updated
+                    $timeout(function() {
+                        console.log('%cFirebase:event: child_changed:'+childSnapshot.name()+':'+mngrSecureFirebase.$secure.children[childSnapshot.name()].$value+':'+(JSON.stringify(childSnapshot.val())), 'background: #999; color: #D0E');
+                        mngrSecureFirebase.$secure.handleEvent('change');
+                        mngrSecureFirebase.$secure.handleEvent('child_changed', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                        if (!mngrSecureFirebase.$secure.loading) {
+                            mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                        }
+                    });
+                }
             });
             mngrSecureFirebase.$secure.ref.on('child_moved', function(childSnapshot, prevChildName){
-                mngrSecureFirebase.$secure.handleEvent('child_moved', childSnapshot, prevChildName);
+                if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
+                    console.log('%cFirebase:event: child_moved:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
+                    mngrSecureFirebase.$secure.handleEvent('change');
+                    mngrSecureFirebase.$secure.handleEvent('child_moved', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                    if(!mngrSecureFirebase.$secure.loading){
+                        mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                    }
+                }
             });
         }
 
