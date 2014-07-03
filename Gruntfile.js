@@ -109,6 +109,15 @@ module.exports = function (grunt) {
 					//{src: ['bower_components/select2/*.png','bower_components/select2/*.gif'], dest:'dist/css/',flatten:true,expand:true},
 					//{src: ['bower_components/angular-mocks/angular-mocks.js'], dest: 'dist/'}
 				]
+			},
+			irthos: {
+				files: [
+					{expand:true, cwd:'dist/', src:['**'], dest: '../irthos/'}
+					//{src: ['bower_components/font-awesome/fonts/**'], dest: '..ionic/www/',filter:'isFile',expand:true}
+					//{src: ['bower_components/angular-ui-utils/ui-utils-ieshiv.min.js'], dest: 'dist/'},
+					//{src: ['bower_components/select2/*.png','bower_components/select2/*.gif'], dest:'dist/css/',flatten:true,expand:true},
+					//{src: ['bower_components/angular-mocks/angular-mocks.js'], dest: 'dist/'}
+				]
 			}
 		},
 		dom_munger:{
@@ -222,6 +231,9 @@ module.exports = function (grunt) {
 			},
 			github:{
 				cmd: 'git add --u && git commit -m magic'
+			},
+			irthos:{
+				cmd: 'cd ../irthos && git add --u && git commit -m magic && git push'
 			}
 		}
 
@@ -230,7 +242,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('build',['jshint','clean:before','less','dom_munger','ngtemplates','cssmin','concat','ngmin','uglify','copy:main','htmlmin','imagemin','clean:after']);
 	grunt.registerTask('serve', ['dom_munger:read','jshint','connect', 'watch']);
 	grunt.registerTask('test',['dom_munger:read','karma:all_tests']);
-	grunt.registerTask('deploy',['copy:ipad','git_deploy','bgShell:ios','bgShell:github']);
+	grunt.registerTask('deploy',['copy:ipad','copy:ipad','git_deploy','bgShell:ios','bgShell:github','bgShell:irthos']);
 
 	grunt.event.on('watch', function(action, filepath) {
 		//https://github.com/gruntjs/grunt-contrib-watch/issues/156
