@@ -137,7 +137,7 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
             });
         }
         else{
-            console.log('%cDenied!', 'background: #000; color: #F00');
+            console.log('%cDenied! \'jibba\'', 'background: #000; color: #F00');
         }
 
         var publicData = publicTest.$child('jibba');
@@ -148,7 +148,7 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
             });
         }
         else{
-            console.log('%cDenied!', 'background: #555; color: #F00');
+            console.log('%cDenied! \'jibba\'', 'background: #555; color: #F00');
         }
 
         // events on data root
@@ -198,7 +198,6 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
 
 
         // events on a $child
-        /**
         testData.$on('loaded', function(){
             console.log('%cSecure testData: loaded', 'background: #000; color: #09F');
         });
@@ -218,7 +217,6 @@ angular.module('mngr').run(function($rootScope, api, data, $q, $firebase, Fireba
         publicData.$on('value', function(snapshot){
             console.log('%cSecure publicData: value: '+((snapshot&&snapshot.snapshot)?snapshot.snapshot.name+':'+JSON.stringify(snapshot.snapshot.value):'null?'), 'background: #555; color: #09F');
         });
-        */
     });
 
 
