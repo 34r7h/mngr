@@ -121,7 +121,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         var child = this.child(key);
                         if(child){
                             result.snapshot = {name: key, value: mngrSecureFirebase.$secure.snapshotValue(child)};
-                            if(angular.isDefined(prevChild) && this.permit(prevChild)){
+                            if(angular.isDefined(prevChild) && (prevChild===null || this.permit(prevChild))){
                                 result.prevChild = prevChild;
                             }
                         }
@@ -208,13 +208,13 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         });
                         $q.all(dataLoaded).then(function(results){
                             // all children are securely loaded for the user
-
-                            //console.log('%cSecure \''+this.type.name+'\' data loaded for \''+user.name+'\'', 'background: #000; color: #CF0');
-                            console.log('%cTrigger event: loaded', 'background: #999; color: #D0E');
-                            mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot()); // ecodocs: angularfire event
-                            mngrSecureFirebase.$secure.handleEvent('loaded'); // ecodocs: angularfire event
-
-                            mngrSecureFirebase.$secure.loading = false;
+                            console.log('%Secure \''+mngrSecureFirebase.$secure.type.name+'\' loaded and secured for \''+mngrSecureFirebase.$secure.user.name+'\'', 'background: #999; color: #D0E');
+                            $timeout(function(){
+                                // timeout so final change and child_added events get fired before value and loaded (consistency with stock Firebase event orders)
+                                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                                mngrSecureFirebase.$secure.handleEvent('loaded'); // ecodocs: angularfire event
+                                mngrSecureFirebase.$secure.loading = false;
+                            });
                         });
                     }
                 },
