@@ -208,9 +208,9 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         });
                         $q.all(dataLoaded).then(function(results){
                             // all children are securely loaded for the user
-                            console.log('%cSecure \''+mngrSecureFirebase.$secure.type.name+'\' loaded and secured for \''+mngrSecureFirebase.$secure.user.name+'\'', 'background: #999; color: #D0E');
                             $timeout(function(){
                                 // timeout so final change and child_added events get fired before value and loaded (consistency with stock Firebase event orders)
+                                console.log('%cSecure \''+mngrSecureFirebase.$secure.type.name+'\' loaded and secured for \''+mngrSecureFirebase.$secure.user.name+'\'', 'background: #999; color: #D0E');
                                 mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
                                 mngrSecureFirebase.$secure.handleEvent('loaded'); // ecodocs: angularfire event
                                 mngrSecureFirebase.$secure.loading = false;
@@ -280,9 +280,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
             // no root access, load what we can for the user
             mngrSecureFirebase.$secure.loadForUser();
 
-            // ecodocs: how do we handle changes to the user's roles and data type lists
-
-            // ecodocs: handle firebase data events in a secure way
+            // handle Firebase events for secured data
             mngrSecureFirebase.$secure.ref.on('value', function(dataSnapshot){
                 // do nothing with value, we will trigger 'value' event when one of the permitted children changes
                 //console.log('%cFirebase:event: value', 'background: #999; color: #D0E');
