@@ -8,7 +8,7 @@ angular.module('mngr').factory('data',function(mngrSecureFirebase) {
             auth: mngrSecureFirebase()
         },
         types: [
-            //{name: 'products', access: 'public'},
+            {name: 'products', access: 'public'},
             {name: 'orders', access: ['user', 'admin', 'manager']},
             {name: 'events', access: ['user', 'admin', 'manager']},
             {name: 'messages', access: ['user', 'admin']},
