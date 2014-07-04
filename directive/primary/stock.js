@@ -48,6 +48,15 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 			};
 
             console.log('productId:'+$scope.productId);
+            if($scope.productId){
+                $scope.product = data[$scope.type].fire.$child($scope.productId);
+                $scope.product.$on('loaded', function(){
+                    console.log('has product:'+JSON.stringify($scope.product.$getIndex()));
+                });
+
+            }
+
+
 
 
 		},
