@@ -23,7 +23,7 @@ angular.module('mngr').directive('mngr', function($compile, $timeout) {
                         domElement.removeAttribute(name.name);
                     });
                     angular.forEach(newVal, function(value, name){
-                        domElement.setAttribute(name, value);
+                        domElement.setAttribute(name, '\''+value+'\'');
                     });
                     $compile(domElement)(scope);
                 }

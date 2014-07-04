@@ -10,8 +10,8 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		],
 		workspace: {
 			overlay: {
-				show: false,
-				component: '',
+				show: true,
+				component: 'stock',
                 params: {},
 				view: '',
 				icon:'fa fa-leaf'
