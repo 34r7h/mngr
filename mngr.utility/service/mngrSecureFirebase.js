@@ -1,4 +1,6 @@
-angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $firebase, $q, $timeout) {
+angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $firebase, $firebaseSimpleLogin, $filter, $q, $timeout) {
+    var auth = $firebaseSimpleLogin(new Firebase("https://mngr.firebaseio.com/"));
+    var userAccounts = null;
     // secured replica of $firebase - provides same interface as $firebase() object
     function MngrSecureFirebase(type, user){
         var mngrSecureFirebase = {
@@ -63,6 +65,13 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 this.$secure.removeEventHandler(eventName, handler);
             },
 
+            $asArray: function(){
+                if(this.$secure.fire){
+                    return $filter('orderByPriority')(this.$secure.fire);
+                }
+                return this.$secure.childArray();
+            },
+
             $secure: {
                 ref: null,  // Firebase reference
                 fire: null, // null unless a user has root access for this type (ie. public or role-access)
@@ -80,16 +89,25 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     }
                     return null;
                 },
+                childArray: function(){
+                    return $filter('orderByPriority')(this.children);
+                },
                 childKeys: function(){
                     return Object.keys(this.children);
                 },
                 addChild: function(value){
+                    var defer = $q.defer();
                     // allow adding the child if we have root access or the value's users list contains the user
-                    if(this.permit() || (type.access.indexOf('user')!==-1 && angular.isArray(value.users) && value.users.indexOf(this.user.$id)!==-1)){
-                        var newID = this.ref.push(value);
-                        this.child(newID);
-                        return newID;
+                    if(this.permit(null, value)){
+                        var newID = this.ref.push(value, function(){
+                            mngrSecureFirebase.$secure.child(newID.name());
+                            defer.resolve(newID);
+                        });
                     }
+                    else{
+                        defer.resolve(null);
+                    }
+                    return defer.promise;
                 },
                 removeChild: function(key){
                     var child = this.child(key);
@@ -193,7 +211,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 },
                 loadForUser: function(){
                     // loads all children of <type> that user knows about (ie. id's listed in user/<type>)
-                    if(this.type.access.indexOf('user')!==-1 && angular.isObject(this.user[this.type.name])){
+                    if(this.type.access.indexOf('user')!==-1 && this.user && angular.isObject(this.user[this.type.name]) && Object.keys(this.user[this.type.name]).length){
                         var dataLoaded = {};
                         mngrSecureFirebase.$secure.loading = true;
                         angular.forEach(this.user[this.type.name], function(allowed, key){
@@ -210,20 +228,25 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                             // all children are securely loaded for the user
                             $timeout(function(){
                                 // timeout so final change and child_added events get fired before value and loaded (consistency with stock Firebase event orders)
-                                console.log('%cSecure \''+mngrSecureFirebase.$secure.type.name+'\' loaded and secured for \''+mngrSecureFirebase.$secure.user.name+'\'', 'background: #999; color: #D0E');
                                 mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
-                                mngrSecureFirebase.$secure.handleEvent('loaded'); // ecodocs: angularfire event
+                                mngrSecureFirebase.$secure.handleEvent('loaded');
                                 mngrSecureFirebase.$secure.loading = false;
                             });
                         });
                     }
+                    else{
+                        $timeout(function() {
+                            mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                            mngrSecureFirebase.$secure.handleEvent('loaded');
+                        });
+                    }
                 },
-                permit: function(key){
+                permit: function(key, value){
                     var result = false;
                     if(this.publicAllowed()){
                         result = true;
                     }
-                    else{
+                    else if(this.user){
                         angular.forEach(this.type.access, function(access){
                             if(!result){
                                 if(access === 'user' && mngrSecureFirebase.$secure.userAllowed(key)){
@@ -235,18 +258,24 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                             }
                         });
                     }
+                    else if(this.type.name === 'users'){
+                        // special permissions for creating/loading user profiles on login
+                        if(auth.user && ((value && value['linked'] && value['linked'][auth.user.uid]) || (userAccounts && key===userAccounts[auth.user.uid]))){
+                            result = true;
+                        }
+                    }
                     return result;
                 },
                 publicAllowed: function(){
                     return (this.type.access.indexOf('public')!==-1);
                 },
                 roleAllowed: function(role){
-                    return (this.type.access.indexOf(role)!==-1 && angular.isObject(this.user.roles) && this.user.roles[role]);
+                    return (this.user && this.type.access.indexOf(role)!==-1 && angular.isObject(this.user.roles) && this.user.roles[role]);
                 },
                 userAllowed: function(key){
                     var result = false;
                     // user-level access can never be granted unless there is a key associated
-                    if(angular.isDefined(key)){
+                    if(this.user && angular.isDefined(key)){
                         // user has access if key is found in their list of entries for the type
                         // this is client-side security only.  server-side security rules must also be set up to avoid client-side spoofing
                         // when proper server-side security rules are set, any spoof attempts would return a firebase "permission denied"
@@ -271,12 +300,14 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // load the data based on user's access level
         if(mngrSecureFirebase.$secure.permit()){
-            console.log('%cRoot on \''+mngrSecureFirebase.$secure.type.name+'\'...', 'background: #555; color: #F90');
             // create the $firebase object if the user has root access for this type
             mngrSecureFirebase.$secure.fire = $firebase(mngrSecureFirebase.$secure.ref);
+
+            if(!userAccounts && type.name === 'userAccounts'){
+                userAccounts = mngrSecureFirebase.$secure.fire;
+            }
         }
         else{
-            console.log('%cRecords on \''+mngrSecureFirebase.$secure.type.name+'\'...', 'background: #000; color: #F90');
             // no root access, load what we can for the user
             mngrSecureFirebase.$secure.loadForUser();
 
@@ -287,7 +318,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
             });
             mngrSecureFirebase.$secure.ref.on('child_added', function(childSnapshot, prevChildName){
                 if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
-                    console.log('%cFirebase:event: child_added:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
+                    //console.log('%cFirebase:event: child_added:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
                     mngrSecureFirebase.$secure.child(childSnapshot.name()).$on('loaded', function(){
                         mngrSecureFirebase.$secure.handleEvent('change');
                         mngrSecureFirebase.$secure.handleEvent('child_added', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
@@ -299,7 +330,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
             });
             mngrSecureFirebase.$secure.ref.on('child_removed', function(oldChildSnapshot){
                 if(mngrSecureFirebase.$secure.permit(oldChildSnapshot.name())){
-                    console.log('%cFirebase:event: child_removed:'+oldChildSnapshot.name(), 'background: #999; color: #D0E');
+                    //console.log('%cFirebase:event: child_removed:'+oldChildSnapshot.name(), 'background: #999; color: #D0E');
                     mngrSecureFirebase.$secure.handleEvent('change');
                     mngrSecureFirebase.$secure.handleEvent('child_removed', mngrSecureFirebase.$secure.snapshot(oldChildSnapshot.name()));
                     if(!mngrSecureFirebase.$secure.loading){
@@ -315,7 +346,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
                     // need $timeout because the Firebase event fires before the $firebase reference gets updated
                     $timeout(function() {
-                        console.log('%cFirebase:event: child_changed:'+childSnapshot.name()+':'+mngrSecureFirebase.$secure.children[childSnapshot.name()].$value+':'+(JSON.stringify(childSnapshot.val())), 'background: #999; color: #D0E');
+                        //console.log('%cFirebase:event: child_changed:'+childSnapshot.name()+':'+mngrSecureFirebase.$secure.children[childSnapshot.name()].$value+':'+(JSON.stringify(childSnapshot.val())), 'background: #999; color: #D0E');
                         mngrSecureFirebase.$secure.handleEvent('change');
                         mngrSecureFirebase.$secure.handleEvent('child_changed', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
                         if (!mngrSecureFirebase.$secure.loading) {
@@ -326,7 +357,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
             });
             mngrSecureFirebase.$secure.ref.on('child_moved', function(childSnapshot, prevChildName){
                 if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
-                    console.log('%cFirebase:event: child_moved:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
+                    //console.log('%cFirebase:event: child_moved:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
                     mngrSecureFirebase.$secure.handleEvent('change');
                     mngrSecureFirebase.$secure.handleEvent('child_moved', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
                     if(!mngrSecureFirebase.$secure.loading){
@@ -340,6 +371,9 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
     }
 
     return function(type, user){
-        return new MngrSecureFirebase(type, user);
+        if(type){
+            return new MngrSecureFirebase(type, user);
+        }
+        return auth;
     };
 });
