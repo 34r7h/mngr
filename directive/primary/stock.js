@@ -2,8 +2,8 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 	return {
 		controller: function($scope){
 			$scope.type = 'products';
-			$scope.showTable=true;
-			$scope.showItem=false;
+			$scope.showTable=false;
+			$scope.showItem=true;
 			$scope.showForm=false;
 
 			$scope.table = {
@@ -47,11 +47,9 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			};
 
-			$scope.api = api;
-
 
 		},
-		scope:{},
+		scope:{productId:'='},
 		restrict: 'EA',
 		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="item"></mngr-item>',
 		link: function(scope, element, attrs, fn) {

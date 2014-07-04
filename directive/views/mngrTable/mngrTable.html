@@ -1,4 +1,11 @@
 <div class="full">
+    <div ng-repeat="array in my.array">
+        <div ng-repeat="otherArray in my.otherArray">
+            <div ng-repeat="array2 in my.array">
+                {{array2 + array}}: {{api | json}}
+            </div>
+        </div>
+    </div>
     <div
             class="col-3 row-12"
             ng-hide='hideFilters'>
