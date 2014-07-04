@@ -47,6 +47,8 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			};
 
+            console.log('productId:'+$scope.productId);
+
 
 		},
 		scope:{productId:'='},
