@@ -1,4 +1,4 @@
-angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
+angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase) {
 
 	var api = {
 
@@ -14,9 +14,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 		save:function(type, id){
 			var time = new Date();
 			console.log('At '+time+', saving '+type+ ': '+id);
-            data[type].fire[id]['updated'] = time; // does the same thing, but with only 1 firebase call
-			data[type].fire.$save(id);
-			//data[type].fire.$child(id).$child('updated').$set(time);
+
+            data[type].fire.$save(id);
+            data[type].fire.$child(id).$update({updated: time});
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -39,6 +39,38 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 		remove:function(type, id){
 			data[type].fire.$remove(id);
 		},
+
+        loadData: function(){
+            var defer = $q.defer();
+
+            var datasLoaded = {};
+            angular.forEach(data.types, function(type){
+                // only load it if it is not already loaded or is not public (so we aren't reloading public sets)
+                if(!data[type.name] || type.access.indexOf('public')===-1){
+                    var dataLoaded = $q.defer();
+                    datasLoaded[type.name] = dataLoaded.promise;
+
+                    var secureFire = mngrSecureFirebase(type, data.user.profile);
+                    data[type.name] = {
+                        fire: secureFire,
+                        array: []
+                    };
+                    secureFire.$on('loaded', function(){
+                        dataLoaded.resolve(true);
+                    });
+                    // generate the array every time there is a value
+                    secureFire.$on('value', function(){
+                        data[type.name].array = secureFire.$asArray();
+                    });
+                }
+            });
+
+            $q.all(datasLoaded).then(function(results){
+                defer.resolve(true);
+            });
+
+            return defer.promise;
+        },
 
         callbackError: function(error){
             var errorMsg = '';
@@ -63,24 +95,32 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
         callbackSuccess: function(result){
             if(result){
                 if(result.uid){
-                    console.log('user authenticated...');
+                    // user authenticated
                     api.loadProfile(result).then(api.callbackSuccess, api.callbackError);
                 }
+                else if(!result.new && result.name && result.email){
+                    // user profile loaded
+                    api.loadData().then(function(){
+                        ui.loadState();
+                    });
+                }
                 else if(result.new && result.linked){
-                    console.log('new user profile...'+JSON.stringify(result));
+                    // new user profile
                     if(result.confirmed){
                         api.createProfile();
                     }
                 }
-                else if(result.name && result.email){
-                    console.log('user profile loaded...'+JSON.stringify(result));
-                    ui.loadState();
-                }
                 else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
-                    console.log('new '+result.parent().name()+' record ('+result.name()+')...');
-                    if(result.parent().name() === 'users'){
-                        data.user.profile = data['users'].fire.$child(result.name());
-                        api.linkProfileAccounts(result.name());
+                    // new record saved
+                    switch(result.parent().name()){
+                        case 'users':
+                            if(data.user.profile.linked){
+                                api.linkProfileAccounts(result.name(), data.user.profile.linked).then(function(){
+                                    api.login('active'); // profile is created and linked, login to activate
+                                });
+                            }
+
+                            break;
                     }
                 }
             }
@@ -89,7 +129,6 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
         // logs a user in via the given provider
         login: function(provider, email, password){
             // handle login request based on provider
-            console.log('logging in \''+provider+'\'...');
             switch(provider){
                 case 'active':
                     api.loginActive();
@@ -123,6 +162,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
         logout: function(){
             data.user.auth.$logout();
             data.user.profile = null;
+            api.loadData();
         },
 
         // creates a user email/password account
@@ -143,7 +183,6 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
                 api.callbackError({code: "EMAIL_TAKEN"});
             }
             else{
-                console.log('$createUser:'+email+';'+password+':'+passwordConfirm+':');
                 data.user.auth.$createUser(email, password).then(api.callbackSuccess, api.callbackError);
             }
         },
@@ -163,7 +202,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
 
         // changes a user's password
         changePassword: function(email, oldPassword, newPassword){
-
+            console.log('changePassword:'+email);
         },
 
         // creates a user profile for a given account
@@ -174,21 +213,22 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
             if(angular.isDefined(data.user.profile.confirmed)){
                 delete data.user.profile.confirmed;
             }
-            // ecodocs: create the user profile
-            console.log('createProfile:'+JSON.stringify(data.user.profile));
 
-            // ecodocs: create the emails entry
+            // ecodocs: need to create the emails entry
             api.create('users', data.user.profile).then(api.callbackSuccess, api.callbackError);
         },
-        linkProfileAccounts: function(userID){
-            console.log('linkProfileAccounts:'+userID);
-            if(data['users'].fire[userID]['linked']){
-                angular.forEach(data['users'].fire[userID]['linked'], function(linked, uid){
-                    if(linked){
-                        api.set('userAccounts', uid, userID);
-                    }
-                });
-            }
+        linkProfileAccounts: function(userID, accounts){
+            var defer = $q.defer();
+            var accountsLinked = {};
+            angular.forEach(accounts, function(linked, uid){
+                if(linked){
+                    accountsLinked[uid] = api.set('userAccounts', uid, userID);
+                }
+            });
+            $q.all(accountsLinked).then(function(){
+                defer.resolve(true);
+            });
+            return defer.promise;
         },
         newProfile: function(account){
             var newProfile = null;
@@ -239,17 +279,30 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, $filter) {
         loadProfile: function(account){
             var defer = $q.defer();
             if(account.uid){
-                // ecodocs: do lookup for account.uid -> userID
-                if(data['userAccounts'].fire[account.uid]){
-                    data.user.profile = data['users'].fire.$child(data['userAccounts'].fire[account.uid]);
-                }
-
-                // ecodocs: if no user found for account, get a new profile...
-                if(!data.user.profile){
-                    data.user.profile = api.newProfile(account);
-                }
-
-                defer.resolve(data.user.profile);
+                // look up user account
+                var userAccount = data['userAccounts'].fire.$child(account.uid);
+                userAccount.$on('loaded', function(){
+                    if(userAccount.$value){
+                        // load the profile linked to the account
+                        var userProfile = data['users'].fire.$child(userAccount.$value);
+                        userProfile.$on('loaded', function(){
+                            if(userProfile.$value===null){
+                                // this would be if the account.uid is linked to a missing profile
+                                data.user.profile = api.newProfile(account);
+                                defer.resolve(data.user.profile);
+                            }
+                            else{
+                                data.user.profile = userProfile;
+                                defer.resolve(data.user.profile);
+                            }
+                        });
+                    }
+                    else{
+                        // if no profile linked to the account, create a new profile
+                        data.user.profile = api.newProfile(account);
+                        defer.resolve(data.user.profile);
+                    }
+                });
             }
             else{
                 defer.reject('No account to load uid for');

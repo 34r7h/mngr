@@ -1,12 +1,27 @@
-angular.module('mngr').factory('data',function(Firebase, $firebaseSimpleLogin) {
-	var fireRef = new Firebase("https://mngr.firebaseio.com/");
+angular.module('mngr').factory('data',function(mngrSecureFirebase) {
+
 	var data = {
         path: '/',
         params: {},
         user: {
             profile: null,  // user profile
-            auth: $firebaseSimpleLogin(fireRef)
-        }
+            auth: mngrSecureFirebase()
+        },
+        types: [
+            {name: 'products', access: 'public'},
+            {name: 'orders', access: ['user', 'admin', 'manager']},
+            {name: 'events', access: ['user', 'admin', 'manager']},
+            {name: 'messages', access: ['user', 'admin']},
+            {name: 'notices', access: ['user', 'admin']},
+            {name: 'contents', access: 'public'},
+            {name: 'notes', access: ['user', 'admin', 'manager']},
+            {name: 'shops', access: 'public'},
+            {name: 'ui', access: 'public'},
+            {name: 'settings', access: 'user'},
+            {name: 'roles', access: ['admin', 'manager']},
+            {name: 'userAccounts', access: 'public'},
+            {name: 'users', access: 'user'}
+        ]
     };
 
 	return data;
