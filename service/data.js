@@ -20,6 +20,7 @@ angular.module('mngr').factory('data',function(mngrSecureFirebase) {
             {name: 'settings', access: 'user'},
             {name: 'roles', access: ['admin', 'manager']},
             {name: 'userAccounts', access: 'public'},
+            {name: 'userEmails', access: 'public'},
             {name: 'users', access: 'user'}
         ]
     };
