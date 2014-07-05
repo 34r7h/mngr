@@ -1,4 +1,4 @@
-angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase) {
+angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase, md5) {
 
 	var api = {
 
@@ -114,6 +114,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
                     // new record saved
                     switch(result.parent().name()){
                         case 'users':
+                            if(data.user.profile.email){
+                                api.set('userEmails', md5.createHash(data.user.profile.email), result.name());
+                            }
                             if(data.user.profile.linked){
                                 api.linkProfileAccounts(result.name(), data.user.profile.linked).then(function(){
                                     api.login('active'); // profile is created and linked, login to activate
@@ -179,11 +182,15 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
             else if(passwordConfirm !== password){
                 api.callbackError('Passwords don\'t match');
             }
-            else if(api.userEmailExists(email)){
-                api.callbackError({code: "EMAIL_TAKEN"});
-            }
             else{
-                data.user.auth.$createUser(email, password).then(api.callbackSuccess, api.callbackError);
+                api.userEmailAvailable(email).then(function(available){
+                    if(available){
+                        data.user.auth.$createUser(email, password).then(api.callbackSuccess, api.callbackError);
+                    }
+                    else{
+                        api.callbackError({code: "EMAIL_TAKEN"});
+                    }
+                });
             }
         },
 
@@ -207,15 +214,21 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 
         // creates a user profile for a given account
         createProfile: function(){
-            if(angular.isDefined(data.user.profile.new)){
-                delete data.user.profile.new;
-            }
-            if(angular.isDefined(data.user.profile.confirmed)){
-                delete data.user.profile.confirmed;
-            }
+            api.userEmailAvailable(data.user.profile.email).then(function(available){
+                if(available){
+                    if(angular.isDefined(data.user.profile.new)){
+                        delete data.user.profile.new;
+                    }
+                    if(angular.isDefined(data.user.profile.confirmed)){
+                        delete data.user.profile.confirmed;
+                    }
 
-            // ecodocs: need to create the emails entry
-            api.create('users', data.user.profile).then(api.callbackSuccess, api.callbackError);
+                    api.create('users', data.user.profile).then(api.callbackSuccess, api.callbackError);
+                }
+                else{
+                    api.callbackError({code: "EMAIL_TAKEN"});
+                }
+            });
         },
         linkProfileAccounts: function(userID, accounts){
             var defer = $q.defer();
@@ -311,9 +324,18 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
         },
 
         // check if the given email is associated with an existing account
-        userEmailExists: function(email){
-            // ecodocs: need to implement this
-            return false;
+        userEmailAvailable: function(email){
+            var defer = $q.defer();
+            var emailCheck =data['userEmails'].fire.$child(md5.createHash(email));
+            emailCheck.$on('loaded', function(){
+                if(emailCheck.$value===null){
+                    defer.resolve(true);
+                }
+                else{
+                    defer.resolve(false);
+                }
+            });
+            return defer.promise;
         }
 
 	};
