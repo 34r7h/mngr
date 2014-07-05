@@ -2,25 +2,37 @@ angular.module('mngr.utility')
     .directive('mngrScrollPages', function () {
         return {
             link: function (scope, element, attrs) {
-                var offset = parseInt(attrs.threshold) || 0;
-                var e = element[0];
+                var threshold = attrs.threshold || 0;
+                var threshPercent = false;
+                var elem = element[0];
                 var nextPage = attrs.nextPage?attrs.nextPage:null;
                 var prevPage = attrs.prevPage?attrs.prevPage:null;
                 var lastTop = -1;
 
+                if(threshold.charAt(threshold.length-1)==='%'){
+                    threshold = threshold.substr(0,threshold.length-1);
+                    threshPercent = true;
+                }
+                threshold = parseFloat(threshold);
+
                 element.bind('scroll', function () {
-                    if(prevPage && e.scrollTop < lastTop && e.scrollTop <= offset){
+                    var offset = threshold;
+                    if(threshPercent){
+                        offset = elem.scrollHeight*(threshold/100.0);
+                    }
+
+                    if(prevPage && elem.scrollTop < lastTop && elem.scrollTop <= offset){
                         if(scope.$apply(prevPage) && attrs.backScroll){
                             lastTop = -1;
-                            e.scrollTop = e.scrollHeight-e.offsetHeight-offset-1;
+                            elem.scrollTop = elem.scrollHeight-elem.offsetHeight-offset-1;
                         }
                     }
-                    if(nextPage && e.scrollTop + e.offsetHeight >= e.scrollHeight - offset) {
+                    if(nextPage && elem.scrollTop + elem.offsetHeight >= elem.scrollHeight - offset) {
                         if(scope.$apply(nextPage) && attrs.backScroll){
-                            e.scrollTop = offset+1;
+                            elem.scrollTop = offset+1;
                         }
                     }
-                    lastTop = e.scrollTop;
+                    lastTop = elem.scrollTop;
                 });
             }
         };
