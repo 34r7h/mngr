@@ -14,9 +14,9 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 		save:function(type, id){
 			var time = new Date();
 			console.log('At '+time+', saving '+type+ ': '+id);
-            data[type].fire.$child(id)['updated'] = time; // does the same thing, but with only 1 firebase call
-			data[type].fire.$save(id);
-			//data[type].fire.$child(id).$child('updated').$set(time);
+
+            data[type].fire.$save(id);
+            data[type].fire.$child(id).$update({updated: time});
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
