@@ -6,9 +6,9 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 		url:'*path',
 		reloadOnSearch: false,
 		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api){
-			ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
+			api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			$scope.$on('$locationChangeSuccess', function(){
-				ui.loadState(angular.copy($location.path()), angular.copy($location.search()));
+				api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			});
 
             $scope.api = api;
