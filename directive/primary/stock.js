@@ -47,6 +47,10 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 			};
 
+            $scope.workspace = $scope.$parent.workspace; // because we are isolating scope, it doesn't come through
+
+            $scope.api = api;
+
             if($scope.productId){
                 $scope.showTable = false;
                 $scope.showItem = true;
