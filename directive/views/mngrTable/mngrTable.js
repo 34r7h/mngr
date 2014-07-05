@@ -27,23 +27,25 @@ angular.module('mngr').directive('mngrTable', function(models, api, filter) {
             }};
 
             scope.scroll = {
-                perPage: 25,
-                offset: 0,
+                perPage: 5,
+                showCount: 25,
                 nextPage: function(){
                     if(scope.table && scope.table.filteredData){
                         var maxOff = (scope.table.filteredData.length - scope.scroll.perPage);
-                        if(scope.scroll.offset <= maxOff){
-                            scope.scroll.offset += scope.scroll.perPage;
+                        if(scope.scroll.showCount < maxOff){
+                            scope.scroll.showCount += scope.scroll.perPage;
                         }
-                        return (scope.scroll.offset <= maxOff);
+                        return (scope.scroll.showCount < maxOff);
                     }
                     return false;
                 },
                 prevPage: function(){
-                    if(scope.scroll.offset >= 1){
-                        scope.scroll.offset -= scope.scroll.perPage;
+                    /**
+                    if(scope.scroll.showCount >= 1){
+                        scope.scroll.showCount -= scope.scroll.perPage;
                     }
-                    return (scope.scroll.offset >= 1);
+                     */
+                    return (scope.scroll.showCount >= 1);
                 }
             };
 
@@ -51,7 +53,7 @@ angular.module('mngr').directive('mngrTable', function(models, api, filter) {
             scope.filterData = function() {
                 if(scope.table && scope.table.data && scope.table.data.array && scope.table.filters){
                     scope.table.filteredData = filter.applyFilters(scope.table.filters, scope.table.data.array);
-                    scope.scroll.offset = 0;
+                    //scope.scroll.showCount = 0;
                 }
             };
 

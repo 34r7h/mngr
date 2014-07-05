@@ -78,11 +78,10 @@
 
             <tbody class="col-13 row-11 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
                    prev-page="scroll.prevPage()"
-                   back-scroll="true"
-                   threshold="30">
+                   threshold="150">
                 <tr
                         class="col-13 row-2 middle-container"
-                        ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | mngrStartAt:scroll.offset | limitTo:scroll.perPage">
+                        ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | limitTo:scroll.showCount">
                     <td
                             class="text-center middle-content"
                             ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority"
