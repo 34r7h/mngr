@@ -4,23 +4,76 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
     // secured replica of $firebase - provides same interface as $firebase() object
     function MngrSecureFirebase(type, user){
         var mngrSecureFirebase = {
+            // $add: returns a promise that resolves with the new ID after it has been added
             $add: function(value){
+                var childAdded = $q.defer();
                 if(this.$secure.fire){
-                    return this.$secure.fire.$add(value);
+                    this.$secure.fire.$add(value).then(function(ref){
+                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1){
+                            mngrSecureFirebase.$secure.queueUserData(ref.name(), value.users);
+                        }
+                        childAdded.resolve(ref.name());
+                    }, function(error){ childAdded.reject(error); });
                 }
-                return this.$secure.addChild(value);
+                else{
+                    this.$secure.addChild(value).then(function(newID){
+                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1) {
+                            mngrSecureFirebase.$secure.queueUserData(newID, value.users);
+                        }
+                        childAdded.resolve(newID);
+                    }, function(error){ childAdded.reject(error); });
+                }
+                return childAdded.promise;
             },
             $remove: function(key){
-                if(this.$secure.fire){
-                    return this.$secure.fire.$remove(key);
-                }
-                return this.$secure.removeChild(key);
+                var childRemoved = $q.defer();
+                var child = this.$child(key);
+                child.$on('loaded', function(){
+                    if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1){
+                        mngrSecureFirebase.$secure.dequeueUserData(child.$id, child.users);
+                    }
+
+                    if(mngrSecureFirebase.$secure.fire) {
+                        mngrSecureFirebase.$secure.fire.$remove(key).then(function(){
+                            childRemoved.resolve(key);
+                        }, function(error){ childRemoved.reject(error); });
+                    }
+                    else{
+                        mngrSecureFirebase.$secure.removeChild(key);
+                        childRemoved.resolve(key);
+                    }
+                });
+                return childRemoved.promise;
             },
             $save: function(key){
+                var childSaved = $q.defer();
                 if(this.$secure.fire){
-                    return this.$secure.fire.$save(key);
+                    this.$secure.fire.$save(key).then(function(){
+                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1) {
+                            var child = mngrSecureFirebase.$child(key);
+                            child.$on('loaded', function () {
+                                if(mngrSecureFirebase.$secure.type.access.indexOf('user') !== -1) {
+                                    mngrSecureFirebase.$secure.queueUserData(key, child.users);
+                                }
+                            });
+                        }
+                        childSaved.resolve(key);
+                    }, function(error){ childSaved.reject(error); });
                 }
-                return this.$secure.saveChild(key);
+                else{
+                    this.$secure.saveChild(key).then(function(){
+                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1) {
+                            var child = mngrSecureFirebase.$child(key);
+                            child.$on('loaded', function () {
+                                if(mngrSecureFirebase.$secure.type.access.indexOf('user') !== -1) {
+                                    mngrSecureFirebase.$secure.queueUserData(key, child.users);
+                                }
+                            });
+                        }
+                        childSaved.resolve(key);
+                    });
+                }
+                return childSaved.promise;
             },
             $child: function(key){
                 if(this.$secure.fire){
@@ -105,22 +158,36 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         });
                     }
                     else{
-                        defer.resolve(null);
+                        defer.reject('No permission to add child');
                     }
                     return defer.promise;
                 },
                 removeChild: function(key){
+                    var defer = $q.defer();
                     var child = this.child(key);
                     // if we have the child, we have access to remove it
                     if(child){
-                        child.$remove();
+                        child.$remove().then(function(){
+                            defer.resolve(true);
+                        }, function(error){ defer.reject(error); });
                     }
+                    else{
+                        defer.reject('Child not found');
+                    }
+                    return defer.promise;
                 },
                 saveChild: function(key){
+                    var defer = $q.defer();
                     var child = this.child(key);
                     if(child){
-                        child.$save();
+                        child.$save().then(function(){
+                            defer.resolve(true);
+                        }, function(error){ defer.reject(error); });
                     }
+                    else{
+                        defer.reject('Child not found');
+                    }
+                    return defer.promise;
                 },
                 snapshot: function(key, prevChild){
                     // generate a snapshot of the secured data
@@ -207,6 +274,26 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                             // no handler specified, remove all handlers for this eventName
                             delete this.eventHandlers[eventName];
                         }
+                    }
+                },
+                queueUserData: function(id, userIDs){
+                    if(id){
+                        angular.forEach(userIDs, function(userID){
+                            if(userID){
+                                var userDataQueue = new Firebase("https://mngr.firebaseio.com/users/"+userID+"/dataQueue/"+this.type.name+"/"+id);
+                                userDataQueue.set(true);
+                            }
+                        });
+                    }
+                },
+                dequeueUserData: function(id, userIDs){
+                    if(id && userIDs){
+                        angular.forEach(userIDs, function(userID){
+                            if(userID){
+                                var userDataQueue = new Firebase("https://mngr.firebaseio.com/users/"+userID+"/dataQueue/"+this.type.name+"/"+id);
+                                userDataQueue.remove();
+                            }
+                        });
                     }
                 },
                 loadForUser: function(){
