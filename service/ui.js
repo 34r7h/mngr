@@ -3,7 +3,6 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 	var ui = {
 		components:[
 			{name:'products',icon:'fa fa-barcode',params:['product-id']},
-
 			{name:'shop',icon:'fa fa-gift',params:['path'],default:true},
 			{name:'orders',icon:'fa fa-barcode',params:['order-id']},
 			{name:'users',icon:'fa fa-barcode',params:['user-id']},
@@ -12,7 +11,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		workspace: {
 			overlay: {
 				show: false,
-				component: 'products',
+				component: '',
 				params: {},
 
 				view: '',

@@ -230,7 +230,7 @@ module.exports = function (grunt) {
 				cmd: 'cd ../apps/ionic && ionic run ios'
 			},
 			github:{
-				cmd: 'git add --u && git commit -m magic'
+				cmd: 'git add --u && git commit -m magic && git push'
 			},
 			irthos:{
 				cmd: 'cd ../irthos && git add --u && git commit -m magic && git push'

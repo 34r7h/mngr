@@ -62,13 +62,13 @@ angular.module('mngr').factory('models',function() {
 		input:{},
 		// ecodocs Primary Directive Models.
 		products: [
-			{name:'upc',value:'',type:'text',element:'input'},
-			{name:'brand',value:'',type:'text',element:'input'},
-			{name:'categories',value:[''],type:'text',element:'input'},
-			{name:'name',value:'',type:'text',element:'input'},
-			{name:'price',value:'',type:'number',element:'input'},
-			{name:'size',value:'',type:'text',element:'select',options:[{}]},
-			{name:'stock',value:'',type:'number',element:'input'},
+			{name:'upc',value:' ',type:'text',element:'input'},
+			{name:'brand',value:' ',type:'text',element:'input'},
+			{name:'categories',value:[' '],type:'text',element:'input'},
+			{name:'name',value:' ',type:'text',element:'input'},
+			{name:'price',value:' ',type:'number',element:'input'},
+			{name:'size',value:' ',type:'text',element:'select',options:[{}]},
+			{name:'stock',value:' ',type:'number',element:'input'},
 			{name:'low stock',value:'',type:'number',element:'input'},
 			{name:'minimum order',value:'',type:'number',element:'input'},
 			{name:'units',value:'',type:'text',element:'input'},
@@ -157,7 +157,7 @@ angular.module('mngr').factory('models',function() {
 		sortables: {
 			products: [
 				{name: 'upc', 'show': false, type: 'text', priority: 1},
-				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2},
+				{name: 'name', link: 'products/:id', 'show': true, type: 'text', priority: 2},
 				{name: 'stock', show: true, type: 'number', priority: 5},
 				{name: 'price', show: false, type: 'number', prefix: '$', priority: 3},
 
