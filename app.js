@@ -11,13 +11,11 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 				api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			});
 			$scope.pleasePrint = function() {
-				$scope.window = $window;
-				console.log($scope.window);
-				$scope.window.plugin.printer.isServiceAvailable(
-					function (isAvailable, installedAppIds, alert) {
-						alert('The following print apps are installed on your device: ' + installedAppIds.join(', '));
-					}
-				);
+				var page = document.body.innerHTML;
+
+// Pass the HTML
+				window.plugin.printer.print(page);
+
 			};
 
             $scope.api = api;
