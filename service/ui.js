@@ -3,6 +3,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 	var ui = {
 		components:[
 			{name:'products',icon:'fa fa-barcode',params:['product-id']},
+
 			{name:'shop',icon:'fa fa-gift',params:['path'],default:true},
 			{name:'orders',icon:'fa fa-barcode',params:['order-id']},
 			{name:'users',icon:'fa fa-barcode',params:['user-id']},
@@ -13,6 +14,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				show: false,
 				component: 'products',
 				params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			},
@@ -20,6 +22,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				show: true,
 				component: '',
 				params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			},
@@ -27,6 +30,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				show: false,
 				component: '',
 				params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			}

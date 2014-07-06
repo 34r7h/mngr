@@ -1,12 +1,11 @@
-angular.module('mngr').directive('create', function() {
+angular.module('mngr').directive('notices', function() {
 	return {
 		restrict: 'E',
 		replace: true,
 		scope: {
 
 		},
-
-		templateUrl: 'directive/views/ux/create/create.html',
+		templateUrl: 'directive/support/notices/notices.html',
 		link: function(scope, element, attrs, fn) {
 
 

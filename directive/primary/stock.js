@@ -1,8 +1,7 @@
-angular.module('mngr').directive('users', function(ui,data,api,models) {
+angular.module('mngr').directive('stock', function(ui,data,api,models) {
 	return {
 		controller: function($scope){
-			$scope.type = 'users';
-
+			$scope.type = 'products';
 			$scope.showTable=true;
 			$scope.showItem=false;
 			$scope.showForm=false;
@@ -48,22 +47,26 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 
 			};
 
-			$scope.api = api;
-			$scope.data = data;
+            $scope.workspace = $scope.$parent.workspace; // because we are isolating scope, it doesn't come through
 
-			if($scope.userId){
+            $scope.api = api;
 
-			}
-			else{
+            if($scope.productId){
+                $scope.showTable = false;
+                $scope.showItem = true;
+                $scope.product = data[$scope.type].fire.$child($scope.productId);
+            }
+            else{
+                $scope.showTable = true;
+            }
 
-			}
+
+
+
 		},
-		scope:{userId:'='},
+		scope:{productId:'='},
 		restrict: 'EA',
-
-        // ecodocs: very bad, I know... but using it for dev purposes until mngr-form is ready to go for login
-        templateUrl: 'directive/primary/users.html',
-		//template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
+		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="product"></mngr-item>',
 		link: function(scope, element, attrs, fn) {
 
 

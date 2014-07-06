@@ -77,6 +77,7 @@ angular.module('mngr').directive('mngrTable', function(models, api, filter) {
 				}
 			});
 
+
 		}
 	};
 });

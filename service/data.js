@@ -25,5 +25,6 @@ angular.module('mngr').factory('data',function(mngrSecureFirebase) {
 		]
 	};
 
+
 	return data;
 });

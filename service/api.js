@@ -10,6 +10,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			//ecodocs takes a reference to firebase and $adds a model.
 			//this.model[type] = {};
 			return data[type].fire.$add(model); // return the $add promise
+
 		},
 		save:function(type, id){
 			var time = new Date();
@@ -17,6 +18,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 
 			data[type].fire.$save(id);
 			data[type].fire.$child(id).$update({updated: time});
+
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -26,6 +28,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			 // that approach would overwrite the entire data[type] table, leaving only the id:model record
 			 */
 			data[type].fire.$child(id).$set(model);
+
 		},
 		update:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -35,6 +38,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			 // that approach would overwrite the full data[type][id] record rather than updating it
 			 */
 			data[type].fire.$child(id).update(model);
+
 		},
 		remove:function(type, id){
 			data[type].fire.$remove(id);

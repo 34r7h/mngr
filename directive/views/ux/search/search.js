@@ -44,6 +44,7 @@ angular.module('mngr').directive('search', function(models, data) {
 			});
 
 
+
 		}
 	};
 });
