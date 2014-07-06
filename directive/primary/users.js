@@ -48,15 +48,15 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 
 			};
 
-            $scope.api = api;
-            $scope.data = data;
+			$scope.api = api;
+			$scope.data = data;
 
-            if($scope.userId){
+			if($scope.userId){
 
-            }
-            else{
+			}
+			else{
 
-            }
+			}
 
 
 
@@ -64,8 +64,8 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 		scope:{userId:'='},
 		restrict: 'EA',
 
-        // ecodocs: very bad, I know... but using it for dev purposes until mngr-form is ready to go for login
-        templateUrl: 'directive/primary/users.html',
+		// ecodocs: very bad, I know... but using it for dev purposes until mngr-form is ready to go for login
+		templateUrl: 'directive/primary/users.html',
 		//template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
 		link: function(scope, element, attrs, fn) {
 
