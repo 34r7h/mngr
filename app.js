@@ -5,11 +5,20 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider.state('main', {
 		url:'*path',
 		reloadOnSearch: false,
-		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api){
+		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api,$window){
 			api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			$scope.$on('$locationChangeSuccess', function(){
 				api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			});
+			$scope.pleasePrint = function() {
+				$scope.window = $window;
+				console.log($scope.window);
+				$scope.window.plugin.printer.isServiceAvailable(
+					function (isAvailable, installedAppIds, alert) {
+						alert('The following print apps are installed on your device: ' + installedAppIds.join(', '));
+					}
+				);
+			};
 
             $scope.api = api;
             $scope.ui = ui;
