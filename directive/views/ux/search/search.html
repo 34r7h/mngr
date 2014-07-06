@@ -1,0 +1,28 @@
+<div class="full">
+    <span class="full">
+        <h2 class="middle-container">
+            <input
+                    class="full fa fa-search text-center"
+                    placeholder="Search"
+                    type="{{searchFilter.type}}"
+                    name="{{searchFilter.name}}"
+                    ng-model="searchFilter.value"
+                    ng-click="ui.search.showSearch=true">
+        </h2>
+    </span>
+    <div
+            class="col-7 row-10 lift-1 absolute "
+            ng-mouseleave="ui.search.showSearch=false"
+            ng-show="ui.search.showSearch">
+        <div class="col-13 row-13 mngr-search">
+            <mngr-table></mngr-table>
+        </div>
+        <div class="middle-container col-2 row-1 absolute bottom right lift-1">
+            <b
+                    class="text-center middle-content"
+                    ng-click="ui.search.showSearch = false">
+                [ Close ]
+            </b>
+        </div>
+    </div>
+</div>
