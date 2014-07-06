@@ -156,10 +156,10 @@ angular.module('mngr').factory('models',function() {
 		//ecodocs table models.
 		sortables: {
 			products: [
-                {name: 'upc', 'show': false, type: 'text', priority: 1},
+				{name: 'upc', 'show': false, type: 'text', priority: 1},
 				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2},
 				{name: 'stock', show: true, type: 'number', priority: 5},
-				{name: 'price', show: false, type: 'number', display: 'currency', priority: 3},
+				{name: 'price', show: false, type: 'number', prefix: '$', priority: 3},
 				{name: 'categories', title: 'category', show: false, type: 'categories', priority: 7},
 				{name: 'suppliers', show: false, type: 'static', priority: 10},
 				{name: 'updated', show: true, type: 'static', priority: 10}
@@ -196,27 +196,27 @@ angular.module('mngr').factory('models',function() {
 		//ecodocs filter models.
 		filters:{
 			products:[
-                {   name: 'Name',
-                    type: 'text',
-                    model: 'name',
-                    value: '',
-                    priority: 10
-                },
-                {   name: 'Price',
-                    type: 'number',
-                    model: 'price',
-                    operands: ['=', '<', '>', '><'],
-                    value: '',
-                    value2: '',
-                    operand: '=',
-                    priority: 10
-                },
-                {   name: 'UPC',
-                    type: 'text',
-                    model: 'upc',
-                    value: '',
-                    priority: 10
-                },
+				{   name: 'Name',
+					type: 'text',
+					model: 'name',
+					value: '',
+					priority: 10
+				},
+				{   name: 'Price',
+					type: 'number',
+					model: 'price',
+					operands: ['=', '<', '>', '><'],
+					value: '',
+					value2: '',
+					operand: '=',
+					priority: 10
+				},
+				{   name: 'UPC',
+					type: 'text',
+					model: 'upc',
+					value: '',
+					priority: 10
+				},
 				{
 					name: 'Updated',
 					type:'button',
@@ -247,7 +247,7 @@ angular.module('mngr').factory('models',function() {
 				{}
 			]
 		},
-        searchable: ['products', 'orders']
+		searchable: ['products', 'orders']
 	};
 	return models;
 });

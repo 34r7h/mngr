@@ -2,7 +2,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 
 	var ui = {
 		components:[
-			{name:'stock',icon:'fa fa-barcode',params:['product-id']},
+			{name:'products',icon:'fa fa-barcode',params:['product-id']},
 			{name:'shop',icon:'fa fa-gift',params:['path'],default:true},
 			{name:'orders',icon:'fa fa-barcode',params:['order-id']},
 			{name:'users',icon:'fa fa-barcode',params:['user-id']},
@@ -11,22 +11,22 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		workspace: {
 			overlay: {
 				show: false,
-				component: 'stock',
-                params: {},
+				component: 'products',
+				params: {},
 				view: '',
 				icon:'fa fa-leaf'
 			},
 			main: {
 				show: true,
 				component: '',
-                params: {},
+				params: {},
 				view: '',
 				icon:'fa fa-leaf'
 			},
 			underlay: {
 				show: false,
 				component: '',
-                params: {},
+				params: {},
 				view: '',
 				icon:'fa fa-leaf'
 			}
