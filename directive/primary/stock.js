@@ -59,10 +59,10 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 								if(currentOrder){
 									data.orders.fire.$child(currentOrder).items.push('This Product');
 								} else {
-									api.create('orders',model.orders);
-
+									api.create('orders',$parent.model.orders);
+									console.log('Outbound');
 								}
-								console.log('Outbound');
+
 							}
 						}
 					]
