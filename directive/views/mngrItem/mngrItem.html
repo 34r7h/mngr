@@ -1,21 +1,125 @@
 <div class="full">
     <div class="col-1 row-12" >
-        <div ng-repeat="action in itemActions" class="col-13 full" style="height:{{100/itemActions.length}}%">
             <div class="middle-container" ng-click="action.action()">
                 <i class="middle-content {{action.icon}}">{{action.name}}</i>
             </div>
-        </div>
     </div>
-    <span class="col-12 row-1">
-        Header
+    <span class="col-12 row-1 text-center">
+        <span class="col-7 middle-container">
+            <h4 class="middle-content text-left">
+                <div
+                        ng-hide="editName"
+                        ng-model="item.name"
+                        ng-click="editName=!editName">
+                    {{$parent.itemModel.header.name()}}
+                </div>
+                <input
+                        class="full"
+                        ng-show="editName"
+                        ng-model="item.name"
+                        ng-blur="$parent.$parent.$parent.api.update($parent.type, item.$id, item); editName=!editName"
+                        on-enter="$parent.$parent.$parent.api.update($parent.type,item.$id, item); editName=!editName;">
+            </h4>
+        </span>
+        <span class="col-6 row-13">
+            <span
+                    class="row-13 pull-left"
+                    style="width:{{100/$parent.$parent.itemModel.header.interests.length}}%"
+                    ng-repeat="interest in $parent.itemModel.header.interests">
+                <div
+                        class="col-13 row-3"
+                        ng-click="editInterest=!editInterest">
+                {{interest.name}}
+                <h3
+                        class="col-13 row-3"
+                        ng-hide="editInterest && interest.type==='edit'"
+                        ng-click="interest.action()">
+                    {{interest.value()}}
+                </h3>
+            </div>
+                <h3
+                        class="col-13 row-10"
+                        ng-show="editInterest && interest.type==='edit'">
+                    <input
+                        ng-init="interesting.value = interest.value()"
+                        ng-model="$parent.item[interest.model]"
+                        autofocus
+                        ng-blur="$parent.$parent.$parent.$parent.api.update($parent.$parent.type, $parent.item.$id, $parent.item); editInterest=false"
+                        on-enter="$parent.$parent.$parent.$parent.api.update($parent.$parent.type,$parent.item.$id, $parent.item); editInterest=false;">
+                </h3>
+            </span>
+        </span>
+        </span>
+
+        <!--span class="col-3 middle-container">
+            <div class="middle-content full"><h3 class="col-5">{{$parent.itemModel.header.name()|currency}}</h3><p>{{$parent.itemModel.header.interests()}}</p></div>
+        </span>
+        <span class="col-3 middle-container">
+            <div class="middle-content"><h3 class="col-5">{{item.stock}}</h3><p>In Stock</p></div>
+        </span-->
     </span>
     <span class="col-5 row-11">
         {{item}}
     </span>
     <span class="col-7 row-11">
-        Interactions
+        <div class="col-5 row-1 middle-container" ng-click="showInteraction=false">
+            <b class="middle-content text-center">Details</b>
+        </div>
+        <div class="col-8 row-1">
+            <div
+                    class="row-13 pull-left middle-container"
+                    style="width:{{100/$parent.$parent.itemModel.interactions.length}}%"
+                    ng-repeat="interaction in $parent.itemModel.interactions"
+                    ng-click="$parent.showInteraction=interaction.name">
+                <b class="middle-content text-center">{{interaction.name}}</b>
+            </div>
+        </div>
+        <div class="row-12 col-13 middle-container" ng-hide="showInteraction">
+            <div
+                    class="col-13 middle-container"
+                    style="height:{{100/$parent.$parent.itemModel.details.length}}%"
+                    ng-repeat="detail in $parent.itemModel.details">
+                <h4 class="middle-content text-center">
+                    <span class="col-3 pull-1 text-right">{{detail.name}}: </span>
+                    <input
+                            class="col-8 text-left"
+                            ng-model="$parent.item[detail.model]"
+                            ng-blur="$parent.$parent.$parent.$parent.api.update($parent.$parent.type, $parent.item.$id, $parent.item); editInterest=false"
+                            on-enter="$parent.$parent.$parent.$parent.api.update($parent.$parent.type,$parent.item.$id, $parent.item); editInterest=false;">
+                </h4><b></b>
+            </div>
+        </div>
+        <div ng-show="showInteraction">
+            <mngr element="showInteraction"></mngr>
+        </div>
     </span>
     <span class="col-13 row-1">
-        Footer
+        <span
+                class="row-13 pull-left text-center"
+                style="width:{{100/$parent.$parent.itemModel.footer.length}}%"
+                ng-repeat="interest in $parent.itemModel.footer">
+                <div
+                        class="col-13 row-3"
+                        ng-click="editInterest=!editInterest">
+                    {{interest.name}}
+                    <h3
+                            class="col-13 row-3"
+                            ng-hide="editInterest && interest.type==='edit'"
+                            ng-click="interest.action()">
+                        {{interest.value()}}
+                    </h3>
+                </div>
+                <h3
+                        class="col-13 row-10"
+                        ng-show="editInterest && interest.type==='edit'">
+                    <input
+                            ng-init="interesting.value = interest.value()"
+                            ng-model="$parent.item[interest.model]"
+                            autofocus
+                            ng-blur="$parent.$parent.$parent.$parent.api.update($parent.$parent.type, $parent.item.$id, $parent.item); editInterest=false"
+                            on-enter="$parent.$parent.$parent.$parent.api.update($parent.$parent.type,$parent.item.$id, $parent.item); editInterest=false;">
+                </h3>
+            </span>
+
     </span>
 </div>

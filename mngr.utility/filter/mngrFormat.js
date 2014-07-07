@@ -50,6 +50,6 @@ angular.module("mngr.utility").filter("mngrLinkTo", function($location){
             searchStr += (searchStr?'&':'?')+workspace+'='+link;
         }
 
-        return '/#'+((!linkPath || linkPath.charAt(0)!=='/')?'/':'')+linkPath+searchStr;
+        return '#'+((!linkPath || linkPath.charAt(0)!=='/')?'/':'')+linkPath+searchStr;
     };
 });

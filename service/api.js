@@ -1,7 +1,9 @@
-angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase, md5) {
+angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase, md5, $window) {
 
 	var api = {
-
+		link: function (url) {
+			$window.location='#'+url;
+		},
 		bind:function(type, id, scope){
 //			data[type].fire.$child(id).$bind(scope, type+id);
 		},
@@ -10,6 +12,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			//ecodocs takes a reference to firebase and $adds a model.
             //this.model[type] = {};
             return data[type].fire.$add(model); // return the $add promise
+
 		},
 		save:function(type, id){
 			var time = new Date();
@@ -17,6 +20,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 
             data[type].fire.$save(id);
             data[type].fire.$child(id).$update({updated: time});
+
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -34,7 +38,10 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			data[type].fire.$update(object);
              // that approach would overwrite the full data[type][id] record rather than updating it
              */
-            data[type].fire.$child(id).update(model);
+			console.log('Updating '+type+': '+id+' with: '+model);
+			var time = new Date();
+            data[type].fire.$child(id).$update(model);
+			data[type].fire.$child(id).$update({updated: time});
 		},
 		remove:function(type, id){
 			data[type].fire.$remove(id);

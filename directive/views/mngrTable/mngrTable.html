@@ -65,6 +65,7 @@
                             <span ng-if="!column.title">
                                 {{column.name | uppercase}}
                             </span>
+
                         </a>
                         <span ng-show="sort.column===column.name">
                             <i
@@ -78,7 +79,8 @@
 
             <tbody class="col-13 row-11 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
                    prev-page="scroll.prevPage()"
-                   threshold="1%">
+                   threshold="10%">
+
                 <tr
                         class="col-13 row-2 middle-container"
                         ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | limitTo:scroll.showCount">
@@ -117,15 +119,16 @@
                                         ng-hide="bind"
                                         class="text-center"
                                         ng-click="bind=true">
-                                    {{data[column.name]}}
+                                    {{column.prefix}} {{data[column.name]}}
                                 </i>
+
                                 <input
                                         class="text-center"
-                                        autofocus ng-show="bind"
-                                        ng-model="data[column.name]">
-                                <i
+                                        autofocus
                                         ng-show="bind"
-                                        ng-click="api.save(type,data.$id); bind=!bind">Done</i>
+                                        ng-blur="api.save(type,data.$id); bind=!bind"
+                                        on-enter="api.save(type,data.$id); bind=!bind"
+                                        ng-model="data[column.name]">
                             </span>
                         </span>
 

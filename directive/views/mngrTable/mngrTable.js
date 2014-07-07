@@ -27,8 +27,8 @@ angular.module('mngr').directive('mngrTable', function(models, api, filter) {
             }};
 
             scope.scroll = {
-                perPage: 5,
-                showCount: 25,
+                perPage: 75,
+                showCount: 75,
                 nextPage: function(){
                     if(scope.table && scope.table.filteredData){
                         var maxOff = (scope.table.filteredData.length - scope.scroll.perPage);
