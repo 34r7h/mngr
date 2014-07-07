@@ -15,6 +15,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
             console.log('create '+type+': '+JSON.stringify(model));
             data[type].fire.$add(model).then(function(result){
                 if(model.users){
+                    // it's added, update all the associated users
                     data[type].fire.$addToUsers(result.id, model.users);
                 }
                 defer.resolve(result);
@@ -74,18 +75,20 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 		},
 		remove:function(type, id){
             var defer = $q.defer();
-            // ecodocs: before remove, get existing users
-            // ecodocs: after remove, dequeue users
             console.log('remove:'+type+'/'+id);
             var child = data[type].fire.$child(id);
             if(child){
                 child.$on('loaded', function(){
                     var users = null;
+                    // get the associated users before we remove it
                     if(child.users){
                         users = child.users;
                     }
                     data[type].fire.$remove(id).then(function(){
-                        data[type].fire.$removeFromUsers(id, users);
+                        if(users){
+                            // it's removed, clean up all the associated user records
+                            data[type].fire.$removeFromUsers(id, users);
+                        }
                         defer.resolve(true);
                     });
                 });
@@ -105,6 +108,12 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
                 if(!data[type.name] || type.access.indexOf('public')===-1){
                     var dataLoaded = $q.defer();
                     datasLoaded[type.name] = dataLoaded.promise;
+
+                    // clean up existing instance of this data type
+                    if(data[type.name] && data[type.name].fire){
+                        data[type.name].fire.destroy();
+                        delete data[type.name].fire;
+                    }
 
                     var secureFire = mngrSecureFirebase(type, data.user.profile);
                     data[type.name] = {

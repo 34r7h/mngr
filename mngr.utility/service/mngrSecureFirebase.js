@@ -84,9 +84,21 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 return this.$secure.removeFromUsers(id, userIDs);
             },
 
+            destroy: function(){
+                console.log('destroying \''+this.$secure.type.name+'\'...');
+                // destructor that removes all data event listeners
+                if(this.$secure.ref){
+                    this.$secure.ref.off();
+                }
+                if(this.$secure.queue){
+                    this.$secure.queue.$off();
+                }
+            },
+
             $secure: {
-                ref: null,  // Firebase reference
-                fire: null, // null unless a user has root access for this type (ie. public or role-access)
+                ref: null,   // Firebase reference
+                fire: null,  // null unless a user has root access for this type (ie. public or role-access)
+                queue: null, // user's data queue
                 children: {},   // object of child $firebase()'s for user-level access
                 type: type,
                 user: user,
@@ -401,13 +413,10 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // initialize security information
 
-        // ensure type.access is always an array (for ease of use)
-        if(angular.isString(type.access)){
-            mngrSecureFirebase.$secure.type.access = [type.access];
-        }
-
         // initializes the $secure data structure based on user's access
         function initForUser(){
+            console.log('initting '+mngrSecureFirebase.$secure.type.name+'...');
+
             // get a reference to the type's root
             mngrSecureFirebase.$secure.ref = new Firebase("https://mngr.firebaseio.com/"+type.name);
 
@@ -483,63 +492,71 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // processes the user's data queue by adding/removing entry's to their data list for this type
         function processUserDataQueue(){
+            console.log('processing data queue...');
             var defer = $q.defer();
 
-            var userDataQueue = new Firebase("https://mngr.firebaseio.com/users/"+user.$id+'/dataQueue/'+type.name);
-            userDataQueue.once('value', function(snapshot) {
-                if(snapshot.val()){
-                    var userDataList = new Firebase("https://mngr.firebaseio.com/users/"+user.$id+'/'+type.name);
-                    var userDataProcessed = {};
+            if(mngrSecureFirebase.$secure.queue){
+                var userDataList = new Firebase("https://mngr.firebaseio.com/users/"+user.$id+'/'+type.name);
+                var userDataProcessed = {};
 
-                    angular.forEach(snapshot.val(), function(added, id) {
-                        var userDataMoved = $q.defer();
-                        userDataProcessed[id] = userDataMoved.promise;
-                        if(added){
-                            // queue'd entry was added, add it to the data list
-                            userDataList.child(id).set(true, function(error){
-                                if(!error){
-                                    userDataMoved.resolve(true);
-                                }
-                                else{
-                                    userDataMoved.reject(error);
-                                }
-                            });
-                        }
-                        else{
-                            // queue'd entry was removed, remove it from the data list
-                            userDataList.child(id).remove(function(error){
-                                if(!error){
-                                    userDataMoved.resolve(true);
-                                }
-                                else{
-                                    userDataMoved.reject(error);
-                                }
-                            });
-                        }
-                        // after data has been moved, remove it from the queue
-                        userDataMoved.promise.then(function(){
-                            userDataQueue.child(id).remove();
+                angular.forEach(mngrSecureFirebase.$secure.queue.$getIndex(), function(id){
+                    var userDataMoved = $q.defer();
+                    userDataProcessed[id] = userDataMoved.promise;
+
+                    if(mngrSecureFirebase.$secure.queue[id]){
+                        // queue'd entry was added, add it to the data list
+                        userDataList.child(id).set(true, function(error){
+                            if(!error){
+                                userDataMoved.resolve(true);
+                            }
+                            else{
+                                userDataMoved.reject(error);
+                            }
                         });
+                    }
+                    else{
+                        // queue'd entry was removed, remove it from the data list
+                        userDataList.child(id).remove(function(error){
+                            if(!error){
+                                userDataMoved.resolve(true);
+                            }
+                            else{
+                                userDataMoved.reject(error);
+                            }
+                        });
+                    }
+                    // after data has been moved, remove it from the queue
+                    userDataMoved.promise.then(function(){
+                        mngrSecureFirebase.$secure.queue.$remove(id);
                     });
+                });
 
-                    $q.all(userDataProcessed).then(function(results){
-                        defer.resolve(true);
-                    }, function(error){ defer.reject(error); });
-                }
-                else{
+                $q.all(userDataProcessed).then(function(results){
                     defer.resolve(true);
-                }
-            });
+                }, function(error){ defer.reject(error); });
+            }
 
             return defer.promise;
         }
 
-        if(user && user.$id){
-            // process queue and initialize $secure data
-            processUserDataQueue().then(initForUser, initForUser); // even if queue-processing fails, initialize data
+        // ensure type.access is always an array (for ease of use)
+        if(angular.isString(type.access)){
+            mngrSecureFirebase.$secure.type.access = [type.access];
+        }
 
-            // listen for changes to the dataQueue so our queue is processed while we're logged in
-            user.$child('dataQueue/'+type.name).$on('value', processUserDataQueue);
+        if(user && user.$id){
+            var initted = false;
+            if(!mngrSecureFirebase.$secure.queue){
+                mngrSecureFirebase.$secure.queue = $firebase(new Firebase("https://mngr.firebaseio.com/users/"+user.$id+'/dataQueue/'+type.name));
+                mngrSecureFirebase.$secure.queue.$on('value', function(){
+                    processUserDataQueue().then(function(){
+                        if(!initted){
+                            initForUser();
+                            initted = true;
+                        }
+                    });
+                });
+            }
         }
         else{
             // no user to process queue for, just initialize $secure data
