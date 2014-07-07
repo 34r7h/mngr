@@ -20,7 +20,7 @@
                 <div class="full ">
                     <div class="col-13 " style="height:{{100/components.length}}%" ng-repeat="component in components">
                         <span class="full middle-container">
-                            <a href="{{component.name | mngrLinkTo:'main'}}" class="full {{component.icon}} middle-content" ng-click="ui.search.showSearch=!ui.search.showSearch">
+                            <a ng-click="$parent.$parent.api.link(component.name)" href class="full {{component.icon}} middle-content" ng-click="ui.search.showSearch=!ui.search.showSearch">
                                 {{component.name}}
                             </a>
                         </span>
