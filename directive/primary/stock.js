@@ -17,10 +17,10 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 			if($scope.productId){
 				$scope.itemModel = models.item;
 				$scope.itemModel.actions = [
-					{name: 'addNewProduct', action:function(){console.log('new product served');}},
-					{name: 'cloneProduct',action:function(){console.log('this product cloned');}},
-					{name: 'removeProduct', action:function(){api.remove($scope.type,$scope.productId);}},
-					{name: 'newMessage',action:function(){console.log('new product message');}}
+					{name: 'New', action:function(){console.log('new product served');}},
+					{name: 'Clone',action:function(){console.log('this product cloned');}},
+					{name: 'Delete', action:function(){api.remove($scope.type,$scope.productId);api.link('/stock');}},
+					{name: 'Message',action:function(){console.log('new product message');}}
 				];
 				$scope.itemModel.interactions = [
 					{name: 'Messages',action:function(){console.log('this product cloned');}},

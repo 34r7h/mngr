@@ -1,12 +1,19 @@
 <div class="full">
     <div class="col-1 row-12" >
-            <div ng-repeat="action in $parent.itemModel.actions" class="middle-container" style="height:{{100/$parent.$parent.itemModel.actions.length}}%" ng-click="action.action()">
-                <i class="middle-content {{action.icon}}">{{action.name}}</i>
+            <div
+                    ng-repeat="action in $parent.itemModel.actions"
+                    class="middle-container"
+                    style="height:{{100/$parent.$parent.itemModel.actions.length}}%"
+                    >
+                <i class="middle-content {{action.icon}}">
+                    <div ng-hide="confirmAction" ng-click="confirmAction=!confirmAction;">{{action.name}}</div>
+                    <div ng-show="confirmAction" ng-click="action.action();confirmAction=false;">[Really?]</div>
+                </i>
             </div>
     </div>
     <span class="col-12 row-1 text-center">
         <span class="col-7 middle-container">
-            <h4 class="middle-content text-left">
+            <h6 class="middle-content text-left">
                 <div
                         ng-hide="editName"
                         ng-model="item.name"
@@ -14,12 +21,12 @@
                     {{$parent.itemModel.header.name()}}
                 </div>
                 <input
-                        class="full"
+                        class="col-13"
                         ng-show="editName"
                         ng-model="item.name"
                         ng-blur="$parent.$parent.$parent.api.update($parent.type, item.$id, item); editName=!editName"
                         on-enter="$parent.$parent.$parent.api.update($parent.type,item.$id, item); editName=!editName;">
-            </h4>
+            </h6>
         </span>
         <span class="col-6 row-13">
             <span
@@ -33,14 +40,14 @@
                 <h3
                         class="col-13 row-3"
                         ng-hide="editInterest && interest.type==='edit'"
-                        ng-click="confirmAction=true;">
-                    <div ng-show="confirmAction" ng-click="interest.action()">{{interest.value()}}</div>
+                        >{{interest.value()}}
                 </h3>
             </div>
                 <h3
                         class="col-13 row-10"
                         ng-show="editInterest && interest.type==='edit'">
                     <input
+                            class="text-center"
                         ng-init="interesting.value = interest.value()"
                         ng-model="$parent.item[interest.model]"
                         autofocus
