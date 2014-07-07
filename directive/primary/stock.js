@@ -28,6 +28,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 					{name: 'Notices',action:function(){console.log('new product message');}}
 				];
 				$scope.itemModel.details = [
+					{name:'Image Url',value:function(){return $scope.product.imgUrl;},type:'edit',model:'imgUrl'},
 					{name:'Suppliers',value:function(){return $scope.product.suppliers;},type:'edit',model:'suppliers'},
 					{name:'Tax Rate',value:function(){return $scope.product.tax;},type:'edit',model:'tax'},
 					{name:'Shops',value:function(){return $scope.product.shops;},type:'edit',model:'shops'},
@@ -38,9 +39,32 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 						return $scope.product.name;
 					},
 					interests:[
-						{name:'Current Price',value:function(){return $scope.product.price;},type:'edit',model:'price'},
-						{name:'In Stock',value:function(){return $scope.product.stock;},type:'edit',model:'stock'},
-						{name:'Outboarded',value:function(){return 'I push over.';},type:'button',action:function(){console.log('Outbound');}}
+						{
+							name:'Current Price',
+							value:function(){return $scope.product.price;},
+							type:'edit',
+							model:'price'
+						},
+						{
+							name:'In Stock',
+							value:function(){return $scope.product.stock;},
+							type:'edit',
+							model:'stock'
+						},
+						{
+							name:'Add to',
+							value:function(){return 'Order';},
+							type:'button',
+							action:function(){
+								if(currentOrder){
+									data.orders.fire.$child(currentOrder).items.push('This Product');
+								} else {
+									api.create('orders',model.orders);
+
+								}
+								console.log('Outbound');
+							}
+						}
 					]
 
 				};

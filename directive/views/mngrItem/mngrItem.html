@@ -1,6 +1,6 @@
 <div class="full">
     <div class="col-1 row-12" >
-            <div class="middle-container" ng-click="action.action()">
+            <div ng-repeat="action in $parent.itemModel.actions" class="middle-container" style="height:{{100/$parent.$parent.itemModel.actions.length}}%" ng-click="action.action()">
                 <i class="middle-content {{action.icon}}">{{action.name}}</i>
             </div>
     </div>
@@ -59,6 +59,9 @@
         </span-->
     </span>
     <span class="col-5 row-11">
+        <img
+                class="col-13"
+             src="{{item.imgUrl}}">
         {{item}}
     </span>
     <span class="col-7 row-11">
