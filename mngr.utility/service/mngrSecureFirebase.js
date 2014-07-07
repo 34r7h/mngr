@@ -93,7 +93,6 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 eventHandlers: {},
                 loading: false,
                 child: function(key){
-                    console.log('get child:'+key);
                     if(this.permit(key)){
                         if(!this.children[key]){
                             this.children[key] = $firebase(this.ref.child(key));
@@ -538,6 +537,9 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
         if(user && user.$id){
             // process queue and initialize $secure data
             processUserDataQueue().then(initForUser, initForUser); // even if queue-processing fails, initialize data
+
+            // listen for changes to the dataQueue so our queue is processed while we're logged in
+            user.$child('dataQueue/'+type.name).$on('value', processUserDataQueue);
         }
         else{
             // no user to process queue for, just initialize $secure data
