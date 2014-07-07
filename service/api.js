@@ -2,7 +2,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 
 	var api = {
 		link: function (url) {
-			$window.location.replace('#'+url);
+			$window.location='#/'+url;
 		},
 		bind:function(type, id, scope){
 //			data[type].fire.$child(id).$bind(scope, type+id);
