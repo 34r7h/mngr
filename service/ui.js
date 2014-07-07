@@ -13,6 +13,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				show: false,
 				component: 'stock',
                 params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			},
@@ -27,6 +28,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				show: false,
 				component: '',
                 params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			}
@@ -46,6 +48,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				{name:'events', icon:'fa fa-calendar', params:['event-id']},
 				{name:'cart', icon:'fa fa-shopping-cart', params:['order-id']},
 				{name:'notices', icon:'fa fa-globe', params:['notice-id']}
+
 			],
 			notification:''
 		},

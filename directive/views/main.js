@@ -5,10 +5,8 @@ angular.module('mngr').directive('main', function() {
 		controller: function($scope){
 
 		},
-
 		templateUrl: 'directive/views/main.html',
 		link: function(scope, element, attrs, fn) {
-
 
 		}
 	};

@@ -3,6 +3,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 		controller: function($scope){
 			$scope.type = 'products';
 			$scope.typeSingular = 'product';
+
 			$scope.showTable=true;
 			$scope.showItem=false;
 			$scope.showForm=false;
@@ -13,7 +14,6 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 				filters: models.filters[$scope.type],
 				data: data[$scope.type]
 			};
-
 			if($scope.productId){
 				$scope.itemModel = models.item;
 				$scope.itemModel.actions = [
@@ -51,8 +51,6 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 					{name:'Low Stock',value:function(){return $scope.product.lowStock;},type:'edit',model:'lowStock'}
 				];
 			}
-
-
 
 			$scope.form = {
 				model:'',

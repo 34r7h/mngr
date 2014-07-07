@@ -60,6 +60,7 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 
 
 
+
 		},
 		scope:{userId:'='},
 		restrict: 'EA',

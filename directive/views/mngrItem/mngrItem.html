@@ -1,6 +1,5 @@
 <div class="full">
     <div class="col-1 row-12" >
-        <div ng-repeat="action in $parent.itemModel.actions" class="col-13 full" style="height:{{100/$parent.$parent.itemModel.actions.length}}%">
             <div class="middle-container" ng-click="action.action()">
                 <i class="middle-content {{action.icon}}">{{action.name}}</i>
             </div>
@@ -122,5 +121,6 @@
                             on-enter="$parent.$parent.$parent.$parent.api.update($parent.$parent.type,$parent.item.$id, $parent.item); editInterest=false;">
                 </h3>
             </span>
+
     </span>
 </div>

@@ -160,6 +160,7 @@ angular.module('mngr').factory('models',function() {
 				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2},
 				{name: 'stock', show: true, type: 'number', priority: 5},
 				{name: 'price', show: false, type: 'number', prefix: '$', priority: 3},
+
 				{name: 'categories', title: 'category', show: false, type: 'categories', priority: 7},
 				{name: 'suppliers', show: false, type: 'static', priority: 10},
 				{name: 'updated', show: true, type: 'static', priority: 10}
@@ -248,6 +249,7 @@ angular.module('mngr').factory('models',function() {
 			]
 		},
         searchable: ['products', 'orders']
+
 	};
 	return models;
 });

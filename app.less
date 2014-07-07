@@ -37,3 +37,139 @@
 //		.translate(0,0);
 //	}
 //}
+
+body {
+  background:rgba(245, 245, 245, .81);
+  // background: rgba(78,56,66,.72);
+}
+
+.test, .test article, .test div, .test section, .test span {
+  box-shadow: inset 1px 1px 0 0 rgba(255,255,255,.18);
+  padding: 0;
+  // background: rgba(78,56,66,.72);
+  color: #f0f0f3;
+}
+.test div, .test section, .test article, .test span, .test{
+  box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 3, .02);
+  padding:0;
+  background: rgba(245, 245, 245, .81);
+  color: rgba(109, 157, 44, .99);
+}
+
+// typeography
+
+h1, .h1, h2, .h2, h3, .h3 {margin-top: 0;margin-bottom: 0; color:rgba(137, 118, 129, .97)}
+
+// positioning
+.middle-container{display: table; height:100%; width:100%;}
+.middle-content{vertical-align: middle!important; display: table-cell;}
+
+.relative {position: relative!important;} .absolute {position: absolute!important; } .fixed {position: fixed!important; } .static {position: static!important;}
+.bottom {bottom:0!important;} .top {top: 0!important;} .left {left:0!important;} .right {right:0!important;}
+
+// gridding
+.full {height:100%;width:100%}
+.row-13 { height: 100%; }
+.row-12 { height: 92.307692%; }
+.row-11 { height: 84.615384%; }
+.row-10 { height: 76.923076%; }
+.row-9 { height: 69.230769%; }
+.row-8 { height: 61.538461%; }
+.row-7 { height: 53.846153%; }
+.row-6 { height: 46.153846%; }
+.row-5 { height: 38.461538%;}
+.row-4 { height: 30.769230%;}
+.row-3 { height: 23.076923%; }
+.row-2 { height: 15.384615%; }
+.row-1 { height: 7.692307%; }
+
+.col-13 { width: 100%; }
+.col-12 { width: 92.307692%; }
+.col-11 { width: 84.615384%; }
+.col-10 { width: 76.923076%; }
+.col-9 { width: 69.230769%; }
+.col-8 { width: 61.538461%; }
+.col-7 { width: 53.846153%; }
+.col-6 { width: 46.153846%; }
+.col-5 { width: 38.461538%;}
+.col-4 { width: 30.769230%;}
+.col-3 { width: 23.076923%; }
+.col-2 { width: 15.384615%; }
+.col-1 { width: 7.692307%; }
+
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7,.col-8, .col-9, .col-10, .col-11, .col-12, .col-13 {
+  float:left;
+}
+
+.push-13 { margin-left: 100%; }
+.push-12 { margin-left: 92.307692%; }
+.push-11 { margin-left: 84.615384%; }
+.push-10 { margin-left: 76.923076%; }
+.push-9 { margin-left: 69.230769%; }
+.push-8 { margin-left: 61.538461%; }
+.push-7 { margin-left: 53.846153%; }
+.push-6 { margin-left: 46.153846%; }
+.push-5 { margin-left: 38.461538%;}
+.push-4 { margin-left: 30.769230%;}
+.push-3 { margin-left: 23.076923%; }
+.push-2 { margin-left: 15.384615%; }
+.push-1 { margin-left: 7.692307%; }
+
+.pull-13 { margin-right: 100%; }
+.pull-12 { margin-right: 92.307692%; }
+.pull-11 { margin-right: 84.615384%; }
+.pull-10 { margin-right: 76.923076%; }
+.pull-9 { margin-right: 69.230769%; }
+.pull-8 { margin-right: 61.538461%; }
+.pull-7 { margin-right: 53.846153%; }
+.pull-6 { margin-right: 46.153846%; }
+.pull-5 { margin-right: 38.461538%;}
+.pull-4 { margin-right: 30.769230%;}
+.pull-3 { margin-right: 23.076923%; }
+.pull-2 { margin-right: 15.384615%; }
+.pull-1 { margin-right: 7.692307%; }
+
+.lift-13 { bottom:100%; }
+.lift-12 { bottom:92.307692%; }
+.lift-11 { bottom:84.615384%; }
+.lift-10 { bottom:76.923076%; }
+.lift-9 { bottom:69.230769%; }
+.lift-8 { bottom:61.538461%; }
+.lift-7 { bottom:53.846153%; }
+.lift-6 { bottom:46.153846%; }
+.lift-5 { bottom:38.461538%;}
+.lift-4 { bottom:30.769230%;}
+.lift-3 { bottom:23.076923%; }
+.lift-2 { bottom:15.384615%; }
+.lift-1 { bottom:7.692307%; }
+
+.drop-13 { top: 100%; }
+.drop-12 { top: 92.307692%; }
+.drop-11 { top: 84.615384%; }
+.drop-10 { top: 76.923076%; }
+.drop-9 { top: 69.230769%; }
+.drop-8 { top: 61.538461%; }
+.drop-7 { top: 53.846153%; }
+.drop-6 { top: 46.153846%; }
+.drop-5 { top: 38.461538%;}
+.drop-4 { top: 30.769230%;}
+.drop-3 { top: 23.076923%; }
+.drop-2 { top: 15.384615%; }
+.drop-1 { top: 7.692307%; }
+
+// scrolling
+.no-scroll {overflow: none}
+.scroll-all {overflow: auto}
+.scroll-y {overflow-y: scroll;}
+.scroll-x {overflow-x: scroll;}
+
+// padding
+.pad, div.pad {padding: 1.618%;}
+.no-pad, div.no-pad {padding:0 0 0 0; padding-left: 0px!important; padding-right:0px;}
+
+// iconography
+input, input :active, input :focus {
+  border: none;
+  outline: none;
+  color: rgba(137, 170, 96, 1);
+}

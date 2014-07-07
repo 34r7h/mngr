@@ -4,6 +4,7 @@ angular.module("mngr").directive("mngrInput", function($compile){
 			controller:function($scope){
 				/* var properties=[
 					'defaultValue','disabled','form','list','max','min','name','step','type','value','size'
+
 				];
 			    var inputs=[
 					{type:'text'},
