@@ -19,7 +19,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 				$scope.itemModel.actions = [
 					{name: 'addNewProduct', action:function(){console.log('new product served');}},
 					{name: 'cloneProduct',action:function(){console.log('this product cloned');}},
-					{name: 'removeProduct', action:function(){console.log('this product removed');}},
+					{name: 'removeProduct', action:function(){api.remove($scope.type,$scope.productId);}},
 					{name: 'newMessage',action:function(){console.log('new product message');}}
 				];
 				$scope.itemModel.interactions = [
@@ -56,11 +56,11 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 							value:function(){return 'Order';},
 							type:'button',
 							action:function(){
-								var currentOrder='a';
-								if(currentOrder.length>1){
-									//data.orders.fire.$child(currentOrder).items.push('This Product');
+								if($scope.$parent.$parent.$parent.$parent.data.users.fire.child($scope.$parent.$parent.$parent.$parent.data.user.profile.$id).activeOrder===true){
+									//data.users.fire.$child(activeOrder).items.push('This Product');
+									console.log($scope.$parent.$parent.$parent.$parent.$parent.data.users.fire.child($scope.$parent.$parent.$parent.$parent.data.user.profile.$id));
 								} else {
-									// api.create('orders',$parent.model.orders);
+									$scope.api.create('orders',$scope.model.orders);
 									console.log('Outbound');
 								}
 

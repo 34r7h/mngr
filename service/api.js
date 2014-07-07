@@ -11,11 +11,18 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			//this.model = model;
 			//ecodocs takes a reference to firebase and $adds a model.
             //this.model[type] = {};
+			var date = Date.now();
+			model.created = date;
+			model.updated = date;
+			var itemId = '';
+			itemId = data[type].fire.$getIndex()[data[type].fire.$getIndex().length -1];
+			console.log('item saved: '+ itemId);
             return data[type].fire.$add(model); // return the $add promise
+
 
 		},
 		save:function(type, id){
-			var time = new Date();
+			var time = Date.now();
 			console.log('At '+time+', saving '+type+ ': '+id);
 
             data[type].fire.$save(id);
@@ -39,7 +46,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
              // that approach would overwrite the full data[type][id] record rather than updating it
              */
 			console.log('Updating '+type+': '+id+' with: '+model);
-			var time = new Date();
+			var time = Date.now();
             data[type].fire.$child(id).$update(model);
 			data[type].fire.$child(id).$update({updated: time});
 		},

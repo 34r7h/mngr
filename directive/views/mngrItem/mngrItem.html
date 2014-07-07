@@ -33,8 +33,8 @@
                 <h3
                         class="col-13 row-3"
                         ng-hide="editInterest && interest.type==='edit'"
-                        ng-click="interest.action()">
-                    {{interest.value()}}
+                        ng-click="confirmAction=true;">
+                    <div ng-show="confirmAction" ng-click="interest.action()">{{interest.value()}}</div>
                 </h3>
             </div>
                 <h3
