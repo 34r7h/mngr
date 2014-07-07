@@ -85,6 +85,7 @@
                 <h4 class="middle-content text-center">
                     <span class="col-3 pull-1 text-right">{{detail.name}}: </span>
                     <input
+                            ng-show="detail.type==='edit'"
                             class="col-8 text-left"
                             ng-model="$parent.item[detail.model]"
                             ng-blur="$parent.$parent.$parent.$parent.api.update($parent.$parent.type, $parent.item.$id, $parent.item); editInterest=false"

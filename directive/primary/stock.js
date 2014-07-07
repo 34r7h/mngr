@@ -56,10 +56,11 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 							value:function(){return 'Order';},
 							type:'button',
 							action:function(){
-								if(currentOrder){
-									data.orders.fire.$child(currentOrder).items.push('This Product');
+								var currentOrder='a';
+								if(currentOrder.length>1){
+									//data.orders.fire.$child(currentOrder).items.push('This Product');
 								} else {
-									api.create('orders',$parent.model.orders);
+									// api.create('orders',$parent.model.orders);
 									console.log('Outbound');
 								}
 
