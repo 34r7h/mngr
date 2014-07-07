@@ -27,5 +27,12 @@
     "ionic": "driftyco/ionic-bower#~0.9.26",
     "angular-sanitize": "~1.2.18",
     "angular-md5": "~0.1.7"
+<<<<<<< HEAD
+=======
+  },
+  "resolutions": {
+    "angular": "1.2.19",
+    "angular-sanitize": "~1.2.18"
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
   }
 }

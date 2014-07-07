@@ -1,11 +1,20 @@
+<<<<<<< HEAD
 angular.module('mngr', ['ngSanitize','ngMd5','ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.utility'/*, 'ionic'*/]);
 
+=======
+
+angular.module('mngr', ['ngSanitize','ngMd5','ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.util'/*, 'ionic'*/]);
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 
 angular.module('mngr').config(function($stateProvider, $urlRouterProvider) {
 	$stateProvider.state('main', {
 		url:'*path',
 		reloadOnSearch: false,
+<<<<<<< HEAD
 		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api){
+=======
+		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api,$window){
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 			api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			$scope.$on('$locationChangeSuccess', function(){
 				api.loadState(angular.copy($location.path()), angular.copy($location.search()));

@@ -2,7 +2,10 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 	return {
 		controller: function($scope){
 			$scope.type = 'products';
+<<<<<<< HEAD
 			$scope.typeSingular = 'product';
+=======
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 			$scope.showTable=true;
 			$scope.showItem=false;
 			$scope.showForm=false;
@@ -13,6 +16,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 				filters: models.filters[$scope.type],
 				data: data[$scope.type]
 			};
+<<<<<<< HEAD
 
 			if($scope.productId){
 				$scope.itemModel = models.item;
@@ -54,6 +58,25 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 
 
 
+=======
+			$scope.item = {
+				id:'',
+				name:'',
+				header:{
+					title:'',
+					quickEdit:[{}],
+					quickInfo:[{}]
+				},
+				details:[{
+					name:'',
+					value:''
+				}],
+				actions:{},
+				// ecodocs interactions are allowed modules within an item
+				interactions:{},
+				media:{}
+			};
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 			$scope.form = {
 				model:'',
 				name:'',
@@ -84,6 +107,13 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
             else{
                 $scope.showTable = true;
             }
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 		},
 		scope:{productId:'='},
 		restrict: 'EA',

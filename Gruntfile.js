@@ -242,7 +242,11 @@ module.exports = function (grunt) {
 	grunt.registerTask('build',['jshint','clean:before','less','dom_munger','ngtemplates','cssmin','concat','ngmin','uglify','copy:main','htmlmin','imagemin','clean:after']);
 	grunt.registerTask('serve', ['dom_munger:read','jshint','connect', 'watch']);
 	grunt.registerTask('test',['dom_munger:read','karma:all_tests']);
+<<<<<<< HEAD
 	grunt.registerTask('deploy',['copy:ipad','copy:ipad','bgShell:ios','bgShell:github','bgShell:irthos']);
+=======
+	grunt.registerTask('deploy',['copy:ipad','copy:ipad','git_deploy','bgShell:ios','bgShell:github','bgShell:irthos']);
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 
 	grunt.event.on('watch', function(action, filepath) {
 		//https://github.com/gruntjs/grunt-contrib-watch/issues/156

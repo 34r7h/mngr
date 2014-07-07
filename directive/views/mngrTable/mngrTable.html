@@ -27,6 +27,10 @@
                     placeholder="{{filter.name}} (max)"
                     ng-if="filter.operand==='><' && (filter.value2||filter.value2==='')"></mngr-input>
             <select
+<<<<<<< HEAD
+=======
+
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
                 class="col-13 row-2"
                 ng-if="filter.operand && filter.operands && filter.type !== 'date' && filter.type !== 'datetimepicker'"
                 name="{{filter.name}}-operand"
@@ -65,6 +69,10 @@
                             <span ng-if="!column.title">
                                 {{column.name | uppercase}}
                             </span>
+<<<<<<< HEAD
+=======
+
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
                         </a>
                         <span ng-show="sort.column===column.name">
                             <i
@@ -78,7 +86,11 @@
 
             <tbody class="col-13 row-11 scroll-y " mngr-scroll-pages next-page="scroll.nextPage()"
                    prev-page="scroll.prevPage()"
+<<<<<<< HEAD
                    threshold="1%">
+=======
+                   threshold="20%">
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
                 <tr
                         class="col-13 row-2 middle-container"
                         ng-repeat="data in table.filteredData | orderBy:sort.operator:sort.reverse | limitTo:scroll.showCount">
@@ -119,6 +131,7 @@
                                         ng-click="bind=true">
                                     {{column.prefix}} {{data[column.name]}}
                                 </i>
+<<<<<<< HEAD
 
                                 <input
                                         class="text-center"
@@ -157,6 +170,54 @@
                         </td>
                     </th>
                 </tr>
+=======
+                                <i
+                                        ng-show="bind"
+                                        class="text-center"
+                                        ng-click="bind=true">
+                                    {{column.prefix}}
+
+                                    <input
+                                            class="text-center"
+                                            autofocus
+                                            on-enter="api.save(type,data.$id); bind=!bind"
+                                            ng-model="data[column.name]">
+                                    <i
+                                            ng-show="bind"
+                                            ng-click="api.save(type,data.$id); bind=!bind">Done</i>
+                                </i>
+                            </span>
+                        </span>
+
+                    </h3>
+                </td>
+                <td class="col-1 row-1 middle-content">
+                    <b
+                            class="middle-content text-right"
+                            ng-click="showRemove=!showRemove"
+                            ng-hide="showRemove">
+                        [x]
+                    </b>
+                    <b
+                            class="middle-content text-right"
+                            ng-show="showRemove"
+                            ng-click="api.remove(type,data.$id)">
+                        [REMOVE]
+                    </b>
+                </td>
+            </tr>
+            </tbody>
+
+            <tfoot class="col-13 row-1">
+            <tr>
+                <th>
+                <td>
+                    Footer
+                </td>
+                </th>
+            </tr>
+
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
             </tfoot>
 
         </table>

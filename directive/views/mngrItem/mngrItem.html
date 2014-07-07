@@ -1,11 +1,16 @@
 <div class="full">
     <div class="col-1 row-12" >
+<<<<<<< HEAD
         <div ng-repeat="action in $parent.itemModel.actions" class="col-13 full" style="height:{{100/$parent.$parent.itemModel.actions.length}}%">
+=======
+        <div ng-repeat="action in itemActions" class="col-13 full" style="height:{{100/itemActions.length}}%">
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
             <div class="middle-container" ng-click="action.action()">
                 <i class="middle-content {{action.icon}}">{{action.name}}</i>
             </div>
         </div>
     </div>
+<<<<<<< HEAD
     <span class="col-12 row-1 text-center">
         <span class="col-7 middle-container">
             <h4 class="middle-content text-left">
@@ -59,11 +64,16 @@
         <span class="col-3 middle-container">
             <div class="middle-content"><h3 class="col-5">{{item.stock}}</h3><p>In Stock</p></div>
         </span-->
+=======
+    <span class="col-12 row-1">
+        Header
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
     </span>
     <span class="col-5 row-11">
         {{item}}
     </span>
     <span class="col-7 row-11">
+<<<<<<< HEAD
         <div class="col-5 row-1 middle-container" ng-click="showInteraction=false">
             <b class="middle-content text-center">Details</b>
         </div>
@@ -122,5 +132,11 @@
                             on-enter="$parent.$parent.$parent.$parent.api.update($parent.$parent.type,$parent.item.$id, $parent.item); editInterest=false;">
                 </h3>
             </span>
+=======
+        Interactions
+    </span>
+    <span class="col-13 row-1">
+        Footer
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
     </span>
 </div>

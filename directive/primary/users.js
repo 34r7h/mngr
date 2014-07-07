@@ -48,6 +48,7 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 
 			};
 
+<<<<<<< HEAD
             $scope.api = api;
             $scope.data = data;
 
@@ -60,6 +61,17 @@ angular.module('mngr').directive('users', function(ui,data,api,models) {
 
 
 
+=======
+			$scope.api = api;
+			$scope.data = data;
+
+			if($scope.userId){
+
+			}
+			else{
+
+			}
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 		},
 		scope:{userId:'='},
 		restrict: 'EA',

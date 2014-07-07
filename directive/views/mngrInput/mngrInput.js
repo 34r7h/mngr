@@ -2,8 +2,24 @@ angular.module("mngr").directive("mngrInput", function($compile){
 		return {
 			restrict:"E",
 			controller:function($scope){
+<<<<<<< HEAD
 				/* var properties=[
 					'defaultValue','disabled','form','list','max','min','name','step','type','value','size'
+=======
+
+				var properties=[
+					'defaultValue',
+					'disabled',
+					'form',
+					'list',
+					'max',
+					'min',
+					'name',
+					'step',
+					'type',
+					'value',
+					'size'
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 				];
 			    var inputs=[
 					{type:'text'},
@@ -15,8 +31,11 @@ angular.module("mngr").directive("mngrInput", function($compile){
 					{type:'password'},
 					{type:'radio'}
 				];
+<<<<<<< HEAD
 				*/
 
+=======
+>>>>>>> f9aec33bf4ece5208ea9d68ea4d58398e8668895
 			},
 			templateUrl:'directive/views/mngrInput/mngrInput.html',
 			//scope:{element:"@", properties:"@", options:"@", type:"@", model:"@", placeholder:'@', name:'@'},
