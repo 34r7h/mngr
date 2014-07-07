@@ -1,11 +1,7 @@
 angular.module('mngr', ['ngSanitize','ngMd5','ui.utils','ui.router','ngAnimate', 'firebase', 'mngr.utility'/*, 'ionic'*/]);
 
 
-angular.module('mngr').config(function($stateProvider, $urlRouterProvider, $compileProvider,$provide,$locationProvider) {
-
-	$locationProvider
-		.html5Mode(true);
-
+angular.module('mngr').config(function($stateProvider, $urlRouterProvider, $compileProvider) {
 	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 	$stateProvider.state('main', {
 		url:'*path',
