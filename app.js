@@ -2,10 +2,7 @@ angular.module('mngr', ['ngSanitize','ngMd5','ui.utils','ui.router','ngAnimate',
 
 
 angular.module('mngr').config(function($stateProvider, $urlRouterProvider, $compileProvider,$provide,$locationProvider) {
-	$provide.decorator('$sniffer', function($delegate) {
-		$delegate.history = false;
-		return $delegate;
-	});
+
 	$locationProvider
 		.html5Mode(true);
 
