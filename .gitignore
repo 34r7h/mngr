@@ -1,0 +1,8 @@
+bower_components/
+node_modules/
+dist/
+.bowercc
+.editorconfig
+.npmignore
+.yo-rc.json
+.idea/

@@ -1,0 +1,48 @@
+<div class="col-13 row-13 absolute test">
+    <div class="col-13 row-1" style="display: table">
+        <div class="col-1 row-13" >
+                <create></create>
+        </div>
+        <div class="col-7 row-13" >
+            <breadcrumbs></breadcrumbs>
+        </div>
+        <div class="col-5 row-13" >
+            <notify></notify>
+        </div>
+    </div>
+
+
+    <div class="col-13 row-11">
+        <div ng-show="ui.workspace.overlay.show" class="full">
+            <mngr
+                    element="ui.workspace.overlay.component"
+                    params="ui.workspace.overlay.params"
+                    workspace="overlay"></mngr >
+        </div>
+        <div
+                class="full"
+                ng-show="ui.workspace.main.show">
+            <mngr
+                    element="ui.workspace.main.component"
+                    params="ui.workspace.main.params"
+                    workspace="main"></mngr>
+            <!--stock></stock-->
+            <!--div class="col-3 row-13"><mngr-item></mngr-item></div>
+            <div class="col-6 row-13"><mngr element="'mngr-form'" workspace="main"></mngr></div>
+            <div class="col-4 row-13"><mngr-table></mngr-table></div-->
+        </div>
+        <div ng-show="ui.workspace.underlay.show" class="full">
+            <mngr element="ui.workspace.underlay.component" params="ui.workspace.underlay.params" workspace="underlay"></mngr>
+            <!--span class="full" style="display: table"><i class="full fa fa-leaf" style="text-align: center; vertical-align: middle; display: table-cell;"> Underlay</i></span-->
+        </div>
+    </div>
+    <div class="col-13 row-1">
+        <div class="col-6 row-13">
+            <omni></omni>
+        </div>
+        <div class="col-7 row-13">
+            <search></search>
+        </div>
+    </div>
+
+</div>
