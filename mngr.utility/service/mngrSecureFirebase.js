@@ -407,76 +407,141 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
             mngrSecureFirebase.$secure.type.access = [type.access];
         }
 
-        // get a reference to the type's root
-        mngrSecureFirebase.$secure.ref = new Firebase("https://mngr.firebaseio.com/"+type.name);
+        // initializes the $secure data structure based on user's access
+        function initForUser(){
+            // get a reference to the type's root
+            mngrSecureFirebase.$secure.ref = new Firebase("https://mngr.firebaseio.com/"+type.name);
 
-        // load the data based on user's access level
-        if(mngrSecureFirebase.$secure.permit()){
-            // create the $firebase object if the user has root access for this type
-            mngrSecureFirebase.$secure.fire = $firebase(mngrSecureFirebase.$secure.ref);
+            // load the data based on user's access level
+            if(mngrSecureFirebase.$secure.permit()){
+                // create the $firebase object if the user has root access for this type
+                mngrSecureFirebase.$secure.fire = $firebase(mngrSecureFirebase.$secure.ref);
 
-            if(!userAccounts && type.name === 'userAccounts'){
-                userAccounts = mngrSecureFirebase.$secure.fire;
+                if(!userAccounts && type.name === 'userAccounts'){
+                    userAccounts = mngrSecureFirebase.$secure.fire;
+                }
             }
-        }
-        else{
-            // no root access, load what we can for the user
-            mngrSecureFirebase.$secure.loadForUser();
+            else{
+                // no root access, load what we can for the user
+                mngrSecureFirebase.$secure.loadForUser();
 
-            // handle Firebase events for secured data
-            mngrSecureFirebase.$secure.ref.on('value', function(dataSnapshot){
-                // do nothing with value, we will trigger 'value' event when one of the permitted children changes
-                //console.log('%cFirebase:event: value', 'background: #999; color: #D0E');
-            });
-            mngrSecureFirebase.$secure.ref.on('child_added', function(childSnapshot, prevChildName){
-                if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
-                    //console.log('%cFirebase:event: child_added:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
-                    mngrSecureFirebase.$secure.child(childSnapshot.name()).$on('loaded', function(){
+                // handle Firebase events for secured data
+                mngrSecureFirebase.$secure.ref.on('value', function(dataSnapshot){
+                    // do nothing with value, we will trigger 'value' event when one of the permitted children changes
+                    //console.log('%cFirebase:event: value', 'background: #999; color: #D0E');
+                });
+                mngrSecureFirebase.$secure.ref.on('child_added', function(childSnapshot, prevChildName){
+                    if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
+                        //console.log('%cFirebase:event: child_added:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
+                        mngrSecureFirebase.$secure.child(childSnapshot.name()).$on('loaded', function(){
+                            mngrSecureFirebase.$secure.handleEvent('change');
+                            mngrSecureFirebase.$secure.handleEvent('child_added', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                            if(!mngrSecureFirebase.$secure.loading){
+                                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                            }
+                        });
+                    }
+                });
+                mngrSecureFirebase.$secure.ref.on('child_removed', function(oldChildSnapshot){
+                    if(mngrSecureFirebase.$secure.permit(oldChildSnapshot.name())){
+                        //console.log('%cFirebase:event: child_removed:'+oldChildSnapshot.name(), 'background: #999; color: #D0E');
                         mngrSecureFirebase.$secure.handleEvent('change');
-                        mngrSecureFirebase.$secure.handleEvent('child_added', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                        mngrSecureFirebase.$secure.handleEvent('child_removed', mngrSecureFirebase.$secure.snapshot(oldChildSnapshot.name()));
                         if(!mngrSecureFirebase.$secure.loading){
                             mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
                         }
-                    });
-                }
-            });
-            mngrSecureFirebase.$secure.ref.on('child_removed', function(oldChildSnapshot){
-                if(mngrSecureFirebase.$secure.permit(oldChildSnapshot.name())){
-                    //console.log('%cFirebase:event: child_removed:'+oldChildSnapshot.name(), 'background: #999; color: #D0E');
-                    mngrSecureFirebase.$secure.handleEvent('change');
-                    mngrSecureFirebase.$secure.handleEvent('child_removed', mngrSecureFirebase.$secure.snapshot(oldChildSnapshot.name()));
-                    if(!mngrSecureFirebase.$secure.loading){
-                        mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
-                    }
 
-                    if(mngrSecureFirebase.$secure.children[oldChildSnapshot.name()]){
-                        delete mngrSecureFirebase.$secure.children[oldChildSnapshot.name()];
+                        if(mngrSecureFirebase.$secure.children[oldChildSnapshot.name()]){
+                            delete mngrSecureFirebase.$secure.children[oldChildSnapshot.name()];
+                        }
                     }
-                }
-            });
-            mngrSecureFirebase.$secure.ref.on('child_changed', function(childSnapshot, prevChildName){
-                if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
-                    // need $timeout because the Firebase event fires before the $firebase reference gets updated
-                    $timeout(function() {
-                        //console.log('%cFirebase:event: child_changed:'+childSnapshot.name()+':'+mngrSecureFirebase.$secure.children[childSnapshot.name()].$value+':'+(JSON.stringify(childSnapshot.val())), 'background: #999; color: #D0E');
+                });
+                mngrSecureFirebase.$secure.ref.on('child_changed', function(childSnapshot, prevChildName){
+                    if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
+                        // need $timeout because the Firebase event fires before the $firebase reference gets updated
+                        $timeout(function() {
+                            //console.log('%cFirebase:event: child_changed:'+childSnapshot.name()+':'+mngrSecureFirebase.$secure.children[childSnapshot.name()].$value+':'+(JSON.stringify(childSnapshot.val())), 'background: #999; color: #D0E');
+                            mngrSecureFirebase.$secure.handleEvent('change');
+                            mngrSecureFirebase.$secure.handleEvent('child_changed', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                            if (!mngrSecureFirebase.$secure.loading) {
+                                mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
+                            }
+                        });
+                    }
+                });
+                mngrSecureFirebase.$secure.ref.on('child_moved', function(childSnapshot, prevChildName){
+                    if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
+                        //console.log('%cFirebase:event: child_moved:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
                         mngrSecureFirebase.$secure.handleEvent('change');
-                        mngrSecureFirebase.$secure.handleEvent('child_changed', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
-                        if (!mngrSecureFirebase.$secure.loading) {
+                        mngrSecureFirebase.$secure.handleEvent('child_moved', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
+                        if(!mngrSecureFirebase.$secure.loading){
                             mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
                         }
-                    });
-                }
-            });
-            mngrSecureFirebase.$secure.ref.on('child_moved', function(childSnapshot, prevChildName){
-                if(mngrSecureFirebase.$secure.permit(childSnapshot.name())){
-                    //console.log('%cFirebase:event: child_moved:'+childSnapshot.name()+','+prevChildName, 'background: #999; color: #D0E');
-                    mngrSecureFirebase.$secure.handleEvent('change');
-                    mngrSecureFirebase.$secure.handleEvent('child_moved', mngrSecureFirebase.$secure.snapshot(childSnapshot.name(), prevChildName));
-                    if(!mngrSecureFirebase.$secure.loading){
-                        mngrSecureFirebase.$secure.handleEvent('value', mngrSecureFirebase.$secure.snapshot());
                     }
+                });
+            }
+        }
+
+        // processes the user's data queue by adding/removing entry's to their data list for this type
+        function processUserDataQueue(){
+            var defer = $q.defer();
+
+            var userDataQueue = new Firebase("https://mngr.firebaseio.com/users/"+user.$id+'/dataQueue/'+type.name);
+            userDataQueue.once('value', function(snapshot) {
+                if(snapshot.val()){
+                    var userDataList = new Firebase("https://mngr.firebaseio.com/users/"+user.$id+'/'+type.name);
+                    var userDataProcessed = {};
+
+                    angular.forEach(snapshot.val(), function(added, id) {
+                        var userDataMoved = $q.defer();
+                        userDataProcessed[id] = userDataMoved.promise;
+                        if(added){
+                            // queue'd entry was added, add it to the data list
+                            userDataList.child(id).set(true, function(error){
+                                if(!error){
+                                    userDataMoved.resolve(true);
+                                }
+                                else{
+                                    userDataMoved.reject(error);
+                                }
+                            });
+                        }
+                        else{
+                            // queue'd entry was removed, remove it from the data list
+                            userDataList.child(id).remove(function(error){
+                                if(!error){
+                                    userDataMoved.resolve(true);
+                                }
+                                else{
+                                    userDataMoved.reject(error);
+                                }
+                            });
+                        }
+                        // after data has been moved, remove it from the queue
+                        userDataMoved.promise.then(function(){
+                            userDataQueue.child(id).remove();
+                        });
+                    });
+
+                    $q.all(userDataProcessed).then(function(results){
+                        defer.resolve(true);
+                    }, function(error){ defer.reject(error); });
+                }
+                else{
+                    defer.resolve(true);
                 }
             });
+
+            return defer.promise;
+        }
+
+        if(user && user.$id){
+            // process queue and initialize $secure data
+            processUserDataQueue().then(initForUser, initForUser); // even if queue-processing fails, initialize data
+        }
+        else{
+            // no user to process queue for, just initialize $secure data
+            initForUser();
         }
 
         return mngrSecureFirebase;
