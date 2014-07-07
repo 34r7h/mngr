@@ -6,74 +6,26 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
         var mngrSecureFirebase = {
             // $add: returns a promise that resolves with the new ID after it has been added
             $add: function(value){
-                var childAdded = $q.defer();
                 if(this.$secure.fire){
+                    var defer = $q.defer();
                     this.$secure.fire.$add(value).then(function(ref){
-                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1){
-                            mngrSecureFirebase.$secure.queueUserData(ref.name(), value.users);
-                        }
-                        childAdded.resolve(ref.name());
-                    }, function(error){ childAdded.reject(error); });
+                        defer.resolve({created: true, type: mngrSecureFirebase.$secure.type.name, id: ref.name()});
+                    }, function(error){ defer.reject(error); });
+                    return defer.promise;
                 }
-                else{
-                    this.$secure.addChild(value).then(function(newID){
-                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1) {
-                            mngrSecureFirebase.$secure.queueUserData(newID, value.users);
-                        }
-                        childAdded.resolve(newID);
-                    }, function(error){ childAdded.reject(error); });
-                }
-                return childAdded.promise;
+                return this.$secure.addChild(value);
             },
             $remove: function(key){
-                var childRemoved = $q.defer();
-                var child = this.$child(key);
-                child.$on('loaded', function(){
-                    if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1){
-                        mngrSecureFirebase.$secure.dequeueUserData(child.$id, child.users);
-                    }
-
-                    if(mngrSecureFirebase.$secure.fire) {
-                        mngrSecureFirebase.$secure.fire.$remove(key).then(function(){
-                            childRemoved.resolve(key);
-                        }, function(error){ childRemoved.reject(error); });
-                    }
-                    else{
-                        mngrSecureFirebase.$secure.removeChild(key);
-                        childRemoved.resolve(key);
-                    }
-                });
-                return childRemoved.promise;
+                if(this.$secure.fire){
+                    return this.$secure.fire.$remove(key);
+                }
+                return this.$secure.removeChild(key);
             },
             $save: function(key){
-                var childSaved = $q.defer();
                 if(this.$secure.fire){
-                    this.$secure.fire.$save(key).then(function(){
-                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1) {
-                            var child = mngrSecureFirebase.$child(key);
-                            child.$on('loaded', function () {
-                                if(mngrSecureFirebase.$secure.type.access.indexOf('user') !== -1) {
-                                    mngrSecureFirebase.$secure.queueUserData(key, child.users);
-                                }
-                            });
-                        }
-                        childSaved.resolve(key);
-                    }, function(error){ childSaved.reject(error); });
+                    return this.$secure.fire.$save(key);
                 }
-                else{
-                    this.$secure.saveChild(key).then(function(){
-                        if(mngrSecureFirebase.$secure.type.access.indexOf('user')!==-1) {
-                            var child = mngrSecureFirebase.$child(key);
-                            child.$on('loaded', function () {
-                                if(mngrSecureFirebase.$secure.type.access.indexOf('user') !== -1) {
-                                    mngrSecureFirebase.$secure.queueUserData(key, child.users);
-                                }
-                            });
-                        }
-                        childSaved.resolve(key);
-                    });
-                }
-                return childSaved.promise;
+                return this.$secure.saveChild(key);
             },
             $child: function(key){
                 if(this.$secure.fire){
@@ -125,6 +77,13 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 return this.$secure.childArray();
             },
 
+            $addToUsers: function(id, userIDs){
+                return this.$secure.addToUsers(id, userIDs);
+            },
+            $removeFromUsers: function(id, userIDs){
+                return this.$secure.removeFromUsers(id, userIDs);
+            },
+
             $secure: {
                 ref: null,  // Firebase reference
                 fire: null, // null unless a user has root access for this type (ie. public or role-access)
@@ -134,6 +93,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 eventHandlers: {},
                 loading: false,
                 child: function(key){
+                    console.log('get child:'+key);
                     if(this.permit(key)){
                         if(!this.children[key]){
                             this.children[key] = $firebase(this.ref.child(key));
@@ -154,7 +114,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     if(this.permit(null, value)){
                         var newID = this.ref.push(value, function(){
                             mngrSecureFirebase.$secure.child(newID.name());
-                            defer.resolve(newID);
+                            defer.resolve({created: true, type: mngrSecureFirebase.$secure.type.name, id: newID.name()});
                         });
                     }
                     else{
@@ -168,7 +128,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     // if we have the child, we have access to remove it
                     if(child){
                         child.$remove().then(function(){
-                            defer.resolve(true);
+                            defer.resolve();
                         }, function(error){ defer.reject(error); });
                     }
                     else{
@@ -180,8 +140,9 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     var defer = $q.defer();
                     var child = this.child(key);
                     if(child){
+                        // ecodocs: we might need to sync the $child from the array'ed version
                         child.$save().then(function(){
-                            defer.resolve(true);
+                            defer.resolve();
                         }, function(error){ defer.reject(error); });
                     }
                     else{
@@ -276,25 +237,81 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                         }
                     }
                 },
-                queueUserData: function(id, userIDs){
+                addToUsers: function(id, userIDs){
+                    var defer = $q.defer();
                     if(id){
-                        angular.forEach(userIDs, function(userID){
+                        var userDataAdded = {};
+                        angular.forEach(userIDs, function(linked, userID){
                             if(userID){
-                                var userDataQueue = new Firebase("https://mngr.firebaseio.com/users/"+userID+"/dataQueue/"+this.type.name+"/"+id);
-                                userDataQueue.set(true);
+                                var userDataDefer = $q.defer();
+                                userDataAdded[userID] = userDataDefer.promise;
+
+                                var userData = new Firebase("https://mngr.firebaseio.com/users/"+userID+((mngrSecureFirebase.$secure.user && userID===mngrSecureFirebase.$secure.user.$id)?"/":"/dataQueue/")+mngrSecureFirebase.$secure.type.name+"/"+id);
+                                userData.set(true, function(error){
+                                    if(!error){
+                                        userDataDefer.resolve(true);
+                                    }
+                                    else{
+                                        userDataDefer.reject(error);
+                                    }
+                                });
                             }
                         });
+                        $q.all(userDataAdded).then(function(){
+                            defer.resolve(true);
+                        }, function(error){
+                            defer.reject(error);
+                        });
                     }
+                    else{
+                        defer.reject('No id to add to users');
+                    }
+                    return defer.promise;
                 },
-                dequeueUserData: function(id, userIDs){
-                    if(id && userIDs){
-                        angular.forEach(userIDs, function(userID){
+                removeFromUsers: function(id, userIDs){
+                    var defer = $q.defer();
+                    if(id){
+                        var userDataRemoved = {};
+                        angular.forEach(userIDs, function(linked, userID){
                             if(userID){
-                                var userDataQueue = new Firebase("https://mngr.firebaseio.com/users/"+userID+"/dataQueue/"+this.type.name+"/"+id);
-                                userDataQueue.remove();
+                                var userDataDefer = $q.defer();
+                                userDataRemoved[userID] = userDataDefer.promise;
+
+                                var userData = new Firebase("https://mngr.firebaseio.com/users/"+userID+((mngrSecureFirebase.$secure.user && userID===mngrSecureFirebase.$secure.user.$id)?"/":"/dataQueue/")+mngrSecureFirebase.$secure.type.name+"/"+id);
+
+                                if(mngrSecureFirebase.$secure.user && userID===mngrSecureFirebase.$secure.user.$id){
+                                    userData.remove(function(error){
+                                        if(!error){
+                                            userDataDefer.resolve(true);
+                                        }
+                                        else{
+                                            userDataDefer.reject(error);
+                                        }
+                                    });
+                                }
+                                else{
+                                    // make sure it is in the user's data queue with false to indicate the user was removed from the record
+                                    userData.set(false, function(error){
+                                        if(!error){
+                                            userDataDefer.resolve(true);
+                                        }
+                                        else{
+                                            userDataDefer.reject(error);
+                                        }
+                                    });
+                                }
                             }
                         });
+                        $q.all(userDataRemoved).then(function(result){
+                            defer.resolve(true);
+                        }, function(error){
+                            defer.reject(error);
+                        });
                     }
+                    else{
+                        defer.reject('No id to remove from users');
+                    }
+                    return defer.promise;
                 },
                 loadForUser: function(){
                     // loads all children of <type> that user knows about (ie. id's listed in user/<type>)
@@ -336,7 +353,7 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                     else if(this.user){
                         angular.forEach(this.type.access, function(access){
                             if(!result){
-                                if(access === 'user' && mngrSecureFirebase.$secure.userAllowed(key)){
+                                if(access === 'user' && mngrSecureFirebase.$secure.userAllowed(key, value)){
                                     result = true;
                                 }
                                 else if(access !== 'public' && mngrSecureFirebase.$secure.roleAllowed(access)){
@@ -359,15 +376,23 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 roleAllowed: function(role){
                     return (this.user && this.type.access.indexOf(role)!==-1 && angular.isObject(this.user.roles) && this.user.roles[role]);
                 },
-                userAllowed: function(key){
+                userAllowed: function(key, value){
                     var result = false;
                     // user-level access can never be granted unless there is a key associated
-                    if(this.user && angular.isDefined(key)){
-                        // user has access if key is found in their list of entries for the type
-                        // this is client-side security only.  server-side security rules must also be set up to avoid client-side spoofing
-                        // when proper server-side security rules are set, any spoof attempts would return a firebase "permission denied"
-                        if(angular.isObject(this.user[this.type.name]) && this.user[this.type.name][key]){
-                            result = true;
+                    if(this.user){
+                        if(angular.isDefined(key) && key){
+                            // user has access if key is found in their list of entries for the type
+                            // this is client-side security only.  server-side security rules must also be set up to avoid client-side spoofing
+                            // when proper server-side security rules are set, any spoof attempts would return a firebase "permission denied"
+                            if(angular.isObject(this.user[this.type.name]) && this.user[this.type.name][key]){
+                                result = true;
+                            }
+                        }
+                        else if(angular.isDefined(value) && value && value.users){
+                            // no key, look at value.users to see if user is listed
+                            if(value.users[this.user.$id]){
+                                result = true;
+                            }
                         }
                     }
                     return result;

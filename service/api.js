@@ -8,18 +8,39 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 //			data[type].fire.$child(id).$bind(scope, type+id);
 		},
 		create:function(type, model){
+            var defer = $q.defer();
 			//this.model = model;
 			//ecodocs takes a reference to firebase and $adds a model.
             //this.model[type] = {};
-            return data[type].fire.$add(model); // return the $add promise
+            console.log('create '+type+': '+JSON.stringify(model));
+            data[type].fire.$add(model).then(function(result){
+                if(model.users){
+                    data[type].fire.$addToUsers(result.id, model.users);
+                }
+                defer.resolve(result);
+            }, function(error){ defer.reject(error); });
+            return defer.promise;
 
 		},
 		save:function(type, id){
 			var time = new Date();
 			console.log('At '+time+', saving '+type+ ': '+id);
 
+            // ecodocs: before save, dequeue existing users
+            // ecodocs: after save, queue users
+
+            /**var child = data[type].fire.$child(id);
+            child.$on('loaded', function(){
+                if(child.users){
+                    data[type].fire.$dequeueUserData(id, child.users).then(function(){
+
+                    });
+                }
+            });*/
+
             data[type].fire.$save(id);
             data[type].fire.$child(id).$update({updated: time});
+
 
 		},
 		set:function(type, id, model){
@@ -29,6 +50,10 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			data[type].fire.$set(object);
              // that approach would overwrite the entire data[type] table, leaving only the id:model record
              */
+
+            // ecodocs: before set, dequeue existing users
+            // ecodocs: after set, queue users
+
             data[type].fire.$child(id).$set(model);
 		},
 		update:function(type, id, model){
@@ -39,12 +64,36 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
              // that approach would overwrite the full data[type][id] record rather than updating it
              */
 			console.log('Updating '+type+': '+id+' with: '+model);
+
+            // ecodocs: before update, dequeue existing users
+            // ecodocs: after update, queue users
+
 			var time = new Date();
             data[type].fire.$child(id).$update(model);
 			data[type].fire.$child(id).$update({updated: time});
 		},
 		remove:function(type, id){
-			data[type].fire.$remove(id);
+            var defer = $q.defer();
+            // ecodocs: before remove, get existing users
+            // ecodocs: after remove, dequeue users
+            console.log('remove:'+type+'/'+id);
+            var child = data[type].fire.$child(id);
+            if(child){
+                child.$on('loaded', function(){
+                    var users = null;
+                    if(child.users){
+                        users = child.users;
+                    }
+                    data[type].fire.$remove(id).then(function(){
+                        data[type].fire.$removeFromUsers(id, users);
+                        defer.resolve(true);
+                    });
+                });
+            }
+            else{
+                defer.reject(type+'/'+id+' does not exist!');
+            }
+            return defer.promise;
 		},
 
         loadData: function(){
@@ -117,19 +166,22 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
                         api.createProfile();
                     }
                 }
-                else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
+                else if(result.created && result.type && result.id){
                     // new record saved
-                    switch(result.parent().name()){
+                    switch(result.type){
                         case 'users':
                             if(data.user.profile.email){
-                                api.set('userEmails', md5.createHash(data.user.profile.email), result.name());
+                                api.set('userEmails', md5.createHash(data.user.profile.email), result.id);
                             }
                             if(data.user.profile.linked){
-                                api.linkProfileAccounts(result.name(), data.user.profile.linked).then(function(){
+                                api.linkProfileAccounts(result.id, data.user.profile.linked).then(function(){
                                     api.login('active'); // profile is created and linked, login to activate
                                 });
                             }
 
+                            break;
+                        default:
+                            console.log('Created:'+result.type+'/'+result.id);
                             break;
                     }
                 }
