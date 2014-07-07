@@ -6,12 +6,12 @@ angular.module('mngr').config(function($stateProvider, $urlRouterProvider, $comp
 	$stateProvider.state('main', {
 		url:'*path',
 		reloadOnSearch: false,
-		controller: ['$scope','$location','ui', 'models', 'data', 'api' ,function($scope, $location, ui, models, data, api){
+		controller: ['$scope','$location','ui', 'models', 'data', 'api','$window' ,function($scope, $location, ui, models, data, api,$window){
 			api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			$scope.$on('$locationChangeSuccess', function(){
 				api.loadState(angular.copy($location.path()), angular.copy($location.search()));
 			});
-
+			$scope.window = $window;
             $scope.api = api;
             $scope.ui = ui;
             $scope.models = models;

@@ -1,8 +1,8 @@
-angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase, md5) {
+angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFirebase, md5, $window) {
 
 	var api = {
 		link: function (url) {
-			window.location('/#'+url,'_self');
+			$window.location='/#'+url;
 		},
 		bind:function(type, id, scope){
 //			data[type].fire.$child(id).$bind(scope, type+id);
