@@ -79,10 +79,46 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
              // that approach would overwrite the entire data[type] table, leaving only the id:model record
              */
 
-            // ecodocs: before set, dequeue existing users
-            // ecodocs: after set, queue users
+            var dbChild = data[type].fire.$getRef().child(id);
+            dbChild.once('value', function(snapshot){
+                // if there are users in the database record or in the new model, we need to handle dataQueue syncing
+                if((model && model.users) || (snapshot.val() && snapshot.val().users)){
+                    var addUsers = null;
+                    var removeUsers = null;
+                    if(snapshot.val() && snapshot.val().users && model.users){
+                        addUsers = {};
+                        if(snapshot.val().users){
+                            removeUsers = snapshot.val().users;
+                        }
+                        // anything not found in the new model.users value will stay in the removeUsers
+                        // conversely, anything found in the new model.users that is not in the db value (removeUsers), will be added
+                        angular.forEach(model.users, function(value, userID){
+                            if(!removeUsers || !removeUsers[userID]){
+                                // not in db yet, add it (no users at all, or no entry for this one)
+                                addUsers[userID] = value;
+                            }
+                            else if(removeUsers && removeUsers[userID]){
+                                // it is in db and new model, take it out of the removal list
+                                delete removeUsers[userID];
+                            }
+                        });
 
-            data[type].fire.$child(id).$set(model);
+                        // save the record
+                        data[type].fire.$child(id).$set(model).then(function(){
+                            // then update the user data queues
+                            if(addUsers && Object.keys(addUsers).length){
+                                data[type].fire.$addToUsers(id, addUsers);
+                            }
+                            if(removeUsers && Object.keys(removeUsers).length){
+                                data[type].fire.$removeFromUsers(id, removeUsers);
+                            }
+                        });
+                    }
+                }
+                else{
+                    data[type].fire.$child(id).$set(model);
+                }
+            });
 		},
 		update:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
