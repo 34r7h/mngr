@@ -29,7 +29,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 
             var child = data[type].fire.$child(id);
             if(child && child.users) {
-                // if there are users in this array, compare the new user value with the one in the db
+                // if there are users in the record, compare the new user value with the one in the db
                 // this is so we can adjust the user's data queues appropriately
                 var dbChild = data[type].fire.$getRef().child(id);
                 dbChild.once('value', function(snapshot){
@@ -93,12 +93,49 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
              */
 			console.log('Updating '+type+': '+id+' with: '+model);
 
-            // ecodocs: before update, dequeue existing users
-            // ecodocs: after update, queue users
-
 			var time = new Date();
-            data[type].fire.$child(id).$update(model);
-			data[type].fire.$child(id).$update({updated: time});
+
+            if(model && model.users) {
+                // if there are users in the new model, compare the new user value with the one in the db
+                // this is so we can adjust the user's data queues appropriately
+                var dbChild = data[type].fire.$getRef().child(id);
+                dbChild.once('value', function(snapshot){
+                    var addUsers = null;
+                    var removeUsers = null;
+                    if(snapshot.val() && snapshot.val().users && model.users){
+                        addUsers = {};
+                        removeUsers = snapshot.val().users;
+                        // anything not found in the new model.users value will stay in the removeUsers
+                        // conversely, anything found in the new model.users that is not in the db value (removeUsers), will be added
+                        angular.forEach(model.users, function(value, userID){
+                            if(!removeUsers[userID]){
+                                // not there yet, add it
+                                addUsers[userID] = value;
+                            }
+                            else{
+                                // it is there, take it out of the removal list
+                                delete removeUsers[userID];
+                            }
+                        });
+                    }
+
+                    // save the record
+                    data[type].fire.$child(id).$update(model).then(function(){
+                        // then update the user data queues
+                        if(addUsers && Object.keys(addUsers).length){
+                            data[type].fire.$addToUsers(id, addUsers);
+                        }
+                        if(removeUsers && Object.keys(removeUsers).length){
+                            data[type].fire.$removeFromUsers(id, removeUsers);
+                        }
+                    });
+                });
+            }
+            else{
+                // don't need to deal with users for this record
+                data[type].fire.$child(id).$update(model);
+            }
+            data[type].fire.$child(id).$update({updated: time});
 		},
 		remove:function(type, id){
             var defer = $q.defer();
