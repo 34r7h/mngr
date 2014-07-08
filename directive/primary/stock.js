@@ -17,10 +17,10 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 			if($scope.productId){
 				$scope.itemModel = models.item;
 				$scope.itemModel.actions = [
-					{name: 'addNewProduct', action:function(){console.log('new product served');}},
-					{name: 'cloneProduct',action:function(){console.log('this product cloned');}},
-					{name: 'removeProduct', action:function(){console.log('this product removed');}},
-					{name: 'newMessage',action:function(){console.log('new product message');}}
+					{name: 'New', action:function(){console.log('new product served');}},
+					{name: 'Clone',action:function(){console.log('this product cloned');}},
+					{name: 'Delete', action:function(){api.remove($scope.type,$scope.productId);api.link('/stock');}},
+					{name: 'Message',action:function(){console.log('new product message');}}
 				];
 				$scope.itemModel.interactions = [
 					{name: 'Messages',action:function(){console.log('this product cloned');}},
@@ -28,6 +28,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 					{name: 'Notices',action:function(){console.log('new product message');}}
 				];
 				$scope.itemModel.details = [
+					{name:'Image Url',value:function(){return $scope.product.imgUrl;},type:'edit',model:'imgUrl'},
 					{name:'Suppliers',value:function(){return $scope.product.suppliers;},type:'edit',model:'suppliers'},
 					{name:'Tax Rate',value:function(){return $scope.product.tax;},type:'edit',model:'tax'},
 					{name:'Shops',value:function(){return $scope.product.shops;},type:'edit',model:'shops'},
@@ -38,9 +39,33 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 						return $scope.product.name;
 					},
 					interests:[
-						{name:'Current Price',value:function(){return $scope.product.price;},type:'edit',model:'price'},
-						{name:'In Stock',value:function(){return $scope.product.stock;},type:'edit',model:'stock'},
-						{name:'Outboarded',value:function(){return 'I push over.';},type:'button',action:function(){console.log('Outbound');}}
+						{
+							name:'Current Price',
+							value:function(){return $scope.product.price;},
+							type:'edit',
+							model:'price'
+						},
+						{
+							name:'In Stock',
+							value:function(){return $scope.product.stock;},
+							type:'edit',
+							model:'stock'
+						},
+						{
+							name:'Add to',
+							value:function(){return 'Order';},
+							type:'button',
+							action:function(){
+								if($scope.$parent.$parent.$parent.$parent.data.users.fire.child($scope.$parent.$parent.$parent.$parent.data.user.profile.$id).activeOrder===true){
+									//data.users.fire.$child(activeOrder).items.push('This Product');
+									console.log($scope.$parent.$parent.$parent.$parent.$parent.data.users.fire.child($scope.$parent.$parent.$parent.$parent.data.user.profile.$id));
+								} else {
+									$scope.api.create('orders',$scope.model.orders);
+									console.log('Outbound');
+								}
+
+							}
+						}
 					]
 
 				};

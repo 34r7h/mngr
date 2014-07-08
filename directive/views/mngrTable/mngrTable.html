@@ -1,15 +1,8 @@
 <div class="full">
-    <div ng-repeat="array in my.array">
-        <div ng-repeat="otherArray in my.otherArray">
-            <div ng-repeat="array2 in my.array">
-                {{array2 + array}}: {{api | json}}
-            </div>
-        </div>
-    </div>
     <div
             class="col-3 row-12"
             ng-hide='hideFilters'>
-        <b>Filters</b>
+        <h4>Filters</h4>
         <div
                 ng-if="filter.priority > 0"
                 ng-repeat="filter in table.filters">
@@ -51,7 +44,7 @@
             </div>
         </span>
     </div>
-    <div class="col-10 row-11 table-responsive">
+    <div class="col-10 row-11">
         <table class="table full">
             <thead class="col-13 row-1">
                 <tr class="middle-container">
@@ -73,7 +66,7 @@
                                     ng-class="{'fa-sort-asc': !sort.reverse, 'fa-sort-desc': sort.reverse}"></i>
                         </span>
                     </th>
-                    <th class="middle-content text-center">Remove</th>
+
                 </tr>
             </thead>
 
@@ -89,7 +82,7 @@
                             ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority"
                             style="width:{{100/table.sortables.length}}%">
                         <!--input ng-focus="$parent.api.bind($parent.type, key, $parent)" ng-blur="$parent.api.unbind($parent.type, key)" ng-model="$parent.$parent[$parent.type+'-'+key].name" /-->
-                        <h4 class="text-left">
+                        <h5 class="text-left">
                             <a
                                     ng-if="column.link"
                                     ng-href="{{column.link | mngrLinkTo:data:workspace}}">
@@ -101,7 +94,7 @@
                                     {{data[column.name]}}
                                 </span>
                             </a>
-                        </h4>
+                        </h5>
                         <h3 class="text-center middle-container">
                         <span
                                 ng-if="!column.link"
@@ -119,7 +112,9 @@
                                         ng-hide="bind"
                                         class="text-center"
                                         ng-click="bind=true">
-                                    {{column.prefix}} {{data[column.name]}}
+                                    <span ng-show="!column.filter">{{data[column.name]}}</span>
+                                    <span ng-show="column.filter==='currency'">{{data[column.name]|currency}}</span>
+                                    <h5 ng-show="column.filter==='date'">{{data[column.name]|date:'medium'}}</h5>
                                 </i>
 
                                 <input
@@ -133,20 +128,6 @@
                         </span>
 
                         </h3>
-                    </td>
-                    <td class="col-1 row-1 middle-content">
-                        <b
-                                class="middle-content text-right"
-                                ng-click="showRemove=!showRemove"
-                                ng-hide="showRemove">
-                            [x]
-                        </b>
-                        <b
-                                class="middle-content text-right"
-                                ng-show="showRemove"
-                                ng-click="api.remove(type,data.$id)">
-                            [REMOVE]
-                        </b>
                     </td>
                 </tr>
             </tbody>

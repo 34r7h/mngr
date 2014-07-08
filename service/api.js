@@ -9,9 +9,10 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 		},
 		create:function(type, model){
             var defer = $q.defer();
-			//this.model = model;
-			//ecodocs takes a reference to firebase and $adds a model.
-            //this.model[type] = {};
+
+            var date = Date.now();
+            model.created = date;
+            model.updated = date;
             console.log('create '+type+': '+JSON.stringify(model));
             data[type].fire.$add(model).then(function(result){
                 if(model.users){
@@ -24,7 +25,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 
 		},
 		save:function(type, id){
-			var time = new Date();
+			var time = Date.now();
 			console.log('At '+time+', saving '+type+ ': '+id);
 
             var child = data[type].fire.$child(id);
@@ -129,7 +130,7 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
              */
 			console.log('Updating '+type+': '+id+' with: '+model);
 
-			var time = new Date();
+			var time = Date.now();
 
             if(model && model.users) {
                 // if there are users in the new model, compare the new user value with the one in the db
