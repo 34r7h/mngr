@@ -70,6 +70,10 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 this.$secure.removeEventHandler(eventName, handler);
             },
 
+            $getRef: function(){
+                return this.$secure.ref;
+            },
+
             $asArray: function(){
                 if(this.$secure.fire){
                     return $filter('orderByPriority')(this.$secure.fire);
