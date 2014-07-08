@@ -85,7 +85,6 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
             },
 
             destroy: function(){
-                console.log('destroying \''+this.$secure.type.name+'\'...');
                 // destructor that removes all data event listeners
                 if(this.$secure.ref){
                     this.$secure.ref.off();
@@ -415,8 +414,6 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // initializes the $secure data structure based on user's access
         function initForUser(){
-            console.log('initting '+mngrSecureFirebase.$secure.type.name+'...');
-
             // get a reference to the type's root
             mngrSecureFirebase.$secure.ref = new Firebase("https://mngr.firebaseio.com/"+type.name);
 
@@ -492,7 +489,6 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
 
         // processes the user's data queue by adding/removing entry's to their data list for this type
         function processUserDataQueue(){
-            console.log('processing data queue...');
             var defer = $q.defer();
 
             if(mngrSecureFirebase.$secure.queue){
