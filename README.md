@@ -72,13 +72,51 @@ For ex. calling the stock directive to the main workspace with a single product 
 
 ### Data service
 ====
-For each data type that is loaded, the data service creates an object containing the following 3 items:
-  * fire - angularfire's 2-way binded $firebase object, keyed by item id (see https://www.firebase.com/docs/angular/reference.html#firebase).
+When the system starts, it loads all data tables defined in the data['types'] list.
+
+Access definitions:
+Each data type is defined with a name and an array of access permissions.  The available permissions are as follows:
+  * public - publicly available data
+  * user - user-specific data (each record contains a list of users associated with it, and each user profile keeps a list of the data id's it has access to)
+  * <role> - role-based access.  any entry in the access list that is not 'public' or 'user' is treated as a role, allowing users with the role access to the data.
+
+For each data type that is loaded, the data service creates an object containing the following 2 items:
+  * fire - mngrSecureFirebase object (see details below)
   * array - an array of the data, ordered by priority.  Each item in the array has an id property.  Array is provided primarily for use with filters.
 
-An item of type can be therefore be accessed in one of the 2 ways:
+An item of type can be therefore be accessed in one of 2 ways:
   * data[type].fire.$child(id)
   * data[type].array[index]
+
+mngrSecureFirebase
+To allow secured user-specific data, mngr provides the mngrSecureFirebase object which simulates the $firebase object, but allows access only to children which the user has permissions for.
+Each instance of mngrSecureFirebase is initialized with the data[type] definition and the user object.
+A special case where mngrSecureFirebase is initialized with no arguments as mngrSecureFirebase() provides the $firebaseSimpleLogin authentication object.
+mngrSecureFirebase provides the following functions:
+  * $add(value) - adds a new entry
+  * $remove(key) - removes an entry
+  * $save(key) - saves an entry
+  * $child(key) - gets a $firebase reference of an entry
+  * $set(value) - since it would be attempting to set the entire table for the data type, does nothing unless user has public or role access, in which case it uses the standard $firebase().$set(value) function.  For setting a specific child use data[type].fire.$child(key).$set(value)
+  * $update(value) - since it would be attempting to update the entire table for the data type, does nothing unless user has public or role access, in which case it uses the standard $firebase().$update(value) function.  For updating a specific child use data[type].fire.$child(key).$update(value)
+  * $getIndex() - gets an array of all data keys
+  * $transaction(updateFn, applyLocally) - does nothing unless user has public or role access, in which case it uses the standard $firebase().$transaction(updateFn, applyLocally) function.
+  * $on(eventName, handler) - registers an event handler (see https://www.firebase.com/docs/angular/reference.html#on-eventname-handler for supported event types)
+  * $off(eventName, handler) - removes an event handler (see https://www.firebase.com/docs/angular/reference.html#off-eventname-handler for supported event types)
+  * $getRef() - gets the vanilla-javascript Firebase reference (see https://www.firebase.com/docs/javascript/firebase/ for documentation)
+  * $asArray() - gets the data set as an array
+  * $addToUsers(key, userIDs) - adds the key to each userID found in the userIDs list.  For the current logged in user, writes directly to their profile.  For all other users, writes to their dataQueue for the data type as <key>:true
+  * $removeFromUsers(key, userIDs) - removes the key from each userID found in the userIDs list.  For the current logged in user, removes directly from their profile.  For all other users, writes to their dataQueue for the data type as <key>:false
+  * destroy() - removes all event listeners from the data objects.  For security reasons, this should be called before reloading the data type.
+
+In most cases, the api should be used for updates to the data tables.
+The api provides the following data access functions:
+  * create(type, model) - creates a new entry of type and with value of model. If model.users exists, adds the new entry ID to each user profile.
+  * save(type, id) - saves an entry of type and matching id, using the value currently stored for it.  If the entry contains a users list, updates each user profile by adding and removing the entry ID as appropriate.
+  * set(type, id, model) - sets an entry of type and matching id, overwriting any existing data in the entry.  If the entry contains a users list, updates each user profile by adding and removing the entry ID as appropriate.
+  * update(type, id, model) - updates an entry of type and matching id, modifying only child data provided by the given model.  If the entry contains a users list, updates each user profile by adding and removing the entry ID as appropriate.
+  * remove(type, id) - removes an entry of type and matching id.  If the entry contains a users list, removes the entry ID from each user profile.
+
   
 ### Development Pattern (suggested)
   * 1. HTML with dummy data
