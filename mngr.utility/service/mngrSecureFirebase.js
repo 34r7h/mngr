@@ -81,11 +81,11 @@ angular.module('mngr.utility').factory('mngrSecureFirebase',function(Firebase, $
                 return this.$secure.childArray();
             },
 
-            $addToUsers: function(id, userIDs){
-                return this.$secure.addToUsers(id, userIDs);
+            $addToUsers: function(key, userIDs){
+                return this.$secure.addToUsers(key, userIDs);
             },
-            $removeFromUsers: function(id, userIDs){
-                return this.$secure.removeFromUsers(id, userIDs);
+            $removeFromUsers: function(key, userIDs){
+                return this.$secure.removeFromUsers(key, userIDs);
             },
 
             destroy: function(){
