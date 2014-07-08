@@ -116,6 +116,7 @@ The api provides the following data access functions:
   * set(type, id, model) - sets an entry of type and matching id, overwriting any existing data in the entry.  If the entry contains a users list, updates each user profile by adding and removing the entry ID as appropriate.
   * update(type, id, model) - updates an entry of type and matching id, modifying only child data provided by the given model.  If the entry contains a users list, updates each user profile by adding and removing the entry ID as appropriate.
   * remove(type, id) - removes an entry of type and matching id.  If the entry contains a users list, removes the entry ID from each user profile.
+  * loadData() - loads/reloads all data tables defined in the data['types'] list
 
   
 ### Development Pattern (suggested)
@@ -179,6 +180,24 @@ When a user logs in, mngr will reload all the data tables that are not marked as
 In loading the data tables for the user, mngr also checks the user's dataQueue table for any changes to shared user-data and updates the appropriate data list in the user's profile.
 After the data tables are reloaded for the user, mngr will reload the state.
 
+Logout
+When a user logs out, mngr de-authenticates them with $firebaseSimpleLogin (thus restricting their data access to only public data) and removes all private data from the browser's memory.
+
+mngr's api service provides the following user account functions:
+  * login(provider, email, password) - logs in via the provider.  email and password are required only if provider is 'password'. Currently supported providers are: active, password, facebook, twitter, google
+  * loginActive() - logs in the account which is currently authenticated with Firebase (called at app start to login in a user who is reloading or returning to the app, but did not logout at the end of their last session)
+  * loginPassword(email, password) - logs a user in via email address and password
+  * loginProvider(provider) - logs a user in via 3rd-party authentication (facebook, twitter, or google)
+  * logout() - ends a user's session by de-authenticating with $firebaseSimpleLogin, and removing their profile and all private data from the browser's memory
+  * createAccount(email, password, passwordConfirm) - creates a new email/password account on firebase's server
+  * removeAccount(email, password) - removes an existing email/password account from firebase's server
+  * recoverPassword(email) - sends a password recovery email for an existing email/password account * ecodocs: Needs to be implemented to call data.user.auth.$sendPasswordResetEmail(email); (https://www.firebase.com/docs/angular/reference.html#sendpasswordresetemail-email)
+  * changePassword(email, oldPassword, newPassword) - changes a password for an existing email/password account * ecodocs: Needs to be implemented to call data.user.auth.$changePassword(email, oldPassword, newPassword); (https://www.firebase.com/docs/angular/reference.html#changepassword-email-oldpassword-newpassword)
+  * createPofile() - creates a new profile with whatever data is currently in data.user.profile
+  * linkProfileAccounts(userID, accounts) - links the uid's provided in the accounts object to the given userID profile
+  * newProfile(account) - generates a new user profile structure with data from the supplied authentication account
+  * loadProfile(account) - attempts to load the profile for the supplied authentication account (by referencing data['userAccounts']) If no profile is found for the account, generates a new one using api.newProfile(account)
+  * userEmailAvailable(email) - returns a promise that is resolved true if the given email address is in use by a user, or false if the email address is not currently in use
 
   
 ## Design Guide
