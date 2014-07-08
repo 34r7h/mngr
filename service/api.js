@@ -8,26 +8,69 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 //			data[type].fire.$child(id).$bind(scope, type+id);
 		},
 		create:function(type, model){
-			//this.model = model;
-			//ecodocs takes a reference to firebase and $adds a model.
-            //this.model[type] = {};
-			var date = Date.now();
-			model.created = date;
-			model.updated = date;
-			var itemId = '';
-			itemId = data[type].fire.$getIndex()[data[type].fire.$getIndex().length -1];
-			console.log('item saved: '+ itemId);
-            return data[type].fire.$add(model); // return the $add promise
+            var defer = $q.defer();
 
+            var date = Date.now();
+            model.created = date;
+            model.updated = date;
+            console.log('create '+type+': '+JSON.stringify(model));
+            data[type].fire.$add(model).then(function(result){
+                if(model.users){
+                    // it's added, update all the associated users
+                    data[type].fire.$addToUsers(result.id, model.users);
+                }
+                defer.resolve(result);
+            }, function(error){ defer.reject(error); });
+            return defer.promise;
 
 		},
 		save:function(type, id){
 			var time = Date.now();
 			console.log('At '+time+', saving '+type+ ': '+id);
 
-            data[type].fire.$save(id);
-            data[type].fire.$child(id).$update({updated: time});
+            var child = data[type].fire.$child(id);
+            if(child && child.users) {
+                // if there are users in the record, compare the new user value with the one in the db
+                // this is so we can adjust the user's data queues appropriately
+                var dbChild = data[type].fire.$getRef().child(id);
+                dbChild.once('value', function(snapshot){
+                    var addUsers = null;
+                    var removeUsers = null;
+                    if(snapshot.val() && snapshot.val().users && child.users){
+                        addUsers = {};
+                        removeUsers = snapshot.val().users;
+                        // anything not found in the new child.users value will stay in the removeUsers
+                        // conversely, anything found in the new child.users that is not in the db value (removeUsers), will be added
+                        angular.forEach(child.users, function(value, userID){
+                            if(!removeUsers[userID]){
+                                // not there yet, add it
+                                addUsers[userID] = value;
+                            }
+                            else{
+                                // it is there, take it out of the removal list
+                                delete removeUsers[userID];
+                            }
+                        });
+                    }
 
+                    // save the record
+                    data[type].fire.$save(id).then(function(){
+                        // then update the user data queues
+                        if(addUsers && Object.keys(addUsers).length){
+                            data[type].fire.$addToUsers(id, addUsers);
+                        }
+                        if(removeUsers && Object.keys(removeUsers).length){
+                            data[type].fire.$removeFromUsers(id, removeUsers);
+                        }
+                    });
+                });
+            }
+            else{
+                // don't need to deal with users for this record
+                data[type].fire.$save(id);
+            }
+            // always want to save the updated time
+            data[type].fire.$child(id).$update({updated: time});
 		},
 		set:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -36,7 +79,47 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
 			data[type].fire.$set(object);
              // that approach would overwrite the entire data[type] table, leaving only the id:model record
              */
-            data[type].fire.$child(id).$set(model);
+
+            var dbChild = data[type].fire.$getRef().child(id);
+            dbChild.once('value', function(snapshot){
+                // if there are users in the database record or in the new model, we need to handle dataQueue syncing
+                if((model && model.users) || (snapshot.val() && snapshot.val().users)){
+                    var addUsers = null;
+                    var removeUsers = null;
+                    if(snapshot.val() && snapshot.val().users && model.users){
+                        addUsers = {};
+                        if(snapshot.val().users){
+                            removeUsers = snapshot.val().users;
+                        }
+                        // anything not found in the new model.users value will stay in the removeUsers
+                        // conversely, anything found in the new model.users that is not in the db value (removeUsers), will be added
+                        angular.forEach(model.users, function(value, userID){
+                            if(!removeUsers || !removeUsers[userID]){
+                                // not in db yet, add it (no users at all, or no entry for this one)
+                                addUsers[userID] = value;
+                            }
+                            else if(removeUsers && removeUsers[userID]){
+                                // it is in db and new model, take it out of the removal list
+                                delete removeUsers[userID];
+                            }
+                        });
+
+                        // save the record
+                        data[type].fire.$child(id).$set(model).then(function(){
+                            // then update the user data queues
+                            if(addUsers && Object.keys(addUsers).length){
+                                data[type].fire.$addToUsers(id, addUsers);
+                            }
+                            if(removeUsers && Object.keys(removeUsers).length){
+                                data[type].fire.$removeFromUsers(id, removeUsers);
+                            }
+                        });
+                    }
+                }
+                else{
+                    data[type].fire.$child(id).$set(model);
+                }
+            });
 		},
 		update:function(type, id, model){
 			//ecodocs inits an object and creates a child with provided id.
@@ -46,12 +129,75 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
              // that approach would overwrite the full data[type][id] record rather than updating it
              */
 			console.log('Updating '+type+': '+id+' with: '+model);
+
 			var time = Date.now();
-            data[type].fire.$child(id).$update(model);
-			data[type].fire.$child(id).$update({updated: time});
+
+            if(model && model.users) {
+                // if there are users in the new model, compare the new user value with the one in the db
+                // this is so we can adjust the user's data queues appropriately
+                var dbChild = data[type].fire.$getRef().child(id);
+                dbChild.once('value', function(snapshot){
+                    var addUsers = null;
+                    var removeUsers = null;
+                    if(snapshot.val() && snapshot.val().users && model.users){
+                        addUsers = {};
+                        removeUsers = snapshot.val().users;
+                        // anything not found in the new model.users value will stay in the removeUsers
+                        // conversely, anything found in the new model.users that is not in the db value (removeUsers), will be added
+                        angular.forEach(model.users, function(value, userID){
+                            if(!removeUsers[userID]){
+                                // not there yet, add it
+                                addUsers[userID] = value;
+                            }
+                            else{
+                                // it is there, take it out of the removal list
+                                delete removeUsers[userID];
+                            }
+                        });
+                    }
+
+                    // save the record
+                    data[type].fire.$child(id).$update(model).then(function(){
+                        // then update the user data queues
+                        if(addUsers && Object.keys(addUsers).length){
+                            data[type].fire.$addToUsers(id, addUsers);
+                        }
+                        if(removeUsers && Object.keys(removeUsers).length){
+                            data[type].fire.$removeFromUsers(id, removeUsers);
+                        }
+                    });
+                });
+            }
+            else{
+                // don't need to deal with users for this record
+                data[type].fire.$child(id).$update(model);
+            }
+            data[type].fire.$child(id).$update({updated: time});
 		},
 		remove:function(type, id){
-			data[type].fire.$remove(id);
+            var defer = $q.defer();
+            console.log('remove:'+type+'/'+id);
+            var child = data[type].fire.$child(id);
+            if(child){
+                child.$on('loaded', function(){
+                    var users = null;
+                    // get the associated users before we remove it
+                    if(child.users){
+                        users = child.users;
+                    }
+                    data[type].fire.$remove(id).then(function(){
+                        if(users){
+                            // it's removed, clean up all the associated user records
+                            data[type].fire.$removeFromUsers(id, users);
+                        }
+                        defer.resolve(true);
+                    });
+                });
+            }
+            else{
+                defer.reject(type+'/'+id+' does not exist!');
+            }
+            return defer.promise;
 		},
 
         loadData: function(){
@@ -63,6 +209,12 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
                 if(!data[type.name] || type.access.indexOf('public')===-1){
                     var dataLoaded = $q.defer();
                     datasLoaded[type.name] = dataLoaded.promise;
+
+                    // clean up existing instance of this data type
+                    if(data[type.name] && data[type.name].fire){
+                        data[type.name].fire.destroy();
+                        delete data[type.name].fire;
+                    }
 
                     var secureFire = mngrSecureFirebase(type, data.user.profile);
                     data[type.name] = {
@@ -124,19 +276,22 @@ angular.module('mngr').factory('api',function(data, models, ui, $q, mngrSecureFi
                         api.createProfile();
                     }
                 }
-                else if(angular.isFunction(result.parent) && angular.isFunction(result.name)){
+                else if(result.created && result.type && result.id){
                     // new record saved
-                    switch(result.parent().name()){
+                    switch(result.type){
                         case 'users':
                             if(data.user.profile.email){
-                                api.set('userEmails', md5.createHash(data.user.profile.email), result.name());
+                                api.set('userEmails', md5.createHash(data.user.profile.email), result.id);
                             }
                             if(data.user.profile.linked){
-                                api.linkProfileAccounts(result.name(), data.user.profile.linked).then(function(){
+                                api.linkProfileAccounts(result.id, data.user.profile.linked).then(function(){
                                     api.login('active'); // profile is created and linked, login to activate
                                 });
                             }
 
+                            break;
+                        default:
+                            console.log('Created:'+result.type+'/'+result.id);
                             break;
                     }
                 }
