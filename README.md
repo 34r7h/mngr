@@ -229,6 +229,28 @@ mngr's api service provides the following user account functions:
   * Form - mngrForm
   * Single item - mngrItem
   * Table - mngrTable
+
+
+### URL and UI Workspaces
+  mngr allows its ui-workspaces to be populated by values found in the URL.
+  The general format of a workspace path is <component>[/<componentParams>] *
+  Workspace paths may be set in the URL as query-variables <workspaceName>=<workspacePath> with the exception of main which can be set as the root path.
+
+  Available <componentParams> are defined for each component in the ui service, and are loaded in the order they are defined.  So if a component has params: [itemID, action], the path would be <componentName>/<itemID>/<action>
+
+  Components are loaded into the HTML via the mngr directive.
+
+  ex.
+    the URL `http://example.com/#/stock/<productID>?overlay=events`
+    would load the 'stock' component into the main workspace with the given <productID> open; and the 'events' component into the overlay workspace with no specific event open.
+
+  The mngr api provides the following ui functions:
+  * loadState(fromPath, withParams) - loads/reloads the app's state with the given path and query-params.  Both path and params are optional, and if omitted will reload the current state with whatever path and params were last passed to loadState.
+  * loadPath(path, workspace) - loads a single componentPath into the supplied workspace.  If an invalid componentPath is given, loads the default component as defined in ui service.
+  * setWorkspace(workspace, component, params) - populates the ui.workspace object for the given workspace and with the given component and its params
+
+  It should be noted that the main state controller listens for the $locationChangeSuccess and calls loadState to reload the state when the URL has changed.
+
   
   
 Created with Angular JS, Firebase, and Font Awesome. 
