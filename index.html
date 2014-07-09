@@ -1,72 +1,74 @@
 <!DOCTYPE html>
 <html ng-app="mngr">
 <head>
-    <title></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-    <link href="app.less" type="text/css" rel="stylesheet/less">
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+  <link href="app.less" type="text/css" rel="stylesheet/less">
 </head>
 <body>
 
-<!-- Livereload script for development only (stripped during dist build) -->
-<script src="http://localhost:35729/livereload.js" data-concat="false"></script>
-<script src="cordova.js"></script>
-<!-- JS from Bower Components -->
-<!--script src="bower_components/ionic/js/ionic.js"></script-->
-<script src="bower_components/less.js/dist/less-1.6.2.js" data-concat="false"></script>
-<script src="bower_components/underscore/underscore.js"></script>
-<script src="bower_components/moment/moment.js"></script>
-<script src="bower_components/angular/angular.js"></script>
-<!--script src="bower_components/ionic/js/ionic-angular.js"></script-->
-<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-<script src="bower_components/angular-animate/angular-animate.js"></script>
-<script src="bower_components/angular-resource/angular-resource.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-<script src="bower_components/angular-ui-utils/ui-utils.js"></script>
-<script src="bower_components/firebase/firebase.js"></script>
-<script src="bower_components/angularfire/angularfire.js"></script>
-<script src="bower_components/firebase-simple-login/firebase-simple-login.js"></script>
-<script src="bower_components/angular-md5/angular-md5.js"></script>
-<!-- Add New Bower Component JS Above -->
-<!-- Main App JS -->
-<script src="app.js"></script>
-<script src="directive/views/main.js"></script>
-<script src="directive/views/ux/create/create.js"></script>
-<script src="service/ui.js"></script>
-<script src="service/models.js"></script>
-<script src="service/data.js"></script>
-<script src="service/api.js"></script>
-<script src="directive/mngr.js"></script>
-<script src="directive/primary/products.js"></script>
-<script src="directive/views/mngrTable/mngrTable.js"></script>
-<script src="directive/views/mngrForm/mngrForm.js"></script>
-<script src="directive/views/ux/breadcrumb/breadcrumb.js"></script>
-<script src="directive/views/ux/notify/notify.js"></script>
-<script src="directive/views/ux/search/search.js"></script>
-<script src="directive/views/ux/omni/omni.js"></script>
-<script src="directive/views/mngrItem/mngrItem.js"></script>
-<script src="directive/primary/orders.js"></script>
-<script src="directive/primary/users.js"></script>
-<script src="directive/primary/contents.js"></script>
-<script src="directive/views/mngrInput/mngrInput.js"></script>
-<script src="directive/support/events.js"></script>
-<script src="directive/support/messages.js"></script>
-<script src="directive/support/notes.js"></script>
-<script src="directive/support/notices.js"></script>
-<script src="directive/views/mngrContent/mngrContent.js"></script>
-<script src="directive/views/mngrButton/mngrButton.js"></script>
-<script src="mngr.util/mngr.util.js"></script>
-<script src="mngr.util/filter/mngrFormat.js"></script>
-<script src="mngr.util/filter/mngrStartAt.js"></script>
-<script src="mngr.util/directive/mngrScrollPages.js"></script>
-<script src="mngr.util/service/mngrSecureFirebase.js"></script>
+  <!-- Livereload script for development only (stripped during dist build) -->
+  <script src="http://localhost:35729/livereload.js" data-concat="false"></script>
+  <script src="cordova.js"></script>
+  <!-- JS from Bower Components -->
+  <!--script src="bower_components/ionic/js/ionic.js"></script-->
+  <script src="bower_components/less.js/dist/less-1.6.2.js" data-concat="false"></script>
+  <script src="bower_components/underscore/underscore.js"></script>
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <!--script src="bower_components/ionic/js/ionic-angular.js"></script-->
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.js"></script>
+  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="bower_components/angular-ui-utils/ui-utils.js"></script>
+  <script src="bower_components/firebase/firebase.js"></script>
+  <script src="bower_components/angularfire/angularfire.js"></script>
+  <script src="bower_components/firebase-simple-login/firebase-simple-login.js"></script>
+  <script src="bower_components/angular-md5/angular-md5.js"></script>
+  <!-- Add New Bower Component JS Above -->
+  <!-- Main App JS -->
+  <script src="app.js"></script>
+  <script src="directive/views/main.js"></script>
+  <script src="directive/views/ux/create/create.js"></script>
+  <script src="service/ui.js"></script>
+  <script src="service/models.js"></script>
+  <script src="service/data.js"></script>
+  <script src="service/api.js"></script>
+  <script src="directive/mngr.js"></script>
+  <script src="directive/primary/stock.js"></script>
+  <script src="directive/views/mngrTable/mngrTable.js"></script>
+  <script src="directive/views/mngrForm/mngrForm.js"></script>
+  <script src="directive/views/ux/breadcrumb/breadcrumbs.js"></script>
+  <script src="directive/views/ux/notify/notify.js"></script>
+  <script src="directive/views/ux/search/search.js"></script>
+  <script src="directive/views/ux/omni/omni.js"></script>
+  <script src="directive/views/mngrItem/mngrItem.js"></script>
+  <script src="directive/primary/shop.js"></script>
+  <script src="directive/primary/orders.js"></script>
+  <script src="directive/primary/users.js"></script>
+  <script src="directive/primary/contents.js"></script>
+  <script src="directive/views/mngrInput/mngrInput.js"></script>
+  <script src="directive/support/events/events.js"></script>
+  <script src="directive/support/messages/messages.js"></script>
+  <script src="directive/support/notes/notes.js"></script>
+  <script src="directive/support/notices/notices.js"></script>
+  <script src="directive/views/mngrContent/mngrContent.js"></script>
+  <script src="directive/views/mngrButton/mngrButton.js"></script>
+  <script src="mngr.utility/mngr.utility.js"></script>
+  <script src="mngr.utility/filter/mngrFormat.js"></script>
+  <script src="mngr.utility/filter/mngrStartAt.js"></script>
+  <script src="mngr.utility/directive/mngrScrollPages.js"></script>
+  <script src="mngr.utility/service/filter.js"></script>
+  <script src="mngr.utility/service/mngrSecureFirebase.js"></script>
+  <script src="mngr.utility/directive/onEnter.js"></script>
 
-<script src="directive/views/mngrLink/mngrLink.js"></script>
-<script src="mngr.util/service/filter.js"></script>
-<script src="mngr.util/directive/onEnter.js"></script>
-<!-- Add New Component JS Above -->
+  <script src="directive/views/mngrLink/mngrLink.js"></script>
+  <!-- Add New Component JS Above -->
 
-<div ui-view></div>
+        <div ui-view></div>
+
 
 </body>
 </html>

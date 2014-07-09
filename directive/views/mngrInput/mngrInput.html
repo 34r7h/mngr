@@ -2,27 +2,27 @@
     <label>{{input.name}}</label>
 
     <input
-            class="col-13"
-            ng-if="type === 'text' || type === 'email' || type === 'number'"
-            name="{{name}}"
-            type="{{type}}"
-            ng-model="$parent.ngModel"
-            placeholder="{{placeholder}}"
-            >
+        class="col-13"
+        ng-if="type === 'text' || type === 'email' || type === 'number'"
+        name="{{name}}"
+        type="{{type}}"
+        ng-model="$parent.ngModel"
+        placeholder="{{placeholder}}"
+        >
     <textarea
-            class="col-13"
-            ng-if="type==='textarea'"
-            name="{{name}}"
-            ng-model="$parent.ngModel"
-            placeholder="{{placeholder}}"
-            ></textarea>
+        class="col-13"
+        ng-if="type==='textarea'"
+        name="{{name}}"
+        ng-model="$parent.ngModel"
+        placeholder="{{placeholder}}"
+        ></textarea>
     <select
-            class="col-13"
-            ng-if="type==='select'"
-            ng-model="$parent.ngModel"
-            ng-options="option as option for option in options"
-            multiple="multiple"
-            >
+        class="col-13"
+        ng-if="type==='select'"
+        ng-model="$parent.ngModel"
+        ng-options="option as option for option in options"
+        multiple="multiple"
+        >
         <option value="">Choose {{name}}</option>
     </select>
 

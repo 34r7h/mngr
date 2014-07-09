@@ -1,8 +1,8 @@
 angular.module('mngr').directive('contents', function() {
 	return {
-		restrict: 'A',
+		restrict: 'EA',
+		scope:{},
 		link: function(scope, element, attrs, fn) {
-
 
 		}
 	};

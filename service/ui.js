@@ -2,7 +2,7 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 
 	var ui = {
 		components:[
-			{name:'products',icon:'fa fa-barcode',params:['product-id']},
+			{name:'stock',icon:'fa fa-barcode',params:['product-id']},
 			{name:'shop',icon:'fa fa-gift',params:['path'],default:true},
 			{name:'orders',icon:'fa fa-barcode',params:['order-id']},
 			{name:'users',icon:'fa fa-barcode',params:['user-id']},
@@ -11,22 +11,24 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 		workspace: {
 			overlay: {
 				show: false,
-				component: 'products',
-				params: {},
+				component: 'stock',
+                params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			},
 			main: {
 				show: true,
 				component: '',
-				params: {},
+                params: {},
 				view: '',
 				icon:'fa fa-leaf'
 			},
 			underlay: {
 				show: false,
 				component: '',
-				params: {},
+                params: {},
+
 				view: '',
 				icon:'fa fa-leaf'
 			}
@@ -45,7 +47,8 @@ angular.module('mngr').factory('ui',['$q',function($q) {
 				{name:'messages', icon:'fa fa-envelope', params:['message-id']},
 				{name:'events', icon:'fa fa-calendar', params:['event-id']},
 				{name:'cart', icon:'fa fa-shopping-cart', params:['order-id']},
-				{name:'notices', icon:'fa fa-globe', params:[]}
+				{name:'notices', icon:'fa fa-globe', params:['notice-id']}
+
 			],
 			notification:''
 		},

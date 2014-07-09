@@ -1,4 +1,61 @@
-<div>
+<div ng-show="!data.user.profile">
+    <div ng-show="!action || action==='login'">
+        <h2>Login</h2>
+        <div>
+            <input type="text" placeholder="email" ng-model="login.email"/>
+        </div>
+        <div>
+            <input type="password" placeholder="password" ng-model="login.password"/>
+        </div>
+        <button ng-click="api.login('password', login.email, login.password);login.email='';login.password='';">Login</button><br/>
+        <a href="#" ng-click="action='register'">Register</a>
+        <a href="#" ng-click="action='recover'">Forgot Password?</a>
 
+        <p>- OR -</p>
+
+        <button ng-click="api.login('facebook')">Facebook</button>
+        <button ng-click="api.login('twitter')">Twitter</button>
+    </div>
+
+    <div ng-show="action==='register'">
+        <h2>Register</h2>
+        <div>
+            <input type="text" placeholder="email" ng-model="newAccount.email"/>
+        </div>
+        <div>
+            <input type="password" placeholder="password" ng-model="newAccount.password"/>
+        </div>
+        <div>
+            <input type="password" placeholder="confirm password" ng-model="newAccount.passwordConfirm"/>
+        </div>
+        <button ng-click="api.createAccount(newAccount.email, newAccount.password, newAccount.passwordConfirm);newAccount.email='';newAccount.password='';newAccount.passwordConfirm='';">Register</button>
+        <button ng-click="action='login'">Cancel</button>
+    </div>
+
+    <div ng-show="action==='recover'">
+        <h2>Recover Password</h2>
+        <div>
+            <input type="text" placeholder="email" ng-model="login.email"/>
+        </div>
+        <button ng-click="api.recoverPassword(login.email)">Recover Password</button>
+        <button ng-click="action='login'">Cancel</button>
+    </div>
 
 </div>
+<div ng-show="data.user.profile.new">
+    <h2>Confirm Email address</h2>
+    <div ng-show="data.user.profile.name">
+        Hello, {{data.user.profile.name}}
+    </div>
+    <div>
+        <input type="text" placeholder="email" ng-model="data.user.profile.email"/>
+    </div>
+    <button ng-click="api.createProfile()">Complete Registration</button>
+    <button ng-click="api.removeAccount(newAccount.email, newAccount.password);data.user.profile=null;newAccount.email='';newAccount.password='';newAccount.passwordConfirm='';action='login'">Cancel</button>
+</div>
+<div ng-show="!data.user.profile.new && data.user.profile.name && data.user.profile.email">
+    Logged in as <strong>{{data.user.profile.name}}</strong><br/>
+    <button ng-click="api.logout()">Logout</button>
+</div>
+<div ng-show="data.user.profile.roles"><mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item></div>
+
