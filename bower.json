@@ -26,11 +26,8 @@
     "angularfire": "~0.7.1",
     "ionic": "driftyco/ionic-bower#~0.9.26",
     "angular-sanitize": "~1.2.18",
-    "angular-md5": "~0.1.7"
-<<<<<<< HEAD
-
-=======
->>>>>>> e9eeab7c4e7dfbcc5906e68cf3db87dfe72c7c52
+    "angular-md5": "~0.1.7",
+    "angular-touch": "~1.2.19"
   },
   "resolutions": {
     "angular": "1.2.19",

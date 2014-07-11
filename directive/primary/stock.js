@@ -35,7 +35,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 							});
 							angular.forEach($scope.generatedOrder, function(order){
 								angular.forEach(order.supplier, function(supplier){
-									if ($scope.supplierList.indexOf(supplier.name) == -1) {
+									if ($scope.supplierList.indexOf(supplier.name) === -1) {
 										$scope.supplierList.push(supplier.name);
 									}
 
