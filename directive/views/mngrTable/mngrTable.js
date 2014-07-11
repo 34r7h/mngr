@@ -10,7 +10,16 @@ angular.module('mngr').directive('mngrTable', function(models, api, filter) {
             scope.bindIt = function(id){
                 api.bind(scope.type, id, scope);
             };
-
+			//ecodocs Counts the sortables for perfect table display.
+			scope.sortableCount = function(){
+				var count = 0;
+				angular.forEach(models.sortables[scope.type],function(value){
+					if(value.show===true){
+						count = count+1;
+					}
+				});
+				return (100/count).toFixed(5)+"%";
+			};
             scope.sort = {column: '', operator: '', reverse: false, by: function(name){
                 if(scope.sort.column !== name){
                     scope.sort.column = name;

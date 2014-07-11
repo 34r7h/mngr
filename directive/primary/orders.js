@@ -49,8 +49,17 @@ angular.module('mngr').directive('orders', function(ui,data,api,models) {
 
 			$scope.api = api;
 
+			if($scope.orderId){
+				$scope.showTable = false;
+				$scope.showItem = true;
+				$scope.order = data[$scope.type].fire.$child($scope.orderId);
+			}
+			else{
+				$scope.showTable = true;
+			}
+
 		},
-		scope:{},
+		scope:{orderId:'='},
 		restrict: 'EA',
 		template: '<mngr-table ng-show="showTable"></mngr-table><mngr-form ng-show="showForm"></mngr-form><mngr-item ng-show="showItem" item="showItem"></mngr-item>',
 		link: function(scope, element, attrs, fn) {

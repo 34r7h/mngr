@@ -52,13 +52,19 @@ body {
 .test div, .test section, .test article, .test span, .test{
   box-shadow: inset 0px 0px 1px 1px rgba(0, 0, 3, .02);
   padding:0;
-  background: rgba(245, 245, 245, .81);
-  color: rgba(109, 157, 44, .99);
+  //background: rgba(25, 22, 27, .021);
+  color: rgba(96, 98, 78, .95);
 }
 
 // typeography
 
-h1, .h1, h2, .h2, h3, .h3 {margin-top: 0;margin-bottom: 0; color:rgba(137, 118, 129, .97)}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 0!important;
+  margin-bottom: 0!important;
+  color:rgba(137, 118, 129, .97);
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+}
 
 // positioning
 .middle-container{display: table; height:100%; width:100%;}
@@ -164,7 +170,7 @@ h1, .h1, h2, .h2, h3, .h3 {margin-top: 0;margin-bottom: 0; color:rgba(137, 118, 
 .scroll-x {overflow-x: scroll;}
 
 // padding
-.pad, div.pad {padding: 1.618%;}
+.pad, div.pad {padding: 1.618% !important;}
 .no-pad, div.no-pad {padding:0 0 0 0; padding-left: 0px!important; padding-right:0px;}
 
 // iconography
@@ -172,4 +178,10 @@ input, input :active, input :focus {
   border: none;
   outline: none;
   color: rgba(137, 170, 96, 1);
+}
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+  padding: 0px;
+  line-height: 1.1;
+  border-top: 2px solid rgba(255,255,255,.62);
 }

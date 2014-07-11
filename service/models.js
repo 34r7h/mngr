@@ -156,14 +156,16 @@ angular.module('mngr').factory('models',function() {
 		//ecodocs table models.
 		sortables: {
 			products: [
-                {name: 'upc', 'show': false, type: 'text', priority: 1},
-				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2},
-				{name: 'stock', show: true, type: 'number', priority: 5},
-				{name: 'price', show: false, type: 'number', prefix: '$', priority: 3},
+                {name: 'upc', 'show': false, type: 'number', priority: 1, position:'center'},
+				{name: 'name', link: 'stock/:id', 'show': true, type: 'text', priority: 2, position:'left'},
+				{name: 'stock', show: true, type: 'number', priority: 5, position:'center'},
+				{name: 'lowStock', show: false, type: 'number', priority: 6, position:'center'},
+				{name: 'price', show: false, type: 'number', prefix: '$', priority: 3, filter:'currency', position:'center'},
+				{name: 'categories', title: 'category', show: false, type: 'array', priority: 7, position:'left'},
+				{name: 'suppliers', show: false, type: 'array', priority: 10, position:'left'},
+				{name: 'updated', show: true, type: 'date', priority: 10, filter:'date', position:'center'},
+				{name: 'stockAlert', show: false, type: 'button', priority: 10, position:'center'}
 
-				{name: 'categories', title: 'category', show: false, type: 'categories', priority: 7},
-				{name: 'suppliers', show: false, type: 'static', priority: 10},
-				{name: 'updated', show: true, type: 'static', priority: 10}
 			],
 			events: [
 				{name: 'date', 'show': true, type: 'number', priority: 1},
@@ -178,7 +180,7 @@ angular.module('mngr').factory('models',function() {
 			],
 			orders: [
 				{name: 'name', title: 'order', link: 'orders/:id', 'show': true, type: 'text', priority: 1},
-				{name: 'date', show: true, type: 'number', priority: 5},
+				{name: 'updated', show: true, type: 'number', priority: 5,filter:'date'},
 				{name: 'type', show: true, type: 'text', priority: 3},
 				{name: 'total', show: true, type: 'text', priority: 7}
 			],
@@ -248,7 +250,7 @@ angular.module('mngr').factory('models',function() {
 				{}
 			]
 		},
-        searchable: ['products', 'orders']
+        searchable: ['products', 'orders','users']
 
 	};
 	return models;

@@ -1,15 +1,8 @@
 <div class="full">
-    <div ng-repeat="array in my.array">
-        <div ng-repeat="otherArray in my.otherArray">
-            <div ng-repeat="array2 in my.array">
-                {{array2 + array}}: {{api | json}}
-            </div>
-        </div>
-    </div>
     <div
-            class="col-3 row-12"
+            class="col-3 row-12 pad"
             ng-hide='hideFilters'>
-        <b>Filters</b>
+        <h4>Filters</h4>
         <div
                 ng-if="filter.priority > 0"
                 ng-repeat="filter in table.filters">
@@ -51,13 +44,14 @@
             </div>
         </span>
     </div>
-    <div class="col-10 row-11 table-responsive">
+    <div class="col-10 row-11">
         <table class="table full">
             <thead class="col-13 row-1">
                 <tr class="middle-container">
                     <th
                             class="middle-content text-center"
-                            ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority">
+                            ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority"
+                            style="width:{{sortableCount()}}">
                         <a ng-click="sort.by(column.name)">
                             <span ng-if="column.title">
                                 {{column.title | uppercase}}
@@ -73,7 +67,7 @@
                                     ng-class="{'fa-sort-asc': !sort.reverse, 'fa-sort-desc': sort.reverse}"></i>
                         </span>
                     </th>
-                    <th class="middle-content text-center">Remove</th>
+
                 </tr>
             </thead>
 
@@ -87,13 +81,14 @@
                     <td
                             class="text-center middle-content"
                             ng-repeat="column in table.sortables | filter:{show:true} | orderBy:priority"
-                            style="width:{{100/table.sortables.length}}%">
+                            style="width:{{sortableCount()}}">
                         <!--input ng-focus="$parent.api.bind($parent.type, key, $parent)" ng-blur="$parent.api.unbind($parent.type, key)" ng-model="$parent.$parent[$parent.type+'-'+key].name" /-->
-                        <h4 class="text-left">
+                        <h5 class="text-left">
                             <a
                                     ng-if="column.link"
-                                    ng-href="{{column.link | mngrLinkTo:data:workspace}}">
-                      <mngr-link href="column.link" data="data" workspace="workspace"></mngr-link>
+                                    ng-href="{{column.link | mngrLinkTo:data:workspace}}"
+                                    class="pad">
+                      <!--mngr-link href="column.link" data="data" workspace="workspace"></mngr-link-->
                                 <span ng-if="column.display">
                                     {{data[column.name] | mngrDisplay:column.display}}
                                 </span>
@@ -101,8 +96,9 @@
                                     {{data[column.name]}}
                                 </span>
                             </a>
-                        </h4>
-                        <h3 class="text-center middle-container">
+                        </h5>
+
+                        <b class="text-center middle-container">
                         <span
                                 ng-if="!column.link"
                                 class="middle-content text-center">
@@ -119,33 +115,26 @@
                                         ng-hide="bind"
                                         class="text-center"
                                         ng-click="bind=true">
-                                    {{column.prefix}} {{data[column.name]}}
+                                    <span ng-if="!column.filter && column.type!=='array'">{{data[column.name]}}</span>
+                                    <div ng-if="column.type==='array'" ng-repeat="subject in data[column.name] track by $index">
+                                        {{subject}}
+                                    </div>
+                                    <span ng-if="column.filter==='currency'">{{data[column.name]|currency}}</span>
+                                    <h5 ng-if="column.filter==='date'">{{data[column.name]|date:'medium'}}</h5>
                                 </i>
 
-                                <input
+                                <h3>
+                                    <input
                                         class="text-center"
                                         autofocus
                                         ng-show="bind"
                                         ng-blur="api.save(type,data.$id); bind=!bind"
                                         on-enter="api.save(type,data.$id); bind=!bind"
                                         ng-model="data[column.name]">
+                                </h3>
                             </span>
                         </span>
 
-                        </h3>
-                    </td>
-                    <td class="col-1 row-1 middle-content">
-                        <b
-                                class="middle-content text-right"
-                                ng-click="showRemove=!showRemove"
-                                ng-hide="showRemove">
-                            [x]
-                        </b>
-                        <b
-                                class="middle-content text-right"
-                                ng-show="showRemove"
-                                ng-click="api.remove(type,data.$id)">
-                            [REMOVE]
                         </b>
                     </td>
                 </tr>
@@ -154,8 +143,8 @@
             <tfoot class="col-13 row-1">
                 <tr>
                     <th>
-                        <td>
-                            Footer
+                        <td ng-repeat="foot in table.footer">
+                            <div ng-click="foot.action()">{{foot.name}}</div>
                         </td>
                     </th>
                 </tr>

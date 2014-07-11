@@ -1,4 +1,4 @@
-<div class="full">
+<div class="full"><div class="full"><div class="full">
     <span class="full" style="display: table" ng-click="ui.create.showOptions = !ui.create.showOptions">
         <i ng-show="ui.iconography.text" class="middle-container">  </i>
         <i ng-show="ui.iconography.icon" class="full fa fa-plus middle-content" ></i>
@@ -20,9 +20,9 @@
                 ng-show=showSpecific
                 class="push-1 col-11 row-11 fixed">
             <span class="col-13 row-1 middle-container">
-                <div class="middle-content" ng-init="model={};">
-                    <i class="col-5" > Cancel</i>
-                    <i class="col-8" ng-click="api.create(ui.create.specific,model[ui.create.specific])"> Save</i>
+                <div class="middle-content text-center" ng-init="model={};showSpecific=false">
+                    <i class="col-5" ng-click="showSpecific=false;"> Cancel</i>
+                    <i class="col-8" ng-click="api.create(ui.create.specific,model[ui.create.specific]); model={}; showSpecific=false;"> Save</i>
                 </div>
             </span>
             <div class="col-13 row-12 scroll-y">
@@ -44,4 +44,4 @@
         </div>
     </div>
 
-</div>
+</div></div></div>

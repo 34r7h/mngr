@@ -1,13 +1,19 @@
 <div class="full">
     <div class="col-1 row-12" >
-            <div class="middle-container" ng-click="action.action()">
-                <i class="middle-content {{action.icon}}">{{action.name}}</i>
+            <div
+                    ng-repeat="action in $parent.itemModel.actions"
+                    class="middle-container"
+                    style="height:{{100/$parent.$parent.itemModel.actions.length}}%"
+                    >
+                <i class="middle-content {{action.icon}}">
+                    <div ng-hide="confirmAction" ng-click="confirmAction=!confirmAction;">{{action.name}}</div>
+                    <div ng-show="confirmAction" ng-click="action.action();confirmAction=false;">[Really?]</div>
+                </i>
             </div>
-        </div>
     </div>
     <span class="col-12 row-1 text-center">
         <span class="col-7 middle-container">
-            <h4 class="middle-content text-left">
+            <h6 class="middle-content text-left">
                 <div
                         ng-hide="editName"
                         ng-model="item.name"
@@ -15,12 +21,12 @@
                     {{$parent.itemModel.header.name()}}
                 </div>
                 <input
-                        class="full"
+                        class="col-13"
                         ng-show="editName"
                         ng-model="item.name"
                         ng-blur="$parent.$parent.$parent.api.update($parent.type, item.$id, item); editName=!editName"
                         on-enter="$parent.$parent.$parent.api.update($parent.type,item.$id, item); editName=!editName;">
-            </h4>
+            </h6>
         </span>
         <span class="col-6 row-13">
             <span
@@ -34,14 +40,14 @@
                 <h3
                         class="col-13 row-3"
                         ng-hide="editInterest && interest.type==='edit'"
-                        ng-click="interest.action()">
-                    {{interest.value()}}
+                        >{{interest.value()}}
                 </h3>
             </div>
                 <h3
                         class="col-13 row-10"
                         ng-show="editInterest && interest.type==='edit'">
                     <input
+                            class="text-center"
                         ng-init="interesting.value = interest.value()"
                         ng-model="$parent.item[interest.model]"
                         autofocus
@@ -60,7 +66,11 @@
         </span-->
     </span>
     <span class="col-5 row-11">
-        {{item}}
+        <img
+                class="col-13"
+             src="{{item.imgUrl}}">
+
+        {{item | json}}
     </span>
     <span class="col-7 row-11">
         <div class="col-5 row-1 middle-container" ng-click="showInteraction=false">
@@ -83,6 +93,7 @@
                 <h4 class="middle-content text-center">
                     <span class="col-3 pull-1 text-right">{{detail.name}}: </span>
                     <input
+                            ng-show="detail.type==='edit'"
                             class="col-8 text-left"
                             ng-model="$parent.item[detail.model]"
                             ng-blur="$parent.$parent.$parent.$parent.api.update($parent.$parent.type, $parent.item.$id, $parent.item); editInterest=false"
