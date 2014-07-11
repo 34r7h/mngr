@@ -233,7 +233,7 @@ module.exports = function (grunt) {
 				cmd: 'git add --u && git commit -m magic && git push'
 			},
 			irthos:{
-				cmd: 'cd ~/irthos && git add --u && git commit -m magic && git push'
+				cmd: 'cd ~/apps/irthos && git add --u && git commit -m magic && git push'
 			}
 		}
 
