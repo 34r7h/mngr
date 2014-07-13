@@ -2,7 +2,8 @@
     <div
             class="col-3 row-12 pad"
             ng-hide='hideFilters'>
-        <h4>Filters</h4>
+        <h4>Filters </h4>
+        <purchase-order></purchase-order>
         <div
                 ng-if="filter.priority > 0"
                 ng-repeat="filter in table.filters">
@@ -144,8 +145,8 @@
                 <tr>
                     <th>
                         <td ng-repeat="foot in table.footer">
-                            <div ng-click="foot.action()">{{foot.name}}</div>
-                        </td>
+                            <!-- div ng-click="foot.action()">{{foot.name}}</div -->
+                </td>
                     </th>
                 </tr>
             </tfoot>

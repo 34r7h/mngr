@@ -1,6 +1,11 @@
 angular.module('mngr').directive('stock', function(ui,data,api,models) {
 	return {
 		controller: function($scope){
+			$scope.sample = "Sample";
+			$scope.getArray = [{a: 1, b:[15,324]}, {a:3, b:4}];
+
+
+
 			$scope.generatedOrder = [];
 			$scope.type = 'products';
 			$scope.typeSingular = 'product';
@@ -17,47 +22,7 @@ angular.module('mngr').directive('stock', function(ui,data,api,models) {
 				footer:[
 					{
 						name:'Generate Purchase Order',
-						type:'button',
-						action:function(){
-							$scope.generatedOrder = [];
-							$scope.supplierList = [];
-							var supplierResults = [];
-							angular.forEach(data.products.array, function(product){
-								if(product.stock < product.lowStock){
-									product.stockAlert = product.minOrder;
-									data[$scope.type].fire.$child(product.$id).$update(product);
-									if(product.suppliers){
-										$scope.generatedOrder.push({name:product.name,id:product.$id,upc:product.upc,'min-order':product.minOrder,supplier:product.suppliers});
-										return $scope.generatedOrder;
-									}
-
-								}
-							});
-							angular.forEach($scope.generatedOrder, function(order){
-								angular.forEach(order.supplier, function(supplier){
-									if ($scope.supplierList.indexOf(supplier.name) === -1) {
-										$scope.supplierList.push(supplier.name);
-									}
-
-								});
-							});
-							for(var i=0;i<Object.keys($scope.generatedOrder).length ;i++){
-								for(var j=0;j<$scope.supplierList.length;j++){
-									if (!angular.isArray(supplierResults[$scope.supplierList[j]])){
-										supplierResults[$scope.supplierList[j]] = [];
-									}
-									if ($scope.generatedOrder[i].supplier !== undefined){
-										if ( $scope.generatedOrder[i].supplier['0'].name === $scope.supplierList[j]) {
-											supplierResults[$scope.supplierList[j]].push($scope.generatedOrder[i]);
-											$scope.supplierResults = supplierResults;
-										}
-									}
-								}
-							}
-							console.log($scope.supplierResults);
-							return $scope.supplierResults;
-
-						}
+						type:'button'
 					}
 				]
 			};

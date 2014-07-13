@@ -1,6 +1,6 @@
-describe('mngrScrollPages', function() {
+describe('notices', function() {
 
-  beforeEach(module('mngr.util'));
+  beforeEach(module('mngr'));
 
   var scope,compile;
 

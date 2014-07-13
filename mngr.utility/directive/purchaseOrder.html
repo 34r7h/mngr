@@ -1,0 +1,16 @@
+<div>
+    {{data.news}}
+    <button type="button" ng-click="purchaseOrder()">Build Purchase Order</button>
+<div ng-if="finalArray" ng-repeat="finalArray in finalArray">
+    <h3>{{finalArray[0].supplier[0].name}}</h3>
+    <div ng-repeat="item in finalArray">
+        <br>
+        <h4>{{item.name}}</h4>
+        <p>Sku: {{item.supplier[0].sku || item.upc}}</p>
+        <p>Minimum Order: {{item['min-order']}}</p>
+        <p>Price: {{item.supplier[0].price | currency }}</p>
+        <b>Total:</b> <code>{{item.supplier[0].price * item['min-order'] | currency}}</code>
+        <hr>
+    </div>
+</div>
+</div>

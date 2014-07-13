@@ -1,6 +1,6 @@
-describe('onEnter', function() {
+describe('notes', function() {
 
-  beforeEach(module('mngr.util'));
+  beforeEach(module('mngr'));
 
   var scope,compile;
 
